@@ -101,19 +101,22 @@ A continuación se describen los casos de usos principales en base a las funcion
 ## 🛠️ Arquitectura y Tecnologías
 
 El siguiente diagrama ilustra la arquitectura del sistema, destacando los componentes clave y sus interacciones:
+
 <img width="1422" height="681" alt="Diagrama-arquitectura drawio" src="https://github.com/user-attachments/assets/352c0ff3-8782-4255-85b3-a1183add27b4" />
 
+### Stack Tecnológico y Decisiones Clave 🎯
 
-### Decisiones Clave y Stack Tecnológico 🎯
+La arquitectura se basa en un conjunto de tecnologías y patrones seleccionados para garantizar escalabilidad, resiliencia y una excelente experiencia de usuario. A continuación, se detalla el stack tecnológico:
 
-El diseño del sistema se fundamenta en las siguientes elecciones, que definen tanto la arquitectura como el stack tecnológico utilizado:
-
-  * **Escalabilidad y Orquestación:** Se adopta una arquitectura de **microservicios** orquestada por **.NET Aspire** para optimizar el despliegue, la gestión y la escalabilidad de cada servicio de forma independiente.
-  * **Resiliencia y Concurrencia:** Se garantiza la resiliencia y el manejo eficiente de eventos masivos (como la toma de tiempos) mediante un bus de mensajes asíncrono (**RabbitMQ**), que desacopla la recepción del procesamiento.
-  * **Experiencia del Usuario (UX):** Se implementan interfaces web modernas utilizando **Blazor** sobre **ASP.NET Core** para ofrecer una experiencia interactiva y en tiempo real.
-  * **Simulación de Hardware:** Se utiliza un **Servicio en Segundo Plano** (*Worker Service*) para simular la lectura de chips RFID y la inyección de eventos de tiempo al Bus de Mensajes.
-  * **Persistencia de Datos:** Se emplea **SQLite** para el almacenamiento local durante el desarrollo, con la flexibilidad de migrar a bases de datos más robustas en producción gracias a **Entity Framework Core**.
-  * **Plataforma de Desarrollo:** Todo el ecosistema está construido sobre **.NET 8**.
+| Área Clave | Tecnología / Patrón | Propósito y Justificación |
+| :--- | :--- | :--- |
+| **Plataforma Base** | `.NET 8` | Ecosistema de desarrollo unificado, moderno y de alto rendimiento para todos los componentes del sistema. |
+| **Arquitectura** | `Microservicios` | Permite que cada servicio (carreras, inscripciones, etc.) evolucione, se despliegue y escale de forma independiente. |
+| **Orquestación** | `.NET Aspire` | Orquestación nativa para simplificar el desarrollo, la configuración y el despliegue de la arquitectura de microservicios. |
+| **Frontend (UX)** | `Blazor` sobre `ASP.NET Core` | Creación de interfaces web interactivas y en tiempo real con C#, ofreciendo una experiencia de usuario fluida y moderna. |
+| **Mensajería Asíncrona**| `RabbitMQ` (Bus de Mensajes) | Desacopla los servicios y garantiza la resiliencia en el manejo de eventos masivos (ej. tiempos de carrera en tiempo real). |
+| **Persistencia de Datos** | `Entity Framework Core` + `SQLite` | Abstracción de la base de datos que facilita el desarrollo (con SQLite) y la migración a sistemas robustos en producción (ej. PostgreSQL). |
+| **Tareas en Segundo Plano**| `Worker Service` | Simulación de hardware (lectura de chips RFID) y generación de datos en tiempo real de forma asíncrona y desacoplada de la UI. |
 
 ## 🖼️ Maquetado de la Interfaz de Usuario y Administrador
 
