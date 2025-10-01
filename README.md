@@ -4,12 +4,12 @@ Sistema desarrollado en el ecosistema de .NET - Aspire, encargado de gestionar a
 
 ## 🧩 Funcionalidades principales
 
-| Funcionalidad | Descripción Breve | Actores |
-|---------------|---|---|
-| Registro de Carreras | Alta y configuración de nuevos eventos deportivos. | Administrador |
-| Inscripción de Participantes | Registro de corredores en carreras disponibles. | Usuarios |
-| Monitoreo en Tiempo Real | Display de progreso y datos de la carrera en vivo. | Usuarios |
-| Gestión de Equipamiento | Administración de la entrega de kits a corredores. | Administrador |
+| Funcionalidad | Descripción Breve | 
+|---------------|---|
+| Registro de Carreras | Alta y configuración de nuevos eventos deportivos. |
+| Inscripción de Participantes | Registro de corredores en carreras disponibles. |
+| Monitoreo en Tiempo Real | Display de progreso y datos de la carrera en vivo. |
+| Gestión de Equipamiento | Administración de la entrega de kits a corredores. | 
 
 ## 📊 Casos de Uso Principales
 
