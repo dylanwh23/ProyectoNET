@@ -13,69 +13,90 @@ Sistema desarrollado en el ecosistema de .NET - Aspire, encargado de gestionar a
 
 ## 📊 Casos de Uso Principales
 
-A continuación se describen los casos de usos principales en base a las funcionalidades.
+A continuación se describen los casos de usos principales en base a las funcionalidades. Haz clic en cada uno para ver los detalles.
 
-### 1\. Registrar carrera
+<details>
+<summary><strong>📝 1. Registrar carrera</strong></summary>
 
-  - **Actor:** Administrador
-  - **Descripción:** Alta de una nueva carrera en el sistema, especificando sus detalles, recorrido y puntos de entrega de equipamiento.
-  - **Flujo Principal:**
-    1.  El administrador accede al panel de administración.
-    2.  Completa el formulario de registro de carrera.
-    3.  Envía el formulario y recibe una confirmación.
+- **Actor:** `Administrador`
+- **Descripción:** Alta de una nueva carrera en el sistema, especificando sus detalles, recorrido y puntos de entrega de equipamiento.
+- **Flujo Principal:**
+  1. El administrador accede al panel de administración.
+  2. Completa el formulario de registro de carrera.
+  3. Envía el formulario y recibe una confirmación.
 
-### 2\. Listar carreras
+</details>
 
-  - **Actor:** Usuario
-  - **Descripción:** Visualización del listado de todas las carreras disponibles.
-  - **Flujo Principal:**
-    1.  El usuario accede a la página principal.
-    2.  Navega a la sección de carreras.
-    3.  Visualiza la lista de carreras disponibles con detalles básicos.
+<details>
+<summary><strong>📋 2. Listar carreras</strong></summary>
 
-### 3\. Inscribirse a carrera
+- **Actor:** `Usuario`
+- **Descripción:** Visualización del listado de todas las carreras disponibles.
+- **Flujo Principal:**
+  1. El usuario accede a la página principal.
+  2. Navega a la sección de carreras.
+  3. Visualiza la lista de carreras disponibles con detalles básicos.
 
-  - **Actor:** Usuario
-  - **Descripción:** Inscripción de un corredor a una carrera disponible.
-  - **Flujo Principal:**
-    1.  El usuario navega a la sección de carreras disponibles.
-    2.  Selecciona una carrera y completa el formulario de inscripción.
-    3.  Envía el formulario y recibe una confirmación.
+</details>
 
-### 4\. Consultar datos de carrera (no iniciada)
+<details>
+<summary><strong>✍️ 3. Inscribirse a carrera</strong></summary>
 
-  - **Actor:** Usuario
-  - **Descripción:** Visualización de los detalles completos de una carrera que aún no ha comenzado.
-  - **Flujo Principal:**
-    1.  El usuario selecciona una carrera no iniciada.
-    2.  Visualiza detalles como fecha, hora, lugar y participantes inscritos.
+- **Actor:** `Usuario`
+- **Descripción:** Inscripción de un corredor a una carrera disponible.
+- **Flujo Principal:**
+  1. El usuario navega a la sección de carreras disponibles.
+  2. Selecciona una carrera y completa el formulario de inscripción.
+  3. Envía el formulario y recibe una confirmación.
 
-### 5\. Monitorear carrera (en curso)
+</details>
 
-  - **Actor:** Usuario
-  - **Descripción:** Visualización de datos en tiempo real de una carrera, incluyendo el progreso de un participante específico.
-  - **Flujo Principal:**
-    1.  El usuario selecciona una carrera en curso.
-    2.  Visualiza datos en tiempo real como posiciones, tiempos y estadísticas.
+<details>
+<summary><strong>ℹ️ 4. Consultar datos de carrera (no iniciada)</strong></summary>
 
-### 6\. Entrega de equipamiento
+- **Actor:** `Usuario`
+- **Descripción:** Visualización de los detalles completos de una carrera que aún no ha comenzado.
+- **Flujo Principal:**
+  1. El usuario selecciona una carrera no iniciada.
+  2. Visualiza detalles como fecha, hora, lugar y participantes inscritos.
 
-  - **Actor:** Administrador, Usuario
-  - **Descripción:** Gestión y registro de la entrega de equipamiento a los corredores inscritos.
-  - **Flujo Principal:**
-    1.  Los puntos de entrega se definen en el registro de la carrera.
-    2.  El usuario se inscribe a la carrera y elige el punto de entrega.
-    3.  El sistema actualiza un JSON con los datos de entrega del nuevo participante.
+</details>
 
-### 7\. Simular carrera
+<details>
+<summary><strong>📈 5. Monitorear carrera (en curso)</strong></summary>
 
-  - **Actor:** Sistema (Servicio en Segundo Plano), Administrador
-  - **Descripción:** Simulación de lectura de chips RFID para generar eventos de tiempo y enviarlos al bus de mensajes.
-  - **Flujo Principal:**
-    1.  El administrador da por iniciada la carrera y la simulación comienza.
-    2.  El servicio en segundo plano genera eventos de tiempo para corredores.
-    3.  Los eventos son enviados al bus de mensajes para su procesamiento.
-    4.  El sistema actualiza los datos de la carrera en tiempo real.
+- **Actor:** `Usuario`
+- **Descripción:** Visualización de datos en tiempo real de una carrera, incluyendo el progreso de un participante específico.
+- **Flujo Principal:**
+  1. El usuario selecciona una carrera en curso.
+  2. Visualiza datos en tiempo real como posiciones, tiempos y estadísticas.
+
+</details>
+
+<details>
+<summary><strong>📦 6. Entrega de equipamiento</strong></summary>
+
+- **Actor:** `Administrador`, `Usuario`
+- **Descripción:** Gestión y registro de la entrega de equipamiento a los corredores inscritos.
+- **Flujo Principal:**
+  1. Los puntos de entrega se definen en el registro de la carrera.
+  2. El usuario se inscribe a la carrera y elige el punto de entrega.
+  3. El sistema actualiza un `JSON` con los datos de entrega del nuevo participante.
+
+</details>
+
+<details>
+<summary><strong>🤖 7. Simular carrera</strong></summary>
+
+- **Actor:** `Sistema`, `Administrador`
+- **Descripción:** Simulación de lectura de chips RFID para generar eventos de tiempo y enviarlos al bus de mensajes.
+- **Flujo Principal:**
+  1. El administrador da por iniciada la carrera y la simulación comienza.
+  2. El servicio en segundo plano genera eventos de tiempo para corredores.
+  3. Los eventos son enviados al bus de mensajes para su procesamiento.
+  4. El sistema actualiza los datos de la carrera en tiempo real.
+
+</details>
 
 ## 🛠️ Arquitectura y Tecnologías
 
