@@ -2,9 +2,18 @@
 
 Sistema desarrollado en el ecosistema de .NET - Aspire, encargado de gestionar aspectos operativos de las carreras deportivas y enriquecer la expericencia de los corredores/espectadores.
 
-## 🎯 Funcionalidades Principales
+## 🧩 Funcionalidades principales
 
-A continuación se describen las funcionalidades principales de la plataforma, los actores involucrados y sus flujos de operación.
+| Funcionalidad | Descripción Breve | Actores |
+|---------------|---|---|
+| Registro de Carreras | Alta y configuración de nuevos eventos deportivos. | Administrador |
+| Inscripción de Participantes | Registro de corredores en carreras disponibles. | Usuarios |
+| Monitoreo en Tiempo Real | Display de progreso y datos de la carrera en vivo. | Usuarios |
+| Gestión de Equipamiento | Administración de la entrega de kits a corredores. | Administrador |
+
+## 📊 Casos de Uso Principales
+
+A continuación se describen los casos de usos principales en base a las funcionalidades.
 
 ### 1\. Registrar carrera
 
@@ -71,7 +80,7 @@ A continuación se describen las funcionalidades principales de la plataforma, l
 ## 🛠️ Arquitectura y Tecnologías
 
 El siguiente diagrama ilustra la arquitectura del sistema, destacando los componentes clave y sus interacciones:
-<img width="1422" height="681" alt="Diagrama-arquitectura drawio" src="https://github.com/user-attachments/assets/6b73e15f-8caf-4f96-8fa0-d158b0e813fb" />
+<img width="1422" height="681" alt="Diagrama-arquitectura drawio" src="https://github.com/user-attachments/assets/352c0ff3-8782-4255-85b3-a1183add27b4" />
 
 
 ### Decisiones Clave y Stack Tecnológico 🎯
@@ -79,9 +88,9 @@ El siguiente diagrama ilustra la arquitectura del sistema, destacando los compon
 El diseño del sistema se fundamenta en las siguientes elecciones, que definen tanto la arquitectura como el stack tecnológico utilizado:
 
   * **Escalabilidad y Orquestación:** Se adopta una arquitectura de **microservicios** orquestada por **.NET Aspire** para optimizar el despliegue, la gestión y la escalabilidad de cada servicio de forma independiente.
-  * **Resiliencia y Concurrencia:** Se garantiza la resiliencia y el manejo eficiente de eventos masivos (como la toma de tiempos) mediante un bus de mensajes asíncrono **RabbitMQ**, que desacopla la recepción del procesamiento.
+  * **Resiliencia y Concurrencia:** Se garantiza la resiliencia y el manejo eficiente de eventos masivos (como la toma de tiempos) mediante un bus de mensajes asíncrono (**RabbitMQ**), que desacopla la recepción del procesamiento.
   * **Experiencia del Usuario (UX):** Se implementan interfaces web modernas utilizando **Blazor** sobre **ASP.NET Core** para ofrecer una experiencia interactiva y en tiempo real.
-  * **Simulación de Hardware:** Se utiliza un **Servicio en Segundo Plano** (*Worker Service*) para simular la lectura de chips y la inyección de eventos de tiempo al Bus de Mensajes.
+  * **Simulación de Hardware:** Se utiliza un **Servicio en Segundo Plano** (*Worker Service*) para simular la lectura de chips RFID y la inyección de eventos de tiempo al Bus de Mensajes.
   * **Persistencia de Datos:** Se emplea **SQLite** para el almacenamiento local durante el desarrollo, con la flexibilidad de migrar a bases de datos más robustas en producción gracias a **Entity Framework Core**.
   * **Plataforma de Desarrollo:** Todo el ecosistema está construido sobre **.NET 8**.
 
