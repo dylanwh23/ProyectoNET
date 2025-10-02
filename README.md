@@ -120,6 +120,7 @@ La arquitectura se basa en un conjunto de tecnologías y patrones seleccionados 
 
 ## 🖼️ Maquetado de la Interfaz de Usuario y Administrador
 
-### Interfaz de Usuario
+### Interfaz de Usuario y Administrador
+<a href="https://wireframe.cc/xaQ82H" target="_blank">Ver Diagrama</a>
 
-### Interfaz de Administrador
+
