@@ -13,7 +13,7 @@ Sistema desarrollado en el ecosistema de .NET - Aspire, encargado de gestionar a
 
 ## 📊 Casos de Uso Principales
 
-A continuación se describen los casos de usos principales en base a las funcionalidades. Haz clic en cada uno para ver los detalles.
+A continuación se describen los casos de usos principales en base a las funcionalidades. Haz clic en cada uno para ver los detalles y los **diagramas de secuencia**.
 
 <details>
 <summary><strong>📝 1. Registrar carrera</strong></summary>
@@ -24,6 +24,9 @@ A continuación se describen los casos de usos principales en base a las funcion
   1. El administrador accede al panel de administración.
   2. Completa el formulario de registro de carrera.
   3. Envía el formulario y recibe una confirmación.
+- **Diagrama de secuencia:**
+<img width="1295" height="719" alt="image" src="https://github.com/user-attachments/assets/932849e0-bda5-474f-a42a-f4669310e0c4" />
+
 
 </details>
 
@@ -81,7 +84,7 @@ A continuación se describen los casos de usos principales en base a las funcion
 - **Flujo Principal:**
   1. Los puntos de entrega se definen en el registro de la carrera.
   2. El usuario se inscribe a la carrera y elige el punto de entrega.
-  3. El sistema actualiza un `JSON` con los datos de entrega del nuevo participante.
+  3. El sistema actualiza un `JSON` con los datos de entrega del nuevo participante (incluye link de confirmación de entrega y pago).
 
 </details>
 
