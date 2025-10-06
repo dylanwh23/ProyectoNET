@@ -134,3 +134,91 @@ La arquitectura se basa en un conjunto de tecnologías y patrones seleccionados 
 <a href="https://wireframe.cc/xaQ82H" target="_blank">Ver Diagrama</a>
 
 
+# 🗓️ Planificación de Iteraciones
+
+> **Duración total:** 6 semanas  
+> **Metodología:** Iterativa e incremental (inspirada en Scrum)  
+> **Objetivo:** Desarrollar un sistema de gestión y monitoreo de carreras con arquitectura distribuida, comunicación por eventos y visualización en tiempo real.
+
+---
+
+## 🔍 Iteración 0 – Estudio, análisis y diseño
+**Duración:** Semana 1  
+**Objetivo:** Comprender las tecnologías base y definir la arquitectura del sistema.
+
+### Actividades principales
+- Investigar **.NET Aspire**, **RabbitMQ**, **SignalR** y **Worker Services**.  
+- Diseñar la arquitectura de microservicios y la comunicación por eventos.  
+- Definir modelos de datos, diagramas de secuencia y casos de uso.  
+- Configurar entorno base de desarrollo (repositorios, Docker, Aspire).  
+
+### Entregables
+- Documento de análisis y diseño.  
+- Entorno base funcionando con contenedores y configuración inicial.
+
+---
+
+## ⚙️ Iteración 1 – Prueba de eventos y simulación base
+**Duración:** Semanas 2–3  
+**Objetivo:** Implementar la base técnica de eventos y la simulación inicial de carrera.
+
+### Actividades principales
+- Configurar **Event Bus (RabbitMQ)** y probar comunicación entre servicios.  
+- Desarrollar el **WorkerService** que genera eventos simulados (lecturas RFID).  
+- Implementar **SignalR** para comunicación en tiempo real.  
+- Crear endpoints para recibir y mostrar eventos de carrera.  
+
+### Casos de uso implementados
+- 🤖 **Simular carrera (versión inicial)**  
+
+### Entregables
+- Comunicación por eventos funcionando entre servicios.  
+- Simulación básica en tiempo real visible desde la interfaz.  
+- Base sólida para el resto del sistema.
+
+---
+
+## 🏗️ Iteración 2 – Gestión de carreras e inscripciones
+**Duración:** Semanas 4–5  
+**Objetivo:** Implementar las funcionalidades principales del sistema.
+
+### Actividades principales
+- Crear microservicio `Carrera API` con operaciones CRUD.  
+- Desarrollar `Inscripción API` y formularios en Blazor Web App.  
+- Integrar los eventos con las carreras e inscripciones.  
+- Permitir monitoreo en tiempo real con **SignalR** y datos del bus.  
+
+### Casos de uso implementados
+- 📝 Registrar carrera  
+- 📋 Listar carreras  
+- ✍️ Inscribirse a carrera  
+- 📈 Monitorear carrera  
+
+### Entregables
+- Carreras reales con inscripciones activas.  
+- Interfaz que permite registrar, listar e inscribirse a carreras.  
+- Monitoreo en tiempo real de la simulación vinculada a cada carrera.
+
+---
+
+## 🎯 Iteración 3 – Entrega de equipamiento y cierre del sistema
+**Duración:** Semana 6  
+**Objetivo:** Completar funcionalidades complementarias y preparar la entrega final.
+
+### Actividades principales
+- Implementar caso de uso **📦 Entrega de equipamiento**.  
+- Actualizar datos de entrega (JSON y confirmaciones).  
+- Incorporar métricas y observabilidad con **Aspire Dashboard**.  
+- Pruebas de integración y mejoras finales en la interfaz.  
+
+### Casos de uso implementados
+- 📦 Entrega de equipamiento  
+- ℹ️ Consultar datos de carrera (versión final)  
+
+
+
+
+
+
+
+
