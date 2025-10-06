@@ -39,6 +39,7 @@ A continuación se describen los casos de usos principales en base a las funcion
   1. El usuario accede a la página principal.
   2. Navega a la sección de carreras.
   3. Visualiza la lista de carreras disponibles con detalles básicos.
+<img width="909" height="451" alt="imagen" src="https://github.com/user-attachments/assets/a6b37618-f96a-42d7-abc7-335ec0d285c3" />
 
 </details>
 
@@ -51,6 +52,8 @@ A continuación se describen los casos de usos principales en base a las funcion
   1. El usuario navega a la sección de carreras disponibles.
   2. Selecciona una carrera y completa el formulario de inscripción.
   3. Envía el formulario y recibe una confirmación.
+  <img width="1036" height="473" alt="{59F9F232-E737-41D1-9168-7F99823D02BC}" src="https://github.com/user-attachments/assets/70460236-c935-49f5-87d7-f4af189d45ab" />
+
 
 </details>
 
@@ -62,6 +65,7 @@ A continuación se describen los casos de usos principales en base a las funcion
 - **Flujo Principal:**
   1. El usuario selecciona una carrera no iniciada.
   2. Visualiza detalles como fecha, hora, lugar y participantes inscritos.
+<img width="1019" height="451" alt="imagen" src="https://github.com/user-attachments/assets/418190fd-b97f-4c2c-8c98-f0fc74df07b5" />
 
 </details>
 
@@ -73,6 +77,7 @@ A continuación se describen los casos de usos principales en base a las funcion
 - **Flujo Principal:**
   1. El usuario selecciona una carrera en curso.
   2. Visualiza datos en tiempo real como posiciones, tiempos y estadísticas.
+<img width="1434" height="570" alt="{D1DC018F-5EBD-475D-BAFF-90E6C5960C45}" src="https://github.com/user-attachments/assets/b90a24ad-5596-4ec0-9329-ba9f18bdd596" />
 
 </details>
 
@@ -85,6 +90,7 @@ A continuación se describen los casos de usos principales en base a las funcion
   1. Los puntos de entrega se definen en el registro de la carrera.
   2. El usuario se inscribe a la carrera y elige el punto de entrega.
   3. El sistema actualiza un `JSON` con los datos de entrega del nuevo participante (incluye link de confirmación de entrega y pago).
+<img width="1088" height="544" alt="{EAF45A97-C3DF-45E6-8DDC-D24A33F708E1}" src="https://github.com/user-attachments/assets/5d593d8e-2fac-471a-9705-204724de2e66" />
 
 </details>
 
@@ -98,6 +104,7 @@ A continuación se describen los casos de usos principales en base a las funcion
   2. El servicio en segundo plano genera eventos de tiempo para corredores.
   3. Los eventos son enviados al bus de mensajes para su procesamiento.
   4. El sistema actualiza los datos de la carrera en tiempo real.
+<img width="796" height="379" alt="{B2AB4E83-87F6-43D2-A923-FE776F652F39}" src="https://github.com/user-attachments/assets/22183344-dcfa-426e-b96d-803e731d27c5" />
 
 </details>
 
