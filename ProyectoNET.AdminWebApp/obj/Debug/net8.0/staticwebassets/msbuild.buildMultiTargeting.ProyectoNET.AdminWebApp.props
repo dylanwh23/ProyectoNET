@@ -1,0 +1,3 @@
+﻿<Project>
+  <Import Project="..\build\ProyectoNET.AdminWebApp.props" />
+</Project>

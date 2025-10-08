@@ -1,0 +1,6 @@
+@ProyectoNET.Carreras.API_HostAddress = http://localhost:5028
+
+GET {{ProyectoNET.Carreras.API_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
