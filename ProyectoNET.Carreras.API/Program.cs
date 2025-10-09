@@ -1,14 +1,14 @@
 using MassTransit;
 using ProyectoNET.Carreras.API.Consumers;
+using ProyectoNET.Shared;
 var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
 builder.Services.AddMassTransit(config => {
-
     config.AddConsumer<TiempoRegistradoConsumer>(); // <-- Registra tu consumidor
-
     config.UsingRabbitMq((ctx, cfg) => {
         cfg.Host(builder.Configuration.GetConnectionString("rabbitmq-bus"));
 
@@ -50,6 +50,21 @@ app.MapGet("/weatherforecast", () =>
     return forecast;
 })
 .WithName("GetWeatherForecast")
+.WithOpenApi();
+
+
+app.MapPost("/carrera/iniciar", async (IniciarCarreraCommand command, IBus bus) =>
+{
+    // Obtiene el endpoint de la cola específica para los simuladores
+    var endpoint = await bus.GetSendEndpoint(new Uri("queue:simulador-carreras"));
+
+    // Envía el comando a esa cola
+    await endpoint.Send(command);
+
+    return Results.Accepted(value: new { message = $"Comando para iniciar la carrera {command.IdCarrera} enviado." });
+})
+.WithSummary("Inicia la simulación de una carrera.")
+.WithName("IniciarCarrera")
 .WithOpenApi();
 
 app.MapGet("/carreras-test", () => "Respuesta del Microservicio de Carreras");

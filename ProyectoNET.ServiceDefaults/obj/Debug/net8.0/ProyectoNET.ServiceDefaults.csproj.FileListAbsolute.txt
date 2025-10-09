@@ -1,0 +1,13 @@
+C:\Users\User\Documents\ProyectoNET\ProyectoNET.ServiceDefaults\bin\Debug\net8.0\ProyectoNET.ServiceDefaults.deps.json
+C:\Users\User\Documents\ProyectoNET\ProyectoNET.ServiceDefaults\bin\Debug\net8.0\ProyectoNET.ServiceDefaults.dll
+C:\Users\User\Documents\ProyectoNET\ProyectoNET.ServiceDefaults\bin\Debug\net8.0\ProyectoNET.ServiceDefaults.pdb
+C:\Users\User\Documents\ProyectoNET\ProyectoNET.ServiceDefaults\obj\Debug\net8.0\ProyectoNET.ServiceDefaults.csproj.AssemblyReference.cache
+C:\Users\User\Documents\ProyectoNET\ProyectoNET.ServiceDefaults\obj\Debug\net8.0\ProyectoNET.ServiceDefaults.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\User\Documents\ProyectoNET\ProyectoNET.ServiceDefaults\obj\Debug\net8.0\ProyectoNET.ServiceDefaults.AssemblyInfoInputs.cache
+C:\Users\User\Documents\ProyectoNET\ProyectoNET.ServiceDefaults\obj\Debug\net8.0\ProyectoNET.ServiceDefaults.AssemblyInfo.cs
+C:\Users\User\Documents\ProyectoNET\ProyectoNET.ServiceDefaults\obj\Debug\net8.0\ProyectoNET.ServiceDefaults.csproj.CoreCompileInputs.cache
+C:\Users\User\Documents\ProyectoNET\ProyectoNET.ServiceDefaults\obj\Debug\net8.0\ProyectoNET.ServiceDefaults.sourcelink.json
+C:\Users\User\Documents\ProyectoNET\ProyectoNET.ServiceDefaults\obj\Debug\net8.0\ProyectoNET.ServiceDefaults.dll
+C:\Users\User\Documents\ProyectoNET\ProyectoNET.ServiceDefaults\obj\Debug\net8.0\refint\ProyectoNET.ServiceDefaults.dll
+C:\Users\User\Documents\ProyectoNET\ProyectoNET.ServiceDefaults\obj\Debug\net8.0\ProyectoNET.ServiceDefaults.pdb
+C:\Users\User\Documents\ProyectoNET\ProyectoNET.ServiceDefaults\obj\Debug\net8.0\ref\ProyectoNET.ServiceDefaults.dll

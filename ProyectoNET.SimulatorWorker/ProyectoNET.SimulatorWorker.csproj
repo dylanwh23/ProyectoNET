@@ -14,5 +14,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\ProyectoNET.Shared\ProyectoNET.Shared.csproj" />
+    <ProjectReference Include="..\ProyectoNET.ServiceDefaults\ProyectoNET.ServiceDefaults.csproj" />
   </ItemGroup>
 </Project>
