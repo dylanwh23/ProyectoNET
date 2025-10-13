@@ -15,5 +15,5 @@ public class ProyectoNET_Carreras_API : global::Aspire.Hosting.IProjectMetadata
     /// <summary>
     /// The path to the ProyectoNET_Carreras_API project.
     /// </summary>
-    public string ProjectPath => """C:\Users\User\Documents\ProyectoNET\ProyectoNET.Carreras.API\ProyectoNET.Carreras.API.csproj""";
+    public string ProjectPath => """C:\Users\rmati\Source\Repos\ProyectoNET\ProyectoNET.Carreras.API\ProyectoNET.Carreras.API.csproj""";
 }

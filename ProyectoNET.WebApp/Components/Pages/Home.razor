@@ -1,7 +1,62 @@
 ﻿@page "/"
+@layout Layout
 
-<PageTitle>Home</PageTitle>
+<div class="text-center mt-5">
+    <h1 class="display-5 fw-bold">Organice su evento deportivo con nosotros</h1>
+    <p class="col-lg-8 mx-auto fs-5 text-muted mt-3">
+        Lorem ipsum dolor sit amet et delectus accommodare his consul copiosae legendos at vix ad
+        putent delectus delicata usu. Vidit dissentiet eos cu eum an brute copiosae hendrerit.
+    </p>
 
-<h1>Hello, world!</h1>
+    <div class="d-flex justify-content-center gap-3 mt-4">
+        <a href="/contacto" class="btn btn-dark btn-lg px-4">Contáctenos</a>
+        <a href="/carreras" class="btn btn-outline-dark btn-lg px-4">Carreras</a>
+    </div>
+</div>
 
-Welcome to your new app.
+
+<section class="container my-5">
+    <h2 class="fw-bold mb-5 text-center">Carreras destacadas</h2>
+    <div class="row g-4 justify-content-center">
+
+        <div class="col-12 col-md-4">
+            <div class="card carrera-card h-100 border-0 shadow-lg">
+                <img src="images/carrera1.jpg" class="card-img-top" alt="Carrera 1">
+                <div class="card-body text-center">
+                    <h5 class="card-title fw-bold">Maratón Ciudadana 10K</h5>
+                    <p class="card-text text-muted">
+                        Una carrera urbana ideal para corredores de todos los niveles.
+                    </p>
+                    <a href="/carreras/1" class="btn btn-dark">Ver más</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 col-md-4">
+            <div class="card carrera-card h-100 border-0 shadow-lg">
+                <img src="images/carrera2.jpg" class="card-img-top" alt="Carrera 2">
+                <div class="card-body text-center">
+                    <h5 class="card-title fw-bold">Trail Sierra Norte</h5>
+                    <p class="card-text text-muted">
+                        Aventura y naturaleza en una exigente competencia de montaña.
+                    </p>
+                    <a href="/carreras/2" class="btn btn-dark">Ver más</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 col-md-4">
+            <div class="card carrera-card h-100 border-0 shadow-lg">
+                <img src="images/carrera3.jpg" class="card-img-top" alt="Carrera 3">
+                <div class="card-body text-center">
+                    <h5 class="card-title fw-bold">Carrera Nocturna 5K</h5>
+                    <p class="card-text text-muted">
+                        Disfrutá de una experiencia única corriendo bajo las luces de la ciudad.
+                    </p>
+                    <a href="/carreras/3" class="btn btn-dark">Ver más</a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</section>

@@ -10,3 +10,15 @@ C:\Users\User\Documents\ProyectoNET\ProyectoNET.Shared\obj\Debug\net8.0\Proyecto
 C:\Users\User\Documents\ProyectoNET\ProyectoNET.Shared\obj\Debug\net8.0\refint\ProyectoNET.Shared.dll
 C:\Users\User\Documents\ProyectoNET\ProyectoNET.Shared\obj\Debug\net8.0\ProyectoNET.Shared.pdb
 C:\Users\User\Documents\ProyectoNET\ProyectoNET.Shared\obj\Debug\net8.0\ref\ProyectoNET.Shared.dll
+C:\Users\rmati\Source\Repos\ProyectoNET\ProyectoNET.Shared\bin\Debug\net8.0\ProyectoNET.Shared.deps.json
+C:\Users\rmati\Source\Repos\ProyectoNET\ProyectoNET.Shared\bin\Debug\net8.0\ProyectoNET.Shared.dll
+C:\Users\rmati\Source\Repos\ProyectoNET\ProyectoNET.Shared\bin\Debug\net8.0\ProyectoNET.Shared.pdb
+C:\Users\rmati\Source\Repos\ProyectoNET\ProyectoNET.Shared\obj\Debug\net8.0\ProyectoNET.Shared.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\rmati\Source\Repos\ProyectoNET\ProyectoNET.Shared\obj\Debug\net8.0\ProyectoNET.Shared.AssemblyInfoInputs.cache
+C:\Users\rmati\Source\Repos\ProyectoNET\ProyectoNET.Shared\obj\Debug\net8.0\ProyectoNET.Shared.AssemblyInfo.cs
+C:\Users\rmati\Source\Repos\ProyectoNET\ProyectoNET.Shared\obj\Debug\net8.0\ProyectoNET.Shared.csproj.CoreCompileInputs.cache
+C:\Users\rmati\Source\Repos\ProyectoNET\ProyectoNET.Shared\obj\Debug\net8.0\ProyectoNET.Shared.sourcelink.json
+C:\Users\rmati\Source\Repos\ProyectoNET\ProyectoNET.Shared\obj\Debug\net8.0\ProyectoNET.Shared.dll
+C:\Users\rmati\Source\Repos\ProyectoNET\ProyectoNET.Shared\obj\Debug\net8.0\refint\ProyectoNET.Shared.dll
+C:\Users\rmati\Source\Repos\ProyectoNET\ProyectoNET.Shared\obj\Debug\net8.0\ProyectoNET.Shared.pdb
+C:\Users\rmati\Source\Repos\ProyectoNET\ProyectoNET.Shared\obj\Debug\net8.0\ref\ProyectoNET.Shared.dll

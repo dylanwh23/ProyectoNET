@@ -15,5 +15,5 @@ public class ProyectoNET_AdminWebApp : global::Aspire.Hosting.IProjectMetadata
     /// <summary>
     /// The path to the ProyectoNET_AdminWebApp project.
     /// </summary>
-    public string ProjectPath => """C:\Users\User\Documents\ProyectoNET\ProyectoNET.AdminWebApp\ProyectoNET.AdminWebApp.csproj""";
+    public string ProjectPath => """C:\Users\rmati\Source\Repos\ProyectoNET\ProyectoNET.AdminWebApp\ProyectoNET.AdminWebApp.csproj""";
 }

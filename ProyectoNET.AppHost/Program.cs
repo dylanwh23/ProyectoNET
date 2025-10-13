@@ -12,7 +12,8 @@ builder.AddProject<Projects.ProyectoNET_SimulatorWorker>("simulator-worker")
 //front       
 builder.AddProject<Projects.ProyectoNET_WebApp>("webapp")
        .WithReference(carrerasApi)  
-       .WithReference(usuariosApi);     
+       .WithReference(usuariosApi)
+       .WithEnvironment("ASPNETCORE_ENVIRONMENT", "Development");
 //front admin     
 builder.AddProject<Projects.ProyectoNET_WebApp>("admin-webapp")
        .WithReference(carrerasApi)  

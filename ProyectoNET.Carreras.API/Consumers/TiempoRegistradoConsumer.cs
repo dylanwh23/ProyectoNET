@@ -1,12 +1,16 @@
 using MassTransit;
+using Microsoft.AspNetCore.SignalR;
+using ProyectoNET.Carreras.API.Hubs;
 using ProyectoNET.Shared;
 
 namespace ProyectoNET.Carreras.API.Consumers;
 
-public class TiempoRegistradoConsumer(ILogger<TiempoRegistradoConsumer> logger)
-    : IConsumer<ProgresoCorredorActualizado>
+public class TiempoRegistradoConsumer(
+    ILogger<TiempoRegistradoConsumer> logger,
+    IHubContext<CarreraHub> hubContext
+) : IConsumer<ProgresoCorredorActualizado>
 {
-    public Task Consume(ConsumeContext<ProgresoCorredorActualizado> context)
+    public async Task Consume(ConsumeContext<ProgresoCorredorActualizado> context)
     {
         var mensaje = context.Message;
 
@@ -20,7 +24,10 @@ public class TiempoRegistradoConsumer(ILogger<TiempoRegistradoConsumer> logger)
             mensaje.TiemposPorTramo.Count
         );
 
-        // Log detallado de los tiempos por tramo (opcional, útil para debugging)
+        // 🔄 Enviar a los clientes conectados por SignalR
+        await hubContext.Clients.All.SendAsync("ProgresoActualizado", mensaje);
+
+        // Log detallado (debug)
         if (logger.IsEnabled(LogLevel.Debug))
         {
             foreach (var tramo in mensaje.TiemposPorTramo)
@@ -33,16 +40,8 @@ public class TiempoRegistradoConsumer(ILogger<TiempoRegistradoConsumer> logger)
                 );
             }
 
-            // Calcular tiempo total acumulado
             var tiempoTotal = TimeSpan.FromTicks(mensaje.TiemposPorTramo.Sum(t => t.Tiempo.Ticks));
-            logger.LogDebug(
-                "  🏃 Tiempo total acumulado: {TiempoTotal}",
-                tiempoTotal.ToString(@"hh\:mm\:ss")
-            );
+            logger.LogDebug("  🏃 Tiempo total acumulado: {TiempoTotal}", tiempoTotal.ToString(@"hh\:mm\:ss"));
         }
-
-        // AQUÍ iría tu lógica de negocio: guardar en la base de datos, etc.
-
-        return Task.CompletedTask;
     }
 }

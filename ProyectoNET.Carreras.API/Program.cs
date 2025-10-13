@@ -1,11 +1,17 @@
 using MassTransit;
 using ProyectoNET.Carreras.API.Consumers;
+using ProyectoNET.Carreras.API.Hubs;
 using ProyectoNET.Shared;
 var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddSignalR();
+
+
+
+
 
 builder.Services.AddMassTransit(config => {
     config.AddConsumer<TiempoRegistradoConsumer>(); // <-- Registra tu consumidor
@@ -19,10 +25,25 @@ builder.Services.AddMassTransit(config => {
     });
 });
 
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(policy =>
+    {
+        policy.WithOrigins("https://localhost:5001") // puerto de tu WebApp
+              .AllowAnyHeader()
+              .AllowAnyMethod()
+              .AllowCredentials();
+    });
+});
+
+
 
 
 var app = builder.Build();
 
+app.MapHub<CarreraHub>("/carreraHub");
+
+app.UseCors();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {

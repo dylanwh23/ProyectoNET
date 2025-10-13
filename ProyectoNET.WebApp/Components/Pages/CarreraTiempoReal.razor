@@ -1,0 +1,79 @@
+﻿@page "/carrera-tiempo-real"
+@using ProyectoNET.Shared
+@using Microsoft.AspNetCore.SignalR.Client
+@layout Layout
+
+<h3>📊 Seguimiento en tiempo real</h3>
+
+@if (hubConnection is null)
+{
+    <p>Conectando...</p>
+}
+else if (!isConnected)
+{
+    <p class="text-danger">❌ No conectado al servidor.</p>
+}
+else
+{
+    <table class="table table-striped table-bordered">
+        <thead class="table-dark">
+            <tr>
+                <th>Carrera</th>
+                <th>Corredor</th>
+                <th>Checkpoint</th>
+                <th>Velocidad (km/h)</th>
+                <th>Tramos completados</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var p in progresos)
+            {
+                <tr>
+                    <td>@p.IdCarrera</td>
+                    <td>@p.IdCorredor</td>
+                    <td>@p.UltimoCheckpointPasado?.Km km</td>
+                    <td>@p.VelocidadKmh.ToString("F2")</td>
+                    <td>@p.TiemposPorTramo.Count</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private HubConnection? hubConnection;
+    private List<ProgresoCorredorActualizado> progresos = new();
+    private bool isConnected = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        hubConnection = new HubConnectionBuilder()
+            .WithUrl("https://localhost:7252/carreraHub")
+            .WithAutomaticReconnect()
+            .Build();
+
+        hubConnection.On<ProgresoCorredorActualizado>("ProgresoActualizado", (mensaje) =>
+        {
+            progresos.Add(mensaje);
+            InvokeAsync(StateHasChanged);
+        });
+
+        try
+        {
+            await hubConnection.StartAsync();
+            isConnected = true;
+        }
+        catch
+        {
+            isConnected = false;
+        }
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        if (hubConnection is not null)
+        {
+            await hubConnection.DisposeAsync();
+        }
+    }
+}
