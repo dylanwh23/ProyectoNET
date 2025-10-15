@@ -15,5 +15,5 @@ public class ProyectoNET_WebApp : global::Aspire.Hosting.IProjectMetadata
     /// <summary>
     /// The path to the ProyectoNET_WebApp project.
     /// </summary>
-    public string ProjectPath => """C:\Users\rmati\Source\Repos\ProyectoNET\ProyectoNET.WebApp\ProyectoNET.WebApp.csproj""";
+    public string ProjectPath => """C:\Users\rmati\source\repos\dylanwh23\ProyectoNET\ProyectoNET.WebApp\ProyectoNET.WebApp.csproj""";
 }

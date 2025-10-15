@@ -18,15 +18,15 @@ using System.Reflection;
     "xt\\")]
 [assembly: System.Reflection.AssemblyMetadata("dcpbinpath", "C:\\Users\\rmati\\.nuget\\packages\\aspire.hosting.orchestration.win-x64\\9.5.1\\tools\\e" +
     "xt\\bin\\")]
-[assembly: System.Reflection.AssemblyMetadata("apphostprojectpath", "C:\\Users\\rmati\\Source\\Repos\\ProyectoNET\\ProyectoNET.AppHost")]
+[assembly: System.Reflection.AssemblyMetadata("apphostprojectpath", "C:\\Users\\rmati\\source\\repos\\dylanwh23\\ProyectoNET\\ProyectoNET.AppHost")]
 [assembly: System.Reflection.AssemblyMetadata("apphostprojectname", "ProyectoNET.AppHost.csproj")]
 [assembly: System.Reflection.AssemblyMetadata("aspiredashboardpath", "C:\\Users\\rmati\\.nuget\\packages\\aspire.dashboard.sdk.win-x64\\9.5.1\\tools\\Aspire.Da" +
     "shboard.exe")]
-[assembly: System.Reflection.AssemblyMetadataAttribute("apphostprojectbaseintermediateoutputpath", "C:\\Users\\rmati\\Source\\Repos\\ProyectoNET\\ProyectoNET.AppHost\\obj\\")]
+[assembly: System.Reflection.AssemblyMetadataAttribute("apphostprojectbaseintermediateoutputpath", "C:\\Users\\rmati\\source\\repos\\dylanwh23\\ProyectoNET\\ProyectoNET.AppHost\\obj\\")]
 [assembly: System.Reflection.AssemblyCompanyAttribute("ProyectoNET.AppHost")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+4a152fe97e7110cfaf079c6eb9244cb56a8c1741")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+41ccda0f4faa60fec91e4a9be09fca9e03989ea5")]
 [assembly: System.Reflection.AssemblyProductAttribute("ProyectoNET.AppHost")]
 [assembly: System.Reflection.AssemblyTitleAttribute("ProyectoNET.AppHost")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

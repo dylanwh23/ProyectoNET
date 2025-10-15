@@ -1,49 +1,48 @@
 ﻿@page "/carrera-tiempo-real"
-@using ProyectoNET.Shared
 @using Microsoft.AspNetCore.SignalR.Client
 @layout Layout
 
 <h3>📊 Seguimiento en tiempo real</h3>
 
-@if (hubConnection is null)
+@if (hubConnection is not null)
 {
-    <p>Conectando...</p>
-}
-else if (!isConnected)
-{
-    <p class="text-danger">❌ No conectado al servidor.</p>
+    <p style="color:green">✅ Conectado al servidor SignalR.</p>
+    <p>⏱️ Tiempo en ejecución: @elapsedSeconds segundos</p>
 }
 else
 {
-    <table class="table table-striped table-bordered">
-        <thead class="table-dark">
-            <tr>
-                <th>Carrera</th>
-                <th>Corredor</th>
-                <th>Checkpoint</th>
-                <th>Velocidad (km/h)</th>
-                <th>Tramos completados</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var p in progresos)
-            {
-                <tr>
-                    <td>@p.IdCarrera</td>
-                    <td>@p.IdCorredor</td>
-                    <td>@p.UltimoCheckpointPasado?.Km km</td>
-                    <td>@p.VelocidadKmh.ToString("F2")</td>
-                    <td>@p.TiemposPorTramo.Count</td>
-                </tr>
-            }
-        </tbody>
-    </table>
+    <p style="color:red">❌ No conectado al servidor.</p>
 }
+
+<table class="table table-dark table-striped mt-3">
+    <thead>
+        <tr>
+            <th>Carrera</th>
+            <th>Corredor</th>
+            <th>Checkpoint</th>
+            <th>Velocidad (km/h)</th>
+            <th>Tramos completados</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in carreraData)
+        {
+            <tr>
+                <td>@item.CarreraId</td>
+                <td>@item.CorredorId</td>
+                <td>@item.Checkpoint</td>
+                <td>@item.Velocidad</td>
+                <td>@item.TramosCompletados</td>
+            </tr>
+        }
+    </tbody>
+</table>
 
 @code {
     private HubConnection? hubConnection;
-    private List<ProgresoCorredorActualizado> progresos = new();
-    private bool isConnected = false;
+    private int elapsedSeconds = 0;
+    private List<CarreraData> carreraData = new();
+    private Timer? timer;
 
     protected override async Task OnInitializedAsync()
     {
@@ -52,28 +51,47 @@ else
             .WithAutomaticReconnect()
             .Build();
 
-        hubConnection.On<ProgresoCorredorActualizado>("ProgresoActualizado", (mensaje) =>
+        hubConnection.On<CarreraData>("RecibirProgreso", data =>
         {
-            progresos.Add(mensaje);
+            var existing = carreraData.FirstOrDefault(x => x.CorredorId == data.CorredorId);
+            if (existing != null)
+            {
+                existing.Checkpoint = data.Checkpoint;
+                existing.Velocidad = data.Velocidad;
+                existing.TramosCompletados = data.TramosCompletados;
+            }
+            else
+            {
+                carreraData.Add(data);
+            }
+
             InvokeAsync(StateHasChanged);
         });
 
-        try
+        await hubConnection.StartAsync();
+        Console.WriteLine("✅ Conectado a SignalR");
+
+        // ✅ Iniciar el temporizador en el hilo correcto
+        timer = new Timer(async _ =>
         {
-            await hubConnection.StartAsync();
-            isConnected = true;
-        }
-        catch
-        {
-            isConnected = false;
-        }
+            elapsedSeconds++;
+            await InvokeAsync(StateHasChanged);
+        }, null, 1000, 1000);
     }
 
-    public async ValueTask DisposeAsync()
+    public void Dispose()
     {
-        if (hubConnection is not null)
-        {
-            await hubConnection.DisposeAsync();
-        }
+        timer?.Dispose();
+        _ = hubConnection?.DisposeAsync();
+    }
+
+    public class CarreraData
+    {
+        public int CarreraId { get; set; }
+        public int CorredorId { get; set; }
+        public string Checkpoint { get; set; } = string.Empty;
+        public double Velocidad { get; set; }
+        public int TramosCompletados { get; set; }
     }
 }
+

@@ -29,7 +29,7 @@ builder.Services.AddCors(options =>
 {
     options.AddDefaultPolicy(policy =>
     {
-        policy.WithOrigins("https://localhost:5001") // puerto de tu WebApp
+        policy.WithOrigins("https://localhost:7073") // puerto de tu WebApp
               .AllowAnyHeader()
               .AllowAnyMethod()
               .AllowCredentials();
@@ -40,10 +40,10 @@ builder.Services.AddCors(options =>
 
 
 var app = builder.Build();
-
+app.UseCors();
 app.MapHub<CarreraHub>("/carreraHub");
 
-app.UseCors();
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {

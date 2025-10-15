@@ -17,5 +17,5 @@ public class ProyectoNET_AppHost
     /// <summary>
     /// The path to the Aspire Host project.
     /// </summary>
-    public static string ProjectPath => """C:\Users\rmati\Source\Repos\ProyectoNET\ProyectoNET.AppHost""";
+    public static string ProjectPath => """C:\Users\rmati\source\repos\dylanwh23\ProyectoNET\ProyectoNET.AppHost""";
 }

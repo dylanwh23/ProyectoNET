@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\rmati\\Source\\Repos\\ProyectoNET\\ProyectoNET.Usuarios.API\\ProyectoNET.Usuarios.API.csproj": {}
+    "C:\\Users\\rmati\\source\\repos\\dylanwh23\\ProyectoNET\\ProyectoNET.Usuarios.API\\ProyectoNET.Usuarios.API.csproj": {}
   },
   "projects": {
-    "C:\\Users\\rmati\\Source\\Repos\\ProyectoNET\\ProyectoNET.Usuarios.API\\ProyectoNET.Usuarios.API.csproj": {
+    "C:\\Users\\rmati\\source\\repos\\dylanwh23\\ProyectoNET\\ProyectoNET.Usuarios.API\\ProyectoNET.Usuarios.API.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\rmati\\Source\\Repos\\ProyectoNET\\ProyectoNET.Usuarios.API\\ProyectoNET.Usuarios.API.csproj",
+        "projectUniqueName": "C:\\Users\\rmati\\source\\repos\\dylanwh23\\ProyectoNET\\ProyectoNET.Usuarios.API\\ProyectoNET.Usuarios.API.csproj",
         "projectName": "ProyectoNET.Usuarios.API",
-        "projectPath": "C:\\Users\\rmati\\Source\\Repos\\ProyectoNET\\ProyectoNET.Usuarios.API\\ProyectoNET.Usuarios.API.csproj",
+        "projectPath": "C:\\Users\\rmati\\source\\repos\\dylanwh23\\ProyectoNET\\ProyectoNET.Usuarios.API\\ProyectoNET.Usuarios.API.csproj",
         "packagesPath": "C:\\Users\\rmati\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\rmati\\Source\\Repos\\ProyectoNET\\ProyectoNET.Usuarios.API\\obj\\",
+        "outputPath": "C:\\Users\\rmati\\source\\repos\\dylanwh23\\ProyectoNET\\ProyectoNET.Usuarios.API\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"

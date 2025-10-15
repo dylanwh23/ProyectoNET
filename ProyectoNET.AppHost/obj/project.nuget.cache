@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "t6T4WCIUH6k=",
+  "dgSpecHash": "L4JvKmzfiWE=",
   "success": true,
-  "projectFilePath": "C:\\Users\\rmati\\Source\\Repos\\ProyectoNET\\ProyectoNET.AppHost\\ProyectoNET.AppHost.csproj",
+  "projectFilePath": "C:\\Users\\rmati\\source\\repos\\dylanwh23\\ProyectoNET\\ProyectoNET.AppHost\\ProyectoNET.AppHost.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\rmati\\.nuget\\packages\\aspire.dashboard.sdk.win-x64\\9.5.1\\aspire.dashboard.sdk.win-x64.9.5.1.nupkg.sha512",
     "C:\\Users\\rmati\\.nuget\\packages\\aspire.hosting\\9.5.1\\aspire.hosting.9.5.1.nupkg.sha512",

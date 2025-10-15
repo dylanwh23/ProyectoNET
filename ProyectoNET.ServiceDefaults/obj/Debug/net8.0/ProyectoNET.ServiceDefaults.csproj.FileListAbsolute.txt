@@ -24,3 +24,16 @@ C:\Users\rmati\Source\Repos\ProyectoNET\ProyectoNET.ServiceDefaults\obj\Debug\ne
 C:\Users\rmati\Source\Repos\ProyectoNET\ProyectoNET.ServiceDefaults\obj\Debug\net8.0\refint\ProyectoNET.ServiceDefaults.dll
 C:\Users\rmati\Source\Repos\ProyectoNET\ProyectoNET.ServiceDefaults\obj\Debug\net8.0\ProyectoNET.ServiceDefaults.pdb
 C:\Users\rmati\Source\Repos\ProyectoNET\ProyectoNET.ServiceDefaults\obj\Debug\net8.0\ref\ProyectoNET.ServiceDefaults.dll
+C:\Users\rmati\source\repos\dylanwh23\ProyectoNET\ProyectoNET.ServiceDefaults\bin\Debug\net8.0\ProyectoNET.ServiceDefaults.deps.json
+C:\Users\rmati\source\repos\dylanwh23\ProyectoNET\ProyectoNET.ServiceDefaults\bin\Debug\net8.0\ProyectoNET.ServiceDefaults.dll
+C:\Users\rmati\source\repos\dylanwh23\ProyectoNET\ProyectoNET.ServiceDefaults\bin\Debug\net8.0\ProyectoNET.ServiceDefaults.pdb
+C:\Users\rmati\source\repos\dylanwh23\ProyectoNET\ProyectoNET.ServiceDefaults\obj\Debug\net8.0\ProyectoNET.ServiceDefaults.csproj.AssemblyReference.cache
+C:\Users\rmati\source\repos\dylanwh23\ProyectoNET\ProyectoNET.ServiceDefaults\obj\Debug\net8.0\ProyectoNET.ServiceDefaults.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\rmati\source\repos\dylanwh23\ProyectoNET\ProyectoNET.ServiceDefaults\obj\Debug\net8.0\ProyectoNET.ServiceDefaults.AssemblyInfoInputs.cache
+C:\Users\rmati\source\repos\dylanwh23\ProyectoNET\ProyectoNET.ServiceDefaults\obj\Debug\net8.0\ProyectoNET.ServiceDefaults.AssemblyInfo.cs
+C:\Users\rmati\source\repos\dylanwh23\ProyectoNET\ProyectoNET.ServiceDefaults\obj\Debug\net8.0\ProyectoNET.ServiceDefaults.csproj.CoreCompileInputs.cache
+C:\Users\rmati\source\repos\dylanwh23\ProyectoNET\ProyectoNET.ServiceDefaults\obj\Debug\net8.0\ProyectoNET.ServiceDefaults.sourcelink.json
+C:\Users\rmati\source\repos\dylanwh23\ProyectoNET\ProyectoNET.ServiceDefaults\obj\Debug\net8.0\ProyectoNET.ServiceDefaults.dll
+C:\Users\rmati\source\repos\dylanwh23\ProyectoNET\ProyectoNET.ServiceDefaults\obj\Debug\net8.0\refint\ProyectoNET.ServiceDefaults.dll
+C:\Users\rmati\source\repos\dylanwh23\ProyectoNET\ProyectoNET.ServiceDefaults\obj\Debug\net8.0\ProyectoNET.ServiceDefaults.pdb
+C:\Users\rmati\source\repos\dylanwh23\ProyectoNET\ProyectoNET.ServiceDefaults\obj\Debug\net8.0\ref\ProyectoNET.ServiceDefaults.dll

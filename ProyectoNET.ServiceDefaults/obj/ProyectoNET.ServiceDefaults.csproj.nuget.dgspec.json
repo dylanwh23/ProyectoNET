@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\rmati\\Source\\Repos\\ProyectoNET\\ProyectoNET.ServiceDefaults\\ProyectoNET.ServiceDefaults.csproj": {}
+    "C:\\Users\\rmati\\source\\repos\\dylanwh23\\ProyectoNET\\ProyectoNET.ServiceDefaults\\ProyectoNET.ServiceDefaults.csproj": {}
   },
   "projects": {
-    "C:\\Users\\rmati\\Source\\Repos\\ProyectoNET\\ProyectoNET.ServiceDefaults\\ProyectoNET.ServiceDefaults.csproj": {
+    "C:\\Users\\rmati\\source\\repos\\dylanwh23\\ProyectoNET\\ProyectoNET.ServiceDefaults\\ProyectoNET.ServiceDefaults.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\rmati\\Source\\Repos\\ProyectoNET\\ProyectoNET.ServiceDefaults\\ProyectoNET.ServiceDefaults.csproj",
+        "projectUniqueName": "C:\\Users\\rmati\\source\\repos\\dylanwh23\\ProyectoNET\\ProyectoNET.ServiceDefaults\\ProyectoNET.ServiceDefaults.csproj",
         "projectName": "ProyectoNET.ServiceDefaults",
-        "projectPath": "C:\\Users\\rmati\\Source\\Repos\\ProyectoNET\\ProyectoNET.ServiceDefaults\\ProyectoNET.ServiceDefaults.csproj",
+        "projectPath": "C:\\Users\\rmati\\source\\repos\\dylanwh23\\ProyectoNET\\ProyectoNET.ServiceDefaults\\ProyectoNET.ServiceDefaults.csproj",
         "packagesPath": "C:\\Users\\rmati\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\rmati\\Source\\Repos\\ProyectoNET\\ProyectoNET.ServiceDefaults\\obj\\",
+        "outputPath": "C:\\Users\\rmati\\source\\repos\\dylanwh23\\ProyectoNET\\ProyectoNET.ServiceDefaults\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"

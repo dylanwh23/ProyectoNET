@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "PWjnkE9qJic=",
+  "dgSpecHash": "8XnRb1FYQ+0=",
   "success": true,
-  "projectFilePath": "C:\\Users\\rmati\\Source\\Repos\\ProyectoNET\\ProyectoNET.Carreras.API\\ProyectoNET.Carreras.API.csproj",
+  "projectFilePath": "C:\\Users\\rmati\\source\\repos\\dylanwh23\\ProyectoNET\\ProyectoNET.Carreras.API\\ProyectoNET.Carreras.API.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\rmati\\.nuget\\packages\\humanizer.core\\2.14.1\\humanizer.core.2.14.1.nupkg.sha512",
     "C:\\Users\\rmati\\.nuget\\packages\\masstransit\\8.5.4\\masstransit.8.5.4.nupkg.sha512",
