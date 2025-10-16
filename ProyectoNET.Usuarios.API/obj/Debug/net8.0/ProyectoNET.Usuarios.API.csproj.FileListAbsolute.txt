@@ -477,7 +477,6 @@ C:\Users\rmati\source\repos\dylanwh23\ProyectoNET\ProyectoNET.Usuarios.API\obj\D
 C:\Users\rmati\source\repos\dylanwh23\ProyectoNET\ProyectoNET.Usuarios.API\obj\Debug\net8.0\staticwebassets.build.json.cache
 C:\Users\rmati\source\repos\dylanwh23\ProyectoNET\ProyectoNET.Usuarios.API\obj\Debug\net8.0\staticwebassets.development.json
 C:\Users\rmati\source\repos\dylanwh23\ProyectoNET\ProyectoNET.Usuarios.API\obj\Debug\net8.0\staticwebassets.build.endpoints.json
-C:\Users\rmati\source\repos\dylanwh23\ProyectoNET\ProyectoNET.Usuarios.API\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt
 C:\Users\rmati\source\repos\dylanwh23\ProyectoNET\ProyectoNET.Usuarios.API\obj\Debug\net8.0\Proyecto.D5EE2840.Up2Date
 C:\Users\rmati\source\repos\dylanwh23\ProyectoNET\ProyectoNET.Usuarios.API\obj\Debug\net8.0\ProyectoNET.Usuarios.API.dll
 C:\Users\rmati\source\repos\dylanwh23\ProyectoNET\ProyectoNET.Usuarios.API\obj\Debug\net8.0\refint\ProyectoNET.Usuarios.API.dll

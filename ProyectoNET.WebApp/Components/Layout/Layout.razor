@@ -3,19 +3,19 @@
 <div class="d-flex flex-column min-vh-100">
     <!-- Navbar -->
     <header class="border-bottom">
-        <div class="container d-flex justify-content-between align-items-center py-3">
+        <div class="d-flex justify-content-between py-3 bg-light align-items-center">
+
             <ul class="nav nav-pills">
-                <li class="nav-item"><a class="nav-link" href="/">Inicio</a></li>
-                <li class="nav-item"><a class="nav-link" href="/carreras">Carreras</a></li>
-                <li class="nav-item"><a class="nav-link" href="/inscribirse">Inscribirse</a></li>
-                <li class="nav-item"><a class="nav-link" href="/carrera-tiempo-real">Carrera en Vivo</a></li>
+
+                @* CAMBIO CLAVE: Usamos NavLink en lugar de <a> para evitar recargas de página *@
+                <li class="nav-item"><NavLink class="nav-link" href="/">Inicio</NavLink></li>
+                <li class="nav-item"><NavLink class="nav-link" href="/carreras">Carreras</NavLink></li>
+                <li class="nav-item"><NavLink class="nav-link" href="/inscribirse">Inscribirse</NavLink></li>
+                <li class="nav-item"><NavLink class="nav-link" href="/carrera-tiempo-real">Carrera en Vivo</NavLink></li>
             </ul>
 
-            <a href="/">
-                <img src="/Imagenes/logo.png" alt="Logo" style="height: 50px;" />
-            </a>
+            <a href="/"> <img class="align-items-center" src="/Imagenes/logo.png" alt="Logo" style="height: 50px;" /></a>
 
-           
         </div>
     </header>
 

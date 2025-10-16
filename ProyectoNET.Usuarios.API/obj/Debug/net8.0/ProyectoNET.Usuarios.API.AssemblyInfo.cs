@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("ProyectoNET.Usuarios.API")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+41ccda0f4faa60fec91e4a9be09fca9e03989ea5")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+3a60012b0a75ee457f1c4f5766c86b28ce7ff890")]
 [assembly: System.Reflection.AssemblyProductAttribute("ProyectoNET.Usuarios.API")]
 [assembly: System.Reflection.AssemblyTitleAttribute("ProyectoNET.Usuarios.API")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

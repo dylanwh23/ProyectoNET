@@ -495,7 +495,6 @@ C:\Users\rmati\source\repos\dylanwh23\ProyectoNET\ProyectoNET.Carreras.API\obj\D
 C:\Users\rmati\source\repos\dylanwh23\ProyectoNET\ProyectoNET.Carreras.API\obj\Debug\net8.0\staticwebassets.build.json.cache
 C:\Users\rmati\source\repos\dylanwh23\ProyectoNET\ProyectoNET.Carreras.API\obj\Debug\net8.0\staticwebassets.development.json
 C:\Users\rmati\source\repos\dylanwh23\ProyectoNET\ProyectoNET.Carreras.API\obj\Debug\net8.0\staticwebassets.build.endpoints.json
-C:\Users\rmati\source\repos\dylanwh23\ProyectoNET\ProyectoNET.Carreras.API\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt
 C:\Users\rmati\source\repos\dylanwh23\ProyectoNET\ProyectoNET.Carreras.API\obj\Debug\net8.0\Proyecto.7B3F13BF.Up2Date
 C:\Users\rmati\source\repos\dylanwh23\ProyectoNET\ProyectoNET.Carreras.API\obj\Debug\net8.0\ProyectoNET.Carreras.API.dll
 C:\Users\rmati\source\repos\dylanwh23\ProyectoNET\ProyectoNET.Carreras.API\obj\Debug\net8.0\refint\ProyectoNET.Carreras.API.dll

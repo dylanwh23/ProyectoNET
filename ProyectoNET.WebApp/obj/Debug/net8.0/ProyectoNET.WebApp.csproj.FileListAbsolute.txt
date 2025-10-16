@@ -139,7 +139,6 @@ C:\Users\rmati\source\repos\dylanwh23\ProyectoNET\ProyectoNET.WebApp\obj\Debug\n
 C:\Users\rmati\source\repos\dylanwh23\ProyectoNET\ProyectoNET.WebApp\obj\Debug\net8.0\staticwebassets.build.json.cache
 C:\Users\rmati\source\repos\dylanwh23\ProyectoNET\ProyectoNET.WebApp\obj\Debug\net8.0\staticwebassets.development.json
 C:\Users\rmati\source\repos\dylanwh23\ProyectoNET\ProyectoNET.WebApp\obj\Debug\net8.0\staticwebassets.build.endpoints.json
-C:\Users\rmati\source\repos\dylanwh23\ProyectoNET\ProyectoNET.WebApp\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt
 C:\Users\rmati\source\repos\dylanwh23\ProyectoNET\ProyectoNET.WebApp\obj\Debug\net8.0\Proyecto.EE2B16AD.Up2Date
 C:\Users\rmati\source\repos\dylanwh23\ProyectoNET\ProyectoNET.WebApp\obj\Debug\net8.0\ProyectoNET.WebApp.dll
 C:\Users\rmati\source\repos\dylanwh23\ProyectoNET\ProyectoNET.WebApp\obj\Debug\net8.0\refint\ProyectoNET.WebApp.dll

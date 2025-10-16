@@ -1,33 +1,31 @@
 ﻿using ProyectoNET.WebApp.Components;
-using ProyectoNET.WebApp.Clients;
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+// 1. AÑADIR SERVICIOS AL CONTENEDOR.
+// Esto sigue siendo correcto y necesario.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
-builder.Services.AddHttpClient<CarrerasApiClient>(client => 
-    client.BaseAddress = new("http://carreras-api"));
-builder.Services.AddHttpClient<UsuariosApiClient>(client => 
-    client.BaseAddress = new("http://usuarios-api"));
-
-
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+// 2. CONFIGURAR EL PIPELINE DE PETICIONES HTTP.
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Error", createScopeForErrors: true);
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
 
 app.UseHttpsRedirection();
-
 app.UseStaticFiles();
 app.UseAntiforgery();
 
+// 3. MAPEAR LOS COMPONENTES DE BLAZOR.
+// ESTE ES EL CAMBIO CLAVE:
+// Ahora, .AddInteractiveServerRenderMode() se aplica directamente al componente <App>.
+// Esto establece un contexto interactivo global para toda la aplicación desde el principio.
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode();
 
 app.Run();
+

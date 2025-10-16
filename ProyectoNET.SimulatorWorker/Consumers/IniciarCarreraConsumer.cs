@@ -31,10 +31,14 @@ public class IniciarCarreraConsumer(
             catch (Exception ex)
             {
                 logger.LogError(ex, "❌ Error al enviar eventos para la carrera {IdCarrera}", command.IdCarrera);
+                
             }
+
+            
         });
         
         logger.LogInformation("🚀 Simulación de carrera {IdCarrera} iniciada en background", command.IdCarrera);
+        await Task.CompletedTask;
     }
     
     private Dictionary<int, List<EventoCorredor>> SimularCarreraCompleta(IniciarCarreraCommand command)

@@ -6,3 +6,126 @@
 @code {
 
 }
+@using System.ComponentModel.DataAnnotations
+@* Asumimos que el modelo está en la carpeta Models *@
+@using ProyectoNET.WebApp
+
+<PageTitle>Inscripción a Carreras</PageTitle>
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h3 class="mb-0">Formulario de Inscripción</h3>
+                </div>
+                <div class="card-body">
+
+                    @if (!string.IsNullOrEmpty(mensajeExito))
+                    {
+                        <div class="alert alert-success" role="alert">
+                            ✅ @mensajeExito
+                        </div>
+                    }
+
+                    <EditForm Model="@inscripcionModel" OnValidSubmit="@HandleValidSubmit" FormName="FormularioDeInscripcion">
+                        <DataAnnotationsValidator />
+
+                        <div class="mb-3">
+                            <label for="nombres" class="form-label">Nombres</label>
+                            <InputText id="nombres" class="form-control" @bind-Value="inscripcionModel.Nombres" />
+                            <ValidationMessage For="@(() => inscripcionModel.Nombres)" />
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="apellidos" class="form-label">Apellidos</label>
+                            <InputText id="apellidos" class="form-control" @bind-Value="inscripcionModel.Apellidos" />
+                            <ValidationMessage For="@(() => inscripcionModel.Apellidos)" />
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Correo Electrónico</label>
+                            <InputText type="email" id="email" class="form-control" @bind-Value="inscripcionModel.Email" />
+                            <ValidationMessage For="@(() => inscripcionModel.Email)" />
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="fechaNacimiento" class="form-label">Fecha de Nacimiento</label>
+                            <InputDate id="fechaNacimiento" class="form-control" @bind-Value="inscripcionModel.FechaNacimiento" />
+                            <ValidationMessage For="@(() => inscripcionModel.FechaNacimiento)" />
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="carrera" class="form-label">Selecciona una Carrera</label>
+                            <InputSelect id="carrera" class="form-select" @bind-Value="inscripcionModel.IdCarreraSeleccionada">
+                                <option value="0">-- Por favor, elige una opción --</option>
+                                @foreach (var carrera in carrerasDisponibles)
+                                {
+                                    <option value="@carrera.Id">@carrera.Nombre</option>
+                                }
+                            </InputSelect>
+                            <ValidationMessage For="@(() => inscripcionModel.IdCarreraSeleccionada)" />
+                        </div>
+
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary btn-lg">Inscribirme</button>
+                        </div>
+
+                    </EditForm>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+@code {
+    // Instancia del modelo que se enlaza (bind) al formulario.
+    private InscripcionModel inscripcionModel = new();
+
+    // Variable para mostrar el mensaje de éxito.
+    private string mensajeExito = "";
+
+    // Lista de carreras disponibles. En una aplicación real, esto vendría de una base de datos.
+    private List<Carrera> carrerasDisponibles = new();
+
+    // Clase auxiliar para representar una carrera
+    private record Carrera(int Id, string Nombre);
+
+    protected override void OnInitialized()
+    {
+        // Simulamos la carga de datos desde una base de datos o API.
+        carrerasDisponibles = new List<Carrera>
+        {
+            new Carrera(1, "Maraton 42K"),
+            new Carrera(2, "San Fernando Punta Del Este"),
+            new Carrera(3, "Aigua 10k"),
+            new Carrera(4, "Aigua 25k")
+        };
+    }
+
+    private async Task HandleValidSubmit()
+    {
+        // 1. Aquí iría la lógica para guardar en la base de datos.
+        // Por ejemplo: await InscripcionService.GuardarInscripcion(inscripcionModel);
+
+        // 2. Simulamos el guardado y obtenemos el nombre de la carrera para el mensaje.
+        var carreraSeleccionada = carrerasDisponibles
+            .FirstOrDefault(c => c.Id == inscripcionModel.IdCarreraSeleccionada);
+
+        Console.WriteLine($"Nuevo inscripto: {inscripcionModel.Nombres} {inscripcionModel.Apellidos}, Email: {inscripcionModel.Email}, Carrera: {carreraSeleccionada?.Nombre}");
+
+        // 3. Mostramos un mensaje de éxito.
+        mensajeExito = $"¡Felicidades, {inscripcionModel.Nombres}! Tu inscripción a la carrera de '{carreraSeleccionada?.Nombre}' ha sido registrada.";
+
+        // 4. Limpiamos el formulario para una nueva inscripción.
+        inscripcionModel = new();
+
+        // Opcional: Ocultar el mensaje después de unos segundos.
+        await Task.Delay(5000);
+        mensajeExito = "";
+        StateHasChanged(); // Notifica a Blazor que debe re-renderizar la UI.
+    }
+}
