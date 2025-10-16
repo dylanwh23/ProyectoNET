@@ -15,8 +15,9 @@ builder.AddProject<Projects.ProyectoNET_WebApp>("webapp")
        .WithReference(usuariosApi)
        .WithEnvironment("ASPNETCORE_ENVIRONMENT", "Development");
 //front admin     
-builder.AddProject<Projects.ProyectoNET_WebApp>("admin-webapp")
+builder.AddProject<Projects.ProyectoNET_AdminWebApp>("admin-webapp")
        .WithReference(carrerasApi)  
-       .WithReference(usuariosApi);    
+       .WithReference(usuariosApi)  
+       .WithHttpEndpoint(port: 7072);
 /**/
 builder.Build().Run();
