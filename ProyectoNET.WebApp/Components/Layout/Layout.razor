@@ -1,33 +1,10 @@
 ﻿@inherits LayoutComponentBase
 
 <div class="d-flex flex-column min-vh-100">
-    <!-- Navbar -->
-    <header class="border-bottom">
-        <div class="d-flex justify-content-between py-3 bg-light align-items-center">
+<NavMenu />
+<div class="flex-fill">
+    @Body
+</div>
+<Footer />
 
-            <ul class="nav nav-pills">
-
-                @* CAMBIO CLAVE: Usamos NavLink en lugar de <a> para evitar recargas de página *@
-                <li class="nav-item"><NavLink class="nav-link" href="/">Inicio</NavLink></li>
-                <li class="nav-item"><NavLink class="nav-link" href="/carreras">Carreras</NavLink></li>
-                <li class="nav-item"><NavLink class="nav-link" href="/inscribirse">Inscribirse</NavLink></li>
-                <li class="nav-item"><NavLink class="nav-link" href="/carrera-tiempo-real">Carrera en Vivo</NavLink></li>
-            </ul>
-
-            <a href="/"> <img class="align-items-center" src="/Imagenes/logo.png" alt="Logo" style="height: 50px;" /></a>
-
-        </div>
-    </header>
-
-    <!-- Contenido de la página -->
-    <main class="flex-fill">
-        <div class="container py-5">
-            @Body
-        </div>
-    </main>
-
-    <!-- Footer -->
-    <footer class="border-top mt-auto py-3 text-center text-muted small">
-        © @DateTime.Now.Year ProyectoNET
-    </footer>
 </div>

@@ -50,32 +50,3 @@ h1:focus {
     border-color: #929292;
 }
 
-/* Fondo general */
-body {
-    background: linear-gradient(135deg, #ff4757, #ff6348, #ee5a6f, #c92a2a);
-    min-height: 100vh;
-}
-/* Tarjetas verticales */
-.carrera-card {
-    border-radius: 1rem;
-    overflow: hidden;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    background-color: #fff;
-    color: #000;
-}
-
-    .carrera-card img {
-        height: 350px;
-        object-fit: cover;
-    }
-
-    .carrera-card:hover {
-        transform: translateY(-10px);
-        box-shadow: 0 10px 25px rgba(0,0,0,0.3);
-    }
-
-/* Título de la sección */
-h2 {
-    letter-spacing: 1px;
-    color: #1f2937 !important;
-}

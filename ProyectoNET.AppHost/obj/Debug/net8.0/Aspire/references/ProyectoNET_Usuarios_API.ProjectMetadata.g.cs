@@ -15,5 +15,5 @@ public class ProyectoNET_Usuarios_API : global::Aspire.Hosting.IProjectMetadata
     /// <summary>
     /// The path to the ProyectoNET_Usuarios_API project.
     /// </summary>
-    public string ProjectPath => """C:\Users\rmati\source\repos\dylanwh23\ProyectoNET\ProyectoNET.Usuarios.API\ProyectoNET.Usuarios.API.csproj""";
+    public string ProjectPath => """C:\Users\User\Documents\ProyectoNET\ProyectoNET.Usuarios.API\ProyectoNET.Usuarios.API.csproj""";
 }
