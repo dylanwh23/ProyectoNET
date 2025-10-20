@@ -113,7 +113,7 @@ A continuación se describen los casos de usos principales en base a las funcion
 
 El siguiente diagrama ilustra la arquitectura del sistema, destacando los componentes clave y sus interacciones:
 
-<img width="1422" height="681" alt="Diagrama-arquitectura drawio" src="https://github.com/user-attachments/assets/352c0ff3-8782-4255-85b3-a1183add27b4" />
+<img width="1605" height="765" alt="image" src="https://github.com/user-attachments/assets/10470c47-217c-427f-a150-78fbccaf3729" />
 
 ### Stack Tecnológico y Decisiones Clave 🎯
 
@@ -126,7 +126,7 @@ La arquitectura se basa en un conjunto de tecnologías y patrones seleccionados 
 | **Orquestación** | `.NET Aspire` | Orquestación nativa para simplificar el desarrollo, la configuración y el despliegue de la arquitectura de microservicios. |
 | **Frontend (UX)** | `Blazor` sobre `ASP.NET Core` | Creación de interfaces web interactivas y en tiempo real con C#, ofreciendo una experiencia de usuario fluida y moderna. |
 | **Mensajería Asíncrona**| `RabbitMQ` (Bus de Mensajes) | Desacopla los servicios y garantiza la resiliencia en el manejo de eventos masivos (ej. tiempos de carrera en tiempo real). |
-| **Persistencia de Datos** | `Entity Framework Core` + `SQLite` | Abstracción de la base de datos que facilita el desarrollo (con SQLite) y la migración a sistemas robustos en producción (ej. PostgreSQL). |
+| **Persistencia de Datos** | `Entity Framework Core` + `PostgreSQL` | Base de datos centralizada en PostgreSQL |
 | **Tareas en Segundo Plano**| `Worker Service` | Simulación de hardware (lectura de chips RFID) y generación de datos en tiempo real de forma asíncrona y desacoplada de la UI. |
 
 ## 🖼️ Maquetado de la Interfaz de Usuario y Administrador
@@ -216,8 +216,8 @@ La arquitectura se basa en un conjunto de tecnologías y patrones seleccionados 
 - 📦 Entrega de equipamiento  
 - ℹ️ Consultar datos de carrera (versión final)  
 
-
-
+## 🤔 Cambios importantes
+- *Migracion SQLite -> PostgreSQL*: En un principio decidimos implementar SQLite para facilitar el desarrollo, pero carece de sentido en un entorno con varias instancias de API, utilizar bases de datos aisladas. Optamos por tener 2 bases de datos centralizadas PostgreSQL.
 
 
 
