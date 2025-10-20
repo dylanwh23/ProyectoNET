@@ -216,8 +216,8 @@ La arquitectura se basa en un conjunto de tecnologías y patrones seleccionados 
 - 📦 Entrega de equipamiento  
 - ℹ️ Consultar datos de carrera (versión final)  
 
-
-
+## 🤔 Cambios importantes
+- *Migracion SQLite -> PostgreSQL*: En un principio decidimos implementar SQLite para facilitar el desarrollo, pero carece de sentido en un entorno con varias instancias de API, utilizar bases de datos aisladas. Optamos por tener 2 bases de datos centralizadas PostgreSQL.
 
 
 
