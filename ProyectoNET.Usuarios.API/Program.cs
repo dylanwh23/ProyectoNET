@@ -1,9 +1,13 @@
+using Microsoft.EntityFrameworkCore;
+using ProyectoNET.Usuarios.API.Data;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.AddNpgsqlDbContext<UsuariosDbContext>("usuarios-db");
 
 var app = builder.Build();
 
@@ -38,6 +42,24 @@ app.MapGet("/weatherforecast", () =>
 
 app.MapGet("/usuarios-test", () => "Respuesta del Microservicio de Usuarios");
 
+
+
+// para aplicar las migraciones al iniciar la aplicación
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    try
+    {
+        var dbContext = services.GetRequiredService<UsuariosDbContext>();
+        dbContext.Database.Migrate();
+    }
+    catch (Exception ex)
+    {
+        var logger = services.GetRequiredService<ILogger<Program>>();
+        logger.LogError(ex, "Ocurrió un error al aplicar las migraciones.");
+    }
+}
+/**/
 
 app.Run();
 

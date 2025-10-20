@@ -2,7 +2,8 @@ using MassTransit;
 using ProyectoNET.Carreras.API.Consumers;
 using ProyectoNET.Carreras.API.Hubs;
 using ProyectoNET.Shared;
-
+using ProyectoNET.Carreras.API.Data;
+using Microsoft.EntityFrameworkCore;
 var builder = WebApplication.CreateBuilder(args);
 
 // =================================================================
@@ -13,6 +14,8 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddSignalR();
 builder.Services.AddControllers();
+builder.AddNpgsqlDbContext<CarrerasDbContext>("carreras-db");
+
 
 // Configuración de MassTransit (se mantiene igual)
 builder.Services.AddMassTransit(config =>
@@ -73,26 +76,6 @@ app.MapHub<CarreraHub>("/carreraHub");
 app.MapControllers();
 
 // Endpoints de Minimal API (se mantienen igual)
-var summaries = new[]
-{
-    "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-};
-
-app.MapGet("/weatherforecast", () =>
-{
-    var forecast = Enumerable.Range(1, 5).Select(index =>
-        new WeatherForecast
-        (
-            DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-            Random.Shared.Next(-20, 55),
-            summaries[Random.Shared.Next(summaries.Length)]
-        ))
-        .ToArray();
-    return forecast;
-})
-.WithName("GetWeatherForecast")
-.WithOpenApi();
-
 app.MapPost("/carrera/iniciar", async (IniciarCarreraCommand command, IBus bus) =>
 {
     var endpoint = await bus.GetSendEndpoint(new Uri("queue:simulador-carreras"));
@@ -104,6 +87,23 @@ app.MapPost("/carrera/iniciar", async (IniciarCarreraCommand command, IBus bus) 
 .WithOpenApi();
 
 app.MapGet("/carreras-test", () => "Respuesta del Microservicio de Carreras");
+
+// para aplicar las migraciones al iniciar la aplicación
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    try
+    {
+        var dbContext = services.GetRequiredService<CarrerasDbContext>();
+        dbContext.Database.Migrate();
+    }
+    catch (Exception ex)
+    {
+        var logger = services.GetRequiredService<ILogger<Program>>();
+        logger.LogError(ex, "Ocurrió un error al aplicar las migraciones.");
+    }
+}
+/**/
 
 // ===============================================
 // 4. EJECUTAR LA APLICACIÓN

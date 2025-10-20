@@ -385,3 +385,6 @@ C:\Users\rmati\source\repos\dylanwh23\ProyectoNET\ProyectoNET.AppHost\obj\Debug\
 C:\Users\rmati\source\repos\dylanwh23\ProyectoNET\ProyectoNET.AppHost\obj\Debug\net8.0\ProyectoNET.AppHost.pdb
 C:\Users\rmati\source\repos\dylanwh23\ProyectoNET\ProyectoNET.AppHost\obj\Debug\net8.0\ProyectoNET.AppHost.genruntimeconfig.cache
 C:\Users\rmati\source\repos\dylanwh23\ProyectoNET\ProyectoNET.AppHost\obj\Debug\net8.0\ref\ProyectoNET.AppHost.dll
+C:\Users\User\Documents\ProyectoNET\ProyectoNET.AppHost\bin\Debug\net8.0\Aspire.Hosting.PostgreSQL.dll
+C:\Users\User\Documents\ProyectoNET\ProyectoNET.AppHost\bin\Debug\net8.0\HealthChecks.NpgSql.dll
+C:\Users\User\Documents\ProyectoNET\ProyectoNET.AppHost\bin\Debug\net8.0\Npgsql.dll
