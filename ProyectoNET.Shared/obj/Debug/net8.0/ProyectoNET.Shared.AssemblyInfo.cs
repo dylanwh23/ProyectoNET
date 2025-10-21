@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("ProyectoNET.Shared")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+905dfb88e2335e9e3daee18f09c95b241c6dfcc1")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+1019df78e2c1affb5c35d8d8313f126920fb401b")]
 [assembly: System.Reflection.AssemblyProductAttribute("ProyectoNET.Shared")]
 [assembly: System.Reflection.AssemblyTitleAttribute("ProyectoNET.Shared")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
