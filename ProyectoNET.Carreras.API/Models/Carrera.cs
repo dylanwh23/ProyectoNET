@@ -11,19 +11,16 @@ namespace ProyectoNET.Carreras.API.Models
         public string Descripcion { get; set; }
         [Required]
         public string Ubicacion { get; set; }
-        [Required]
         public DateTime FechaCreada { get; set; }
         public DateTime? FechaInicio { get; set; }
         public DateTime? FechaFin { get; set; }
-        [Required]
-        public List<string> LugaresRetiroEquipamiento { get; set; }
-        [Required]
+        public virtual ICollection<LugarDeEntrega> LugaresRetiroEquipamiento { get; set; } = new HashSet<LugarDeEntrega>();
         public long CostoInscripcion { get; set; }
-        public List<Participante> Participantes { get; set; }
+        public virtual ICollection<Participante> Participantes { get; set; } = new HashSet<Participante>();
         public int CantidadParticipantes => Participantes?.Count ?? 0;
-        [Required]
         public int CantidadMaximaParticipantes { get; set; }
-        public string Estado { get; set; } // Ejemplo: "Pendiente", "En Progreso", "Finalizada"
+        public enum Estado { Pendiente, EnProgreso, Finalizada } 
+        public Estado EstadoCarrera { get; set; } = Estado.Pendiente;
 
     }
 }

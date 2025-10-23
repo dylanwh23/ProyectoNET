@@ -15,5 +15,5 @@ public class ProyectoNET_SimulatorWorker : global::Aspire.Hosting.IProjectMetada
     /// <summary>
     /// The path to the ProyectoNET_SimulatorWorker project.
     /// </summary>
-    public string ProjectPath => """C:\Users\User\Documents\ProyectoNET\ProyectoNET.SimulatorWorker\ProyectoNET.SimulatorWorker.csproj""";
+    public string ProjectPath => """D:\FACULTAD ESTUDIOS\CURE\.NET\ProyectoNET\ProyectoNET.SimulatorWorker\ProyectoNET.SimulatorWorker.csproj""";
 }

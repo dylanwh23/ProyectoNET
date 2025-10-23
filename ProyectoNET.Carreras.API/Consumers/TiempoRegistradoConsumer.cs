@@ -48,8 +48,8 @@ public class TiempoRegistradoConsumer(
 
         // 2. 🔄 Enviar a los clientes conectados por SignalR.
         // Se corrige el nombre del método a "RecibirProgreso" (el que espera el cliente).
-        await hubContext.Clients.All.SendAsync("RecibirProgreso", dataParaCliente);
-
+        await hubContext.Clients.Group($"carrera-{mensaje.IdCarrera}")
+                 .SendAsync("RecibirProgreso", dataParaCliente);
         // Log detallado (debug)
         if (logger.IsEnabled(LogLevel.Debug))
         {

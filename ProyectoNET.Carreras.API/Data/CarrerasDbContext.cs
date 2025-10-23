@@ -10,4 +10,5 @@ public class CarrerasDbContext : DbContext
     }
     public DbSet<Carrera> Carreras { get; set; }
     public DbSet<Participante> Participantes { get; set; }
+    public DbSet<LugarDeEntrega> LugaresDeEntrega { get; set; }
 }

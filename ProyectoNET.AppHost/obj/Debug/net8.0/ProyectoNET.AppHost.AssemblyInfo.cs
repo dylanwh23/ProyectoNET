@@ -11,21 +11,21 @@ using System;
 using System.Reflection;
 
 [assembly: Microsoft.Extensions.Configuration.UserSecrets.UserSecretsIdAttribute("e5323336-50a9-4a83-a432-d15f2d521b61")]
-[assembly: System.Reflection.AssemblyMetadata("dcpclipath", "C:\\Users\\User\\.nuget\\packages\\aspire.hosting.orchestration.win-x64\\9.5.1\\tools\\dc" +
-    "p.exe")]
-[assembly: System.Reflection.AssemblyMetadata("dcpextensionpaths", "C:\\Users\\User\\.nuget\\packages\\aspire.hosting.orchestration.win-x64\\9.5.1\\tools\\ex" +
-    "t\\")]
-[assembly: System.Reflection.AssemblyMetadata("dcpbinpath", "C:\\Users\\User\\.nuget\\packages\\aspire.hosting.orchestration.win-x64\\9.5.1\\tools\\ex" +
-    "t\\bin\\")]
-[assembly: System.Reflection.AssemblyMetadata("apphostprojectpath", "C:\\Users\\User\\Documents\\ProyectoNET\\ProyectoNET.AppHost")]
+[assembly: System.Reflection.AssemblyMetadata("dcpclipath", ("C:\\Users\\diego\\.nuget\\packages\\aspire.hosting.orchestration.win-x64\\9.5.1\\tools\\d" +
+    "cp.exe"))]
+[assembly: System.Reflection.AssemblyMetadata("dcpextensionpaths", ("C:\\Users\\diego\\.nuget\\packages\\aspire.hosting.orchestration.win-x64\\9.5.1\\tools\\e" +
+    "xt\\"))]
+[assembly: System.Reflection.AssemblyMetadata("dcpbinpath", ("C:\\Users\\diego\\.nuget\\packages\\aspire.hosting.orchestration.win-x64\\9.5.1\\tools\\e" +
+    "xt\\bin\\"))]
+[assembly: System.Reflection.AssemblyMetadata("apphostprojectpath", "D:\\FACULTAD ESTUDIOS\\CURE\\.NET\\ProyectoNET\\ProyectoNET.AppHost")]
 [assembly: System.Reflection.AssemblyMetadata("apphostprojectname", "ProyectoNET.AppHost.csproj")]
-[assembly: System.Reflection.AssemblyMetadata("aspiredashboardpath", "C:\\Users\\User\\.nuget\\packages\\aspire.dashboard.sdk.win-x64\\9.5.1\\tools\\Aspire.Das" +
-    "hboard.exe")]
-[assembly: System.Reflection.AssemblyMetadataAttribute("apphostprojectbaseintermediateoutputpath", "C:\\Users\\User\\Documents\\ProyectoNET\\ProyectoNET.AppHost\\obj\\")]
+[assembly: System.Reflection.AssemblyMetadata("aspiredashboardpath", ("C:\\Users\\diego\\.nuget\\packages\\aspire.dashboard.sdk.win-x64\\9.5.1\\tools\\Aspire.Da" +
+    "shboard.exe"))]
+[assembly: System.Reflection.AssemblyMetadataAttribute("apphostprojectbaseintermediateoutputpath", "D:\\FACULTAD ESTUDIOS\\CURE\\.NET\\ProyectoNET\\ProyectoNET.AppHost\\obj\\")]
 [assembly: System.Reflection.AssemblyCompanyAttribute("ProyectoNET.AppHost")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+905dfb88e2335e9e3daee18f09c95b241c6dfcc1")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+c20440526306a9b187458c3b41449e0f03b7a935")]
 [assembly: System.Reflection.AssemblyProductAttribute("ProyectoNET.AppHost")]
 [assembly: System.Reflection.AssemblyTitleAttribute("ProyectoNET.AppHost")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
