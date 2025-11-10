@@ -1,39 +1,44 @@
-﻿@page "/carrera-tiempo-real"
+﻿@page "/carrera-tiempo-real/{CarreraId}"
 @rendermode InteractiveServer
 @using Microsoft.AspNetCore.SignalR.Client
 @layout Layout
+@implements IDisposable
 
+<div class="container-fluid">
+    <h1 class="mb-3 text-center">Carrera San Fernando en tiempo real!</h1>
+   <div class="mx-auto mb-3 text-center rounded-3 bg-body-secondary w-100 d-flex p-2 justify-content-between">
+    <Largada Class="text-black" style="height: 2rem;" />
 
-<div class="container mt-4">
-    <h3 class="mb-3">📊 Seguimiento de Carreras en Tiempo Real</h3>
+    <div class="flex-fill d-flex align-items-end px-3">
 
-    <div class="card p-3 mb-4">
-        @if (hubConnection is not null && hubConnection.State == HubConnectionState.Connected)
-        {
-            <p class="text-success mb-0">✅ Conectado al servidor SignalR.</p>
-            <p class="text-muted mb-0">⏱️ Tiempo en ejecución: @elapsedSeconds segundos</p>
-        }
-        else
-        {
-            <p class="text-danger mb-0">❌ No conectado al servidor. Compruebe que la URL del Hub sea correcta.</p>
-        }
+    <div class="w-100" style="position: relative; min-height: 32px; border-bottom: 4px dashed #6c757d;">
+        <Checkpoint style="position: absolute; bottom: 0px; left: 0%; height: 2rem;" />
+        <Checkpoint style="position: absolute; bottom: 0px; left: 10%; height: 2rem;" />
+        <Checkpoint style="position: absolute; bottom: 0px; left: 40%; height: 2rem;" />
+        <Checkpoint style="position: absolute; bottom: 0px; left: 70%; height: 2rem;" />
+
+        <Punto_Corredor id="1" style="@($"position: absolute; bottom: 2px; left: 15%; height: 1.5rem; color: {GetRandomColor()};")" />
+        <Punto_Corredor id="2" style="@($"position: absolute; bottom: 2px; left: 16%; height: 2rem; color: {GetRandomColor()}; filter: drop-shadow(0 0 10px black);")" />
+
     </div>
+</div>
 
-    <table class="table table-dark table-striped table-hover mt-3 rounded-3 overflow-hidden">
+    <Llegada Class="text-primary" style="height: 2rem;" />
+</div>
+    <div class="d-flex">
+    <table class="table table-dark table-striped table-hover rounded-3 overflow-hidden w-50">
         <thead>
             <tr>
-                <th>Carrera</th>
-                <th>Corredor</th>
-                <th>Checkpoint</th>
-                <th>Velocidad (km/h)</th>
-                <th>Tramos completados</th>
+                <th>Posición</th>
+                <th>Dorsal</th>
+                <th>Apellido</th>
+                <th>Último Checkpoint</th>
+                <th>Velocidad Estimada (km/h)</th>
             </tr>
         </thead>
         <tbody>
-            @if (carreraData.Any())
+          @*   @if (carreraData.Any())
             {
-                <!-- APLICACIÓN DE LA SOLUCIÓN: Usar @key para asegurar que Blazor actualice la fila correctamente -->
-                <!-- También se usa OrderBy para mantener un orden consistente en la tabla -->
                 @foreach (var item in carreraData.OrderBy(x => x.CorredorId))
                 {
                     <tr @key="item.CorredorId">
@@ -50,18 +55,30 @@
                 <tr>
                     <td colspan="5" class="text-center text-muted">Esperando datos de simulación...</td>
                 </tr>
-            }
+            } *@
+            
         </tbody>
     </table>
+    <div class="w-50 bg-pink-200">
+        Corredor Data
+    </div>
+    </div>
 </div>
 
+
 @code {
+    [Parameter]
+    public string CarreraId { get; set; }
+
     private HubConnection? hubConnection;
     private int elapsedSeconds = 0;
     private List<CarreraData> carreraData = new();
 
     // Usaremos CancellationTokenSource para controlar el bucle de conteo de tiempo.
     private CancellationTokenSource cts = new CancellationTokenSource();
+
+    // Generador de números aleatorios
+    private Random _random = new Random();
 
     protected override async Task OnInitializedAsync()
     {
@@ -158,5 +175,18 @@
         public string Checkpoint { get; set; } = string.Empty;
         public double Velocidad { get; set; }
         public int TramosCompletados { get; set; }
+    }
+
+    // Método que genera colores HSL "bonitos"
+    private string GetRandomColor()
+    {
+        // Usar HSL (Hue, Saturation, Lightness)
+        int hue = _random.Next(0, 360);
+        // Saturation: 70-100% (para que sea un color vibrante, no gris)
+        int saturation = _random.Next(70, 101);
+        // Lightness: 40-60% (para evitar blanco y negro)
+        int lightness = _random.Next(40, 61);
+
+        return $"hsl({hue}, {saturation}%, {lightness}%)";
     }
 }
