@@ -6,46 +6,75 @@ namespace ProyectoNET.Carreras.API.Hubs;
 
 public class CarreraHub : Hub
 {
-    // Si tuvieras un constructor, se vería así:
-    // private readonly ILogger<CarreraHub> _logger;
-    // public CarreraHub(ILogger<CarreraHub> logger) {
-    //     _logger = logger;
-    // }
-
+    // -------------------------
+    // Conexión / Desconexión
+    // -------------------------
     public override async Task OnConnectedAsync()
     {
-        try
-        {
-            // Este código se ejecuta cuando un nuevo cliente (tu WebApp) se conecta.
-            await base.OnConnectedAsync();
-            Console.WriteLine($"✅ Cliente conectado exitosamente: {Context.ConnectionId}");
-        }
-        catch (Exception ex)
-        {
-            // ¡ESTO ES LO IMPORTANTE!
-            // Si ocurre un error durante la conexión, lo veremos aquí en la consola de la API.
-            Console.WriteLine($"❌❌❌ ERROR GRAVE en OnConnectedAsync: {ex.Message}");
-            Console.WriteLine(ex.ToString()); // Imprime todos los detalles del error para encontrar la causa.
-
-            // Forzamos el cierre de la conexión para que el cliente no se quede "colgado".
-            Context.Abort();
-        }
+        await base.OnConnectedAsync();
+        Console.WriteLine($"✅ Cliente conectado: {Context.ConnectionId}");
     }
 
     public override async Task OnDisconnectedAsync(Exception? exception)
     {
-        // Este código se ejecuta cuando un cliente se desconecta.
         await base.OnDisconnectedAsync(exception);
+        Console.WriteLine(exception != null
+            ? $"🔌 Cliente desconectado por error: {Context.ConnectionId} ({exception.Message})"
+            : $"🔌 Cliente desconectado normalmente: {Context.ConnectionId}");
+    }
 
-        if (exception != null)
-        {
-            // Si la desconexión fue por un error, lo veremos aquí.
-            Console.WriteLine($"🔌 Cliente desconectado POR ERROR: {Context.ConnectionId}");
-            Console.WriteLine($"   Motivo del error: {exception.Message}");
-        }
-        else
-        {
-            Console.WriteLine($"🔌 Cliente desconectado normalmente: {Context.ConnectionId}");
-        }
+    // -------------------------
+    // Métodos para unirse a grupos
+    // -------------------------
+    /// <summary>
+    /// Permite al cliente unirse a la carrera indicada.
+    /// </summary>
+    public async Task UnirseCarrera(int carreraId)
+    {
+        string grupo = ObtenerNombreGrupo(carreraId);
+        await Groups.AddToGroupAsync(Context.ConnectionId, grupo);
+        Console.WriteLine($"Cliente {Context.ConnectionId} se unió al grupo {grupo}");
+
+        // Opcional: enviar log al cliente que se acaba de unir
+        await Clients.Caller.SendAsync("Log", $"✅ Conectado al grupo de carrera {carreraId}");
+    }
+
+    /// <summary>
+    /// Permite al cliente salir de un grupo/carrera.
+    /// </summary>
+    public async Task SalirCarrera(int carreraId)
+    {
+        string grupo = ObtenerNombreGrupo(carreraId);
+        await Groups.RemoveFromGroupAsync(Context.ConnectionId, grupo);
+        Console.WriteLine($"Cliente {Context.ConnectionId} salió del grupo {grupo}");
+        await Clients.Caller.SendAsync("Log", $"⚠️ Saliste del grupo de carrera {carreraId}");
+    }
+
+    // -------------------------
+    // Envío de progreso
+    // -------------------------
+    /// <summary>
+    /// Envía el progreso únicamente a los clientes conectados al grupo de la carrera.
+    /// </summary>
+    public async Task EnviarProgreso(int carreraId, CarreraData data)
+    {
+        string grupo = ObtenerNombreGrupo(carreraId);
+        await Clients.Group(grupo).SendAsync("RecibirProgreso", data);
+        Console.WriteLine($"Progreso enviado al grupo {grupo}: Corredor {data.CorredorId} - Tramo {data.TramosCompletados}");
+    }
+
+    // -------------------------
+    // Helpers
+    // -------------------------
+    private string ObtenerNombreGrupo(int carreraId) => $"carrera-{carreraId}";
+
+    // DTO de ejemplo para enviar progreso
+    public class CarreraData
+    {
+        public int CarreraId { get; set; }
+        public int CorredorId { get; set; }
+        public string Checkpoint { get; set; } = string.Empty;
+        public double Velocidad { get; set; }
+        public int TramosCompletados { get; set; }
     }
 }
