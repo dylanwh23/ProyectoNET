@@ -1,3 +1,0 @@
-﻿<Project>
-  <Import Project="..\buildMultiTargeting\ProyectoNET.Usuarios.API.props" />
-</Project>

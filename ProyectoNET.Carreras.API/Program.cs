@@ -41,7 +41,7 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy(name: corsPolicyName, policy =>
     {
-        policy.WithOrigins("https://localhost:7072") // Puerto de tu WebApp
+        policy.WithOrigins("https://localhost:7073") // Puerto de tu WebApp
               .AllowAnyHeader()
               .AllowAnyMethod()
               .AllowCredentials(); // Crucial para SignalR
