@@ -4,6 +4,8 @@ using ProyectoNET.Carreras.API.Hubs;
 using ProyectoNET.Shared;
 using ProyectoNET.Carreras.API.Data;
 using Microsoft.EntityFrameworkCore;
+using ProyectoNET.Carreras.API.Mappers;
+using ProyectoNET.Carreras.API.Models.Repositories;
 var builder = WebApplication.CreateBuilder(args);
 
 // =================================================================
@@ -45,6 +47,19 @@ builder.Services.AddCors(options =>
               .AllowCredentials(); // Crucial para SignalR
     });
 });
+
+//Repositorios
+builder.Services.AddScoped<ICarreraRepository, CarreraRepository>();
+builder.Services.AddScoped<IParticipanteRepository, ParticipanteRepository>();
+builder.Services.AddScoped<ILugarDeEntregaRepository, LugarDeEntregaRepository>();
+
+//Mapperly
+builder.Services.AddSingleton<CarreraMapper>();
+
+//Cliente blob storage (imagenes)
+builder.AddAzureBlobServiceClient("blobstorage");
+builder.Services.AddScoped<IBlobStorageService, BlobStorageService>();
+builder.Services.AddTransient<BlobStorageSeeder>(); // para que se suba la imagen default al blobstorage siempre
 
 // ===============================================
 // 2. CONSTRUIR LA APLICACIÓN
@@ -101,6 +116,26 @@ using (var scope = app.Services.CreateScope())
     {
         var logger = services.GetRequiredService<ILogger<Program>>();
         logger.LogError(ex, "Ocurrió un error al aplicar las migraciones.");
+    }
+}
+/**/
+
+// Seeder para el blob storage (imagen default)
+if (app.Environment.IsDevelopment())
+{
+    try
+    {
+        // Obtenemos el servicio y lo ejecutamos
+        using (var scope = app.Services.CreateScope())
+        {
+            var seeder = scope.ServiceProvider.GetRequiredService<BlobStorageSeeder>();
+            await seeder.InitializeAsync();
+        }
+    }
+    catch (Exception ex)
+    {
+        var logger = app.Services.GetRequiredService<ILogger<Program>>();
+        logger.LogError(ex, "Ocurrió un error al inicializar el Blob Storage Seeder.");
     }
 }
 /**/

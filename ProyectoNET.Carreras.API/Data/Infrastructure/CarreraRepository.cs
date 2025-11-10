@@ -25,7 +25,6 @@ public class CarreraRepository : ICarreraRepository
     }
     public async Task UpdateAsync(Carrera carrera)
     {
-        _context.Carreras.Update(carrera);
         await _context.SaveChangesAsync();
     }
     public async Task DeleteAsync(Carrera carrera)

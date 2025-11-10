@@ -19,8 +19,9 @@ namespace ProyectoNET.Carreras.API.Models
         public virtual ICollection<Participante> Participantes { get; set; } = new HashSet<Participante>();
         public int CantidadParticipantes => Participantes?.Count ?? 0;
         public int CantidadMaximaParticipantes { get; set; }
-        public enum Estado { Pendiente, EnProgreso, Finalizada } 
+        public enum Estado { Pendiente, EnProgreso, Finalizada }
         public Estado EstadoCarrera { get; set; } = Estado.Pendiente;
+        public string ImagenPromocional { get; set; } = "http://127.0.0.1:10000/devstoreaccount1/default/carreradefault.png";
 
     }
 }

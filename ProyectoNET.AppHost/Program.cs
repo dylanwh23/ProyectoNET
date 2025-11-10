@@ -1,18 +1,21 @@
-using Projects;
-
 var builder = DistributedApplication.CreateBuilder(args);
 /**/
 //base de datos 
 var postgresServer = builder.AddPostgres("postgres-server");
 postgresServer.WithDataVolume("postgres_data");
 var dbCarreraAPI = postgresServer.AddDatabase("carreras-db");
-var dbUsuariosAPI = postgresServer.AddDatabase("usuarios-db"); 
+var dbUsuariosAPI = postgresServer.AddDatabase("usuarios-db");
+//storage de imagenes
+var blobStorage = builder.AddAzureStorage("storage")
+                            .RunAsEmulator(options => options.WithBlobPort(10000))
+                            .AddBlobs("blobstorage");
 //rabbit
 var rabbitmq = builder.AddRabbitMQ("rabbitmq-bus");
 //microservicios
 var carrerasApi = builder.AddProject<Projects.ProyectoNET_Carreras_API>("carreras-api")
        .WithReference(rabbitmq)
-       .WithReference(dbCarreraAPI);
+       .WithReference(dbCarreraAPI)
+       .WithReference(blobStorage);
 var usuariosApi = builder.AddProject<Projects.ProyectoNET_Usuarios_API>("usuarios-api")
        .WithReference(rabbitmq)
        .WithReference(dbUsuariosAPI);

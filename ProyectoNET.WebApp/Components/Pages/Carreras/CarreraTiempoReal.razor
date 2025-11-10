@@ -1,39 +1,43 @@
-﻿@page "/carrera-tiempo-real"
+﻿@page "/carrera-tiempo-real/{CarreraId}"
 @rendermode InteractiveServer
 @using Microsoft.AspNetCore.SignalR.Client
 @layout Layout
 
+<div class="container-fluid">
+    <h1 class="mb-3 text-center">Carrera San Fernando en tiempo real!</h1>
+   <div class="mx-auto mb-3 text-center rounded-3 bg-body-secondary w-100 d-flex p-2 justify-content-between">
+    <Largada Class="text-black" style="height: 2rem;" />
 
-<div class="container mt-4">
-    <h3 class="mb-3">📊 Seguimiento de Carreras en Tiempo Real</h3>
+    <div class="flex-fill d-flex align-items-end px-3">
 
-    <div class="card p-3 mb-4">
-        @if (hubConnection is not null && hubConnection.State == HubConnectionState.Connected)
-        {
-            <p class="text-success mb-0">✅ Conectado al servidor SignalR.</p>
-            <p class="text-muted mb-0">⏱️ Tiempo en ejecución: @elapsedSeconds segundos</p>
-        }
-        else
-        {
-            <p class="text-danger mb-0">❌ No conectado al servidor. Compruebe que la URL del Hub sea correcta.</p>
-        }
+    <div class="w-100" style="position: relative; min-height: 32px; border-bottom: 4px dashed #6c757d;">
+        <Checkpoint style="position: absolute; bottom: 0px; left: 0%; height: 2rem;" />
+        <Checkpoint style="position: absolute; bottom: 0px; left: 10%; height: 2rem;" />
+        <Checkpoint style="position: absolute; bottom: 0px; left: 40%; height: 2rem;" />
+        <Checkpoint style="position: absolute; bottom: 0px; left: 70%; height: 2rem;" />
+
+        <Punto_Corredor id="1" style="@($"position: absolute; bottom: 2px; left: 15%; height: 1.5rem; color: {GetRandomColor()};")" />
+        <Punto_Corredor id="2" style="@($"position: absolute; bottom: 2px; left: 16%; height: 2rem; color: {GetRandomColor()}; filter: drop-shadow(0 0 10px black);")" />
+
     </div>
+</div>
 
-    <table class="table table-dark table-striped table-hover mt-3 rounded-3 overflow-hidden">
+    <Llegada Class="text-primary" style="height: 2rem;" />
+</div>
+    <div class="d-flex">
+    <table class="table table-dark table-striped table-hover rounded-3 overflow-hidden w-50">
         <thead>
             <tr>
-                <th>Carrera</th>
-                <th>Corredor</th>
-                <th>Checkpoint</th>
-                <th>Velocidad (km/h)</th>
-                <th>Tramos completados</th>
+                <th>Posición</th>
+                <th>Dorsal</th>
+                <th>Apellido</th>
+                <th>Último Checkpoint</th>
+                <th>Velocidad Estimada (km/h)</th>
             </tr>
         </thead>
         <tbody>
-            @if (carreraData.Any())
+          @*   @if (carreraData.Any())
             {
-                <!-- APLICACIÓN DE LA SOLUCIÓN: Usar @key para asegurar que Blazor actualice la fila correctamente -->
-                <!-- También se usa OrderBy para mantener un orden consistente en la tabla -->
                 @foreach (var item in carreraData.OrderBy(x => x.CorredorId))
                 {
                     <tr @key="item.CorredorId">
@@ -50,113 +54,12 @@
                 <tr>
                     <td colspan="5" class="text-center text-muted">Esperando datos de simulación...</td>
                 </tr>
-            }
+            } *@
+            
         </tbody>
     </table>
+    <div class="w-50 bg-pink-200">
+        Corredor Data
+    </div>
+    </div>
 </div>
-
-@code {
-    private HubConnection? hubConnection;
-    private int elapsedSeconds = 0;
-    private List<CarreraData> carreraData = new();
-
-    // Usaremos CancellationTokenSource para controlar el bucle de conteo de tiempo.
-    private CancellationTokenSource cts = new CancellationTokenSource();
-
-    protected override async Task OnInitializedAsync()
-    {
-        // 1. Configuración de la conexión SignalR
-        hubConnection = new HubConnectionBuilder()
-            .WithUrl("https://localhost:7252/carreraHub")
-            .WithAutomaticReconnect()
-            .Build();
-
-        // 2. Manejar la recepción de datos
-        // NOTA: El InvokeAsync(StateHasChanged) aquí es CRUCIAL y ya estaba correcto.
-        hubConnection.On<CarreraData>("RecibirProgreso", data =>
-        {
-            // Log detallado para confirmar que se reciben todos los datos
-            Console.WriteLine($"[SignalR] Recibido: Carrera={data.CarreraId}, Corredor={data.CorredorId}, CheckPoint={data.Checkpoint}, Velocidad={data.Velocidad}, TramosCompletado={data.TramosCompletados}");
-
-            // Lógica de upsert (actualizar si existe, añadir si no)
-            var existing = carreraData.FirstOrDefault(x => x.CorredorId == data.CorredorId);
-            if (existing != null)
-            {
-                // Actualizar todas las propiedades mapeadas
-                existing.CarreraId = data.CarreraId;
-                existing.Checkpoint = data.Checkpoint;
-                existing.Velocidad = data.Velocidad;
-                existing.TramosCompletados = data.TramosCompletados;
-            }
-            else
-            {
-                carreraData.Add(data);
-            }
-
-            // Notificar a Blazor que el estado ha cambiado para actualizar la UI
-            InvokeAsync(StateHasChanged);
-        });
-
-        try
-        {
-            await hubConnection.StartAsync();
-            Console.WriteLine("✅ Conectado a SignalR");
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"❌ Error al conectar a SignalR: {ex.Message}. Asegúrese de que el servidor esté corriendo.");
-        }
-
-        // 3. Iniciar el contador de tiempo de ejecución de forma más robusta
-        if (hubConnection.State == HubConnectionState.Connected)
-        {
-            // Inicia el bucle de conteo sin esperar a que termine (background task)
-            _ = StartTimerLoop();
-        }
-    }
-
-    // Nuevo método para manejar el contador de tiempo de forma asíncrona y segura
-    private async Task StartTimerLoop()
-    {
-        while (!cts.IsCancellationRequested)
-        {
-            try
-            {
-                await Task.Delay(1000, cts.Token);
-                elapsedSeconds++;
-                // Asegura la actualización en el contexto de Blazor
-                await InvokeAsync(StateHasChanged);
-            }
-            catch (TaskCanceledException)
-            {
-                // Ignorar si el token de cancelación es activado
-                break;
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"❌ Error en el bucle del temporizador: {ex.Message}");
-                break;
-            }
-        }
-    }
-
-    public void Dispose()
-    {
-        // 1. Cancelar el Task.Delay del bucle del contador
-        cts.Cancel();
-        // 2. Liberar recursos del Hub
-        _ = hubConnection?.DisposeAsync();
-        // 3. Liberar el CancellationTokenSource
-        cts.Dispose();
-    }
-
-    // El DTO de datos del corredor (debe coincidir con la estructura mapeada en el servidor)
-    public class CarreraData
-    {
-        public int CarreraId { get; set; }
-        public int CorredorId { get; set; }
-        public string Checkpoint { get; set; } = string.Empty;
-        public double Velocidad { get; set; }
-        public int TramosCompletados { get; set; }
-    }
-}

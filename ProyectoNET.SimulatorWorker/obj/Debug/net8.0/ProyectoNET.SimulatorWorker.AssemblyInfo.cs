@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("ProyectoNET.SimulatorWorker")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+1019df78e2c1affb5c35d8d8313f126920fb401b")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+cf3a6b6df96a9534a211e50e1da03ede72ab35ca")]
 [assembly: System.Reflection.AssemblyProductAttribute("ProyectoNET.SimulatorWorker")]
 [assembly: System.Reflection.AssemblyTitleAttribute("ProyectoNET.SimulatorWorker")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

@@ -1,0 +1,6 @@
+.hero{
+  background-image: url('/images/fondo-carreras.png');
+  background-size: cover;     
+  background-position: center;  
+  background-repeat: no-repeat;
+}

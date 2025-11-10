@@ -1,6 +1,10 @@
 {
   "Files": [
     {
+      "Id": "C:\\Users\\User\\Documents\\ProyectoNET\\ProyectoNET.WebApp\\obj\\Debug\\net8.0\\scopedcss\\projectbundle\\ProyectoNET.WebApp.bundle.scp.css",
+      "PackagePath": "staticwebassets\\ProyectoNET.WebApp.bundle.scp.css"
+    },
+    {
       "Id": "C:\\Users\\User\\Documents\\ProyectoNET\\ProyectoNET.WebApp\\wwwroot\\Imagenes\\logo.png",
       "PackagePath": "staticwebassets\\Imagenes\\logo.png"
     },
@@ -13,8 +17,24 @@
       "PackagePath": "staticwebassets\\favicon.png"
     },
     {
+      "Id": "C:\\Users\\User\\Documents\\ProyectoNET\\ProyectoNET.WebApp\\wwwroot\\images\\carreradefault.png",
+      "PackagePath": "staticwebassets\\images\\carreradefault.png"
+    },
+    {
+      "Id": "C:\\Users\\User\\Documents\\ProyectoNET\\ProyectoNET.WebApp\\wwwroot\\images\\fondo-carreras.png",
+      "PackagePath": "staticwebassets\\images\\fondo-carreras.png"
+    },
+    {
+      "Id": "C:\\Users\\User\\Documents\\ProyectoNET\\ProyectoNET.WebApp\\wwwroot\\images\\logo.png",
+      "PackagePath": "staticwebassets\\images\\logo.png"
+    },
+    {
       "Id": "C:\\Users\\User\\Documents\\ProyectoNET\\ProyectoNET.WebApp\\wwwroot\\index.html",
       "PackagePath": "staticwebassets\\index.html"
+    },
+    {
+      "Id": "C:\\Users\\User\\Documents\\ProyectoNET\\ProyectoNET.WebApp\\wwwroot\\js\\carreraHubClient.js",
+      "PackagePath": "staticwebassets\\js\\carreraHubClient.js"
     },
     {
       "Id": "C:\\Users\\User\\Documents\\ProyectoNET\\ProyectoNET.WebApp\\wwwroot\\lib\\bootstrap\\css\\bootstrap-grid.css",
