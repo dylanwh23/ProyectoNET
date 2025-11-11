@@ -1,17 +1,13 @@
+using System;
 using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.Logging;    // <--- Añadir
 using ProyectoNET.Shared;
-using System.Net.Http;                 // <--- Añadir
-using System.Net.Http.Json;            // <--- Añadir (para GetFromJsonAsync)
-using System.Collections.Generic;      // <--- Añadir
-using System.Threading.Tasks;
-using ProyectoNET.Shared.WebApp;          // <--- Añadir
-
-namespace ProyectoNET.WebApp.Components.Pages.Carreras
+using ProyectoNET.Shared.WebApp;
+namespace ProyectoNET.WebApp.Components.Pages.Inscripciones
 {
-    public partial class Carreras : ComponentBase
+    public partial class CarrerasInscripcion: ComponentBase
     {
-        private List<CarreraEnCursoCard> _carreras = new List<CarreraEnCursoCard>();
+         private List<CarreraInscripcionCard> _carreras = new List<CarreraInscripcionCard>();
 
         // Inyectamos la "fábrica" para crear el cliente que configuramos
         [Inject]
@@ -19,7 +15,7 @@ namespace ProyectoNET.WebApp.Components.Pages.Carreras
 
         // (Opcional pero recomendado) Inyectamos un logger para ver errores
         [Inject]
-        private ILogger<Carreras> Logger { get; set; } = default!;
+        private ILogger<CarrerasInscripcion> Logger { get; set; } = default!;
 
         protected override async Task OnInitializedAsync()
         {
@@ -30,7 +26,7 @@ namespace ProyectoNET.WebApp.Components.Pages.Carreras
 
                 // 2. Llama a tu endpoint
                 // ❗️ Ajusta "api/carreras" a la ruta real de tu controlador de API
-                var result = await httpClient.GetFromJsonAsync<List<CarreraEnCursoCard>>("api/carreras/en-curso");
+                var result = await httpClient.GetFromJsonAsync<List<CarreraInscripcionCard>>("api/carreras/inscripcion");
 
                 // 3. Asigna el resultado a tu lista
                 if (result != null)

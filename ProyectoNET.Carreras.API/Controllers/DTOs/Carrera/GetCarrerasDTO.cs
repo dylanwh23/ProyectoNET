@@ -4,4 +4,5 @@ public record GetCarrerasDTO
     public string Nombre { get; init; }
     public string Descripcion { get; init; }
     public string ImagenPromocional { get; init; }
+    public string Ubicacion { get; init; }
 }
