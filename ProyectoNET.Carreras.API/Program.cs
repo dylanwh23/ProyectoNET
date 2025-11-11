@@ -41,7 +41,13 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy(name: corsPolicyName, policy =>
     {
-        policy.WithOrigins("https://localhost:7073") // Puerto de tu WebApp
+        policy.WithOrigins(
+            "https://localhost:7073",   // WebApp original
+            "https://localhost:5001",   // Blazor o MVC
+            "http://127.0.0.1:5500",    // Live Server de VSCode
+            "https://localhost:7188",
+            "https://localhost:7182"// API de usuarios si se comunican entre sí
+        )
               .AllowAnyHeader()
               .AllowAnyMethod()
               .AllowCredentials(); // Crucial para SignalR
