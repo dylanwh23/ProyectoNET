@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.SignalR;
 using System;
 using System.Threading.Tasks;
-
+using ProyectoNET.Shared;
 namespace ProyectoNET.Carreras.API.Hubs;
 
 public class CarreraHub : Hub
@@ -69,12 +69,5 @@ public class CarreraHub : Hub
     private string ObtenerNombreGrupo(int carreraId) => $"carrera-{carreraId}";
 
     // DTO de ejemplo para enviar progreso
-    public class CarreraData
-    {
-        public int CarreraId { get; set; }
-        public int CorredorId { get; set; }
-        public string Checkpoint { get; set; } = string.Empty;
-        public double Velocidad { get; set; }
-        public int TramosCompletados { get; set; }
-    }
+   
 }

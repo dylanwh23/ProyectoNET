@@ -1,7 +1,4 @@
-// ================================================
-// 🏁 Cliente SignalR Carrera (reutilizable, callbacks)
-// ================================================
-
+/*
 export class CarreraHubClient {
     constructor(carreraId, hubUrl = "https://localhost:7252/carreraHub") {
         if (!carreraId) throw new Error("Debe especificarse el ID de la carrera");
@@ -69,3 +66,4 @@ export class CarreraHubClient {
         }
     }
 }
+*/
