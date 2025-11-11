@@ -53,6 +53,22 @@ public class CarreraController : ControllerBase
         return Ok(carrerasDTO);
     }
 
+    [HttpGet("api/carreras/en-curso")]
+    public async Task<IActionResult> ObtenerCarrerasEnCurso()
+    {
+        var carreras = await _carreraRepository.GetCarerasEnCursoAsync();
+        var carrerasDTO = carreras.Select(c => _mapper.ToCarreraEnCursoCard(c));
+        return Ok(carrerasDTO);
+    }
+
+    [HttpGet("api/carreras/inscripcion")]
+    public async Task<IActionResult> ObtenerCarrerasInscripcion()
+    {
+        var carreras = await _carreraRepository.GetCarerasAbiertasInscripcionAsync();
+        var carrerasDTO = carreras.Select(c => _mapper.ToCarreraInscripcionCard(c));
+        return Ok(carrerasDTO);
+    }
+
     [HttpDelete("api/carreras/{id}")]
     public async Task<IActionResult> EliminarCarrera(int id)
     {

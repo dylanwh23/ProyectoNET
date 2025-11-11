@@ -32,4 +32,18 @@ public class CarreraRepository : ICarreraRepository
         _context.Carreras.Remove(carrera);
         await _context.SaveChangesAsync();
     }
+
+    public async Task<IEnumerable<Carrera>> GetCarerasEnCursoAsync()
+    {
+        return await _context.Carreras
+            .Where(c => c.EstadoCarrera == Carrera.Estado.EnProgreso)
+            .ToListAsync();
+    }
+
+    public async Task<IEnumerable<Carrera>> GetCarerasAbiertasInscripcionAsync()
+    {
+        return await _context.Carreras
+            .Where(c => c.EstadoCarrera == Carrera.Estado.Pendiente)
+            .ToListAsync();
+    }
 }

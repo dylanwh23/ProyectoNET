@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("ProyectoNET.AdminWebApp")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+34720dd6c89b90b83e15fbeab14e260db5b8c3ed")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+032309e3912e7bd5b500d050c2b0f9023f9c5e9e")]
 [assembly: System.Reflection.AssemblyProductAttribute("ProyectoNET.AdminWebApp")]
 [assembly: System.Reflection.AssemblyTitleAttribute("ProyectoNET.AdminWebApp")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

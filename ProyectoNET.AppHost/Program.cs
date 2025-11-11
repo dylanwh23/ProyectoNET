@@ -1,3 +1,5 @@
+using Microsoft.Identity.Client.Extensions.Msal;
+
 var builder = DistributedApplication.CreateBuilder(args);
 /**/
 //base de datos 
@@ -7,9 +9,10 @@ var dbCarreraAPI = postgresServer.AddDatabase("carreras-db");
 var dbUsuariosAPI = postgresServer.AddDatabase("usuarios-db");
 //storage de imagenes
 var blobStorage = builder.AddAzureStorage("storage")
-                            .RunAsEmulator(options => options.WithBlobPort(10000))
+                            .RunAsEmulator(options => { options.WithBlobPort(10000); options.WithDataVolume("blob_data"); } )
                             .AddBlobs("blobstorage");
-//rabbit
+
+//rabbi
 var rabbitmq = builder.AddRabbitMQ("rabbitmq-bus");
 //microservicios
 var carrerasApi = builder.AddProject<Projects.ProyectoNET_Carreras_API>("carreras-api")

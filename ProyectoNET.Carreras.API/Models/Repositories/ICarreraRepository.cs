@@ -8,5 +8,9 @@ namespace ProyectoNET.Carreras.API.Models.Repositories
         Task AddAsync(Carrera carrera);
         Task UpdateAsync(Carrera carrera);
         Task DeleteAsync(Carrera carrera);
+
+        Task<IEnumerable<Carrera>> GetCarerasEnCursoAsync();
+        Task<IEnumerable<Carrera>> GetCarerasAbiertasInscripcionAsync();
+        
     }
 }

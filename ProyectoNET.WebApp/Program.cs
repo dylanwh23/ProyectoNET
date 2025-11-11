@@ -2,11 +2,21 @@
 
 
 var builder = WebApplication.CreateBuilder(args);
-
-// 1. AÑADIR SERVICIOS AL CONTENEDOR.
-// Esto sigue siendo correcto y necesario.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
+builder.Services.AddHttpClient("api", (sp, client) =>
+{
+    var config = sp.GetRequiredService<IConfiguration>();
+    var apiUrl = config["services:carreras-api:https:0"] ?? config["services:carreras-api:http:0"];
+
+    if (string.IsNullOrEmpty(apiUrl))
+    {
+        throw new InvalidOperationException("No se pudo encontrar la URL del servicio 'carreras-api'.");
+    }
+    
+    client.BaseAddress = new Uri(apiUrl);
+});
+
 
 var app = builder.Build();
 
