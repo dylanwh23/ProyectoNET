@@ -10,4 +10,7 @@ public class CarreraCard
     public string Descripcion { get; set; } = string.Empty;
     public DateTime FechaInicio { get; set; }
     public string ImagenPromocional { get; set; } = string.Empty;
+    public string Estado { get; set; } = "Pendiente";
+    public int TotalInscriptos { get; set; }
+    public int TotalPuntosControl { get; set; }
 }
