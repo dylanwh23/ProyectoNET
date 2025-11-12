@@ -9,4 +9,5 @@ namespace ProyectoNET.Shared;
         public string Checkpoint { get; set; } = string.Empty;
         public double Velocidad { get; set; }
         public int TramosCompletados { get; set; }
-    }
+        public string Estado { get; set; } = "En Curso";
+}

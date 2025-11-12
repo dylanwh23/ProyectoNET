@@ -23,12 +23,22 @@ builder.AddNpgsqlDbContext<CarrerasDbContext>("carreras-db");
 builder.Services.AddMassTransit(config =>
 {
     config.AddConsumer<TiempoRegistradoConsumer>();
+    config.AddConsumer<CarreraFinalizadaConsumer>();
+
     config.UsingRabbitMq((ctx, cfg) =>
     {
         cfg.Host(builder.Configuration.GetConnectionString("rabbitmq-bus"));
+
+        // ✅ Cola para TiempoRegistrado
         cfg.ReceiveEndpoint("tiempos-queue", e =>
         {
             e.ConfigureConsumer<TiempoRegistradoConsumer>(ctx);
+        });
+
+        // ✅ Cola explícita para CarreraFinalizada con Publish/Subscribe
+        cfg.ReceiveEndpoint("carrera-finalizada", e =>
+        {
+            e.ConfigureConsumer<CarreraFinalizadaConsumer>(ctx);
         });
     });
 });
@@ -97,17 +107,7 @@ app.MapHub<CarreraHub>("/carreraHub");
 app.MapControllers();
 
 // Endpoints de Minimal API (se mantienen igual)
-app.MapPost("/carrera/iniciar", async (IniciarCarreraCommand command, IBus bus) =>
-{
-    var endpoint = await bus.GetSendEndpoint(new Uri("queue:simulador-carreras"));
-    await endpoint.Send(command);
-    return Results.Accepted(value: new { message = $"Comando para iniciar la carrera {command.IdCarrera} enviado." });
-})
-.WithSummary("Inicia la simulación de una carrera.")
-.WithName("IniciarCarrera")
-.WithOpenApi();
 
-app.MapGet("/carreras-test", () => "Respuesta del Microservicio de Carreras");
 
 // para aplicar las migraciones al iniciar la aplicación
 using (var scope = app.Services.CreateScope())

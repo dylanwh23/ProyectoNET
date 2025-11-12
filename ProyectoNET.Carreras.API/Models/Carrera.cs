@@ -6,11 +6,11 @@ namespace ProyectoNET.Carreras.API.Models
         [Key]
         public int Id { get; set; }
         [Required]
-        public string Nombre { get; set; }
+        public string Nombre { get; set; } = string.Empty;
         [Required]
-        public string Descripcion { get; set; }
+        public string Descripcion { get; set; } = string.Empty;
         [Required]
-        public string Ubicacion { get; set; }
+        public string Ubicacion { get; set; } = string.Empty; // <-- Solución aquí
         public DateTime FechaCreada { get; set; }
         public DateTime? FechaInicio { get; set; }
         public DateTime? FechaFin { get; set; }
@@ -22,6 +22,5 @@ namespace ProyectoNET.Carreras.API.Models
         public enum Estado { Pendiente, EnProgreso, Finalizada }
         public Estado EstadoCarrera { get; set; } = Estado.Pendiente;
         public string ImagenPromocional { get; set; } = "http://127.0.0.1:10000/devstoreaccount1/default/carreradefault.png";
-
     }
 }
