@@ -2,7 +2,7 @@ using MassTransit;
 using ProyectoNET.SimulatorWorker;
 using ProyectoNET.SimulatorWorker.Consumers;
 var builder = Host.CreateApplicationBuilder(args);
-builder.AddServiceDefaults(); 
+builder.AddServiceDefaults();
 builder.Services.AddMassTransit(config =>
 {
     // Registra nuestro consumidor para que MassTransit lo conozca
@@ -20,6 +20,8 @@ builder.Services.AddMassTransit(config =>
         });
     });
 });
+
+
 
 var host = builder.Build();
 host.Run();

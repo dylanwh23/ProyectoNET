@@ -20,7 +20,7 @@ public record ProgresoCorredorActualizado(
     int IdCarrera,
     int IdCorredor,
     PuntosDeControlDTO UltimoCheckpointPasado,
+    float KmRecorridos, // <-- ¡AÑADIDO!
     float VelocidadKmh,
     List<TiempoPorTramoDTO> TiemposPorTramo
 );
-

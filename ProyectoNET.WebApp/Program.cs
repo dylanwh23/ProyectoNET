@@ -1,6 +1,5 @@
 ﻿using ProyectoNET.WebApp.Components;
 
-
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
@@ -16,6 +15,7 @@ builder.Services.AddHttpClient("api", (sp, client) =>
     
     client.BaseAddress = new Uri(apiUrl);
 });
+
 
 
 var app = builder.Build();

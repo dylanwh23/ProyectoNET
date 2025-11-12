@@ -1,12 +1,25 @@
-using System;
+// En ProyectoNET.Shared.WebApp (o donde viva CarreraData)
+public class CarreraData
+{
+    // (Tus propiedades existentes)
+    public int CarreraId { get; set; }
+    public int CorredorId { get; set; }
+    public string Checkpoint { get; set; } = string.Empty;
+    public double Velocidad { get; set; }
+    public int TramosCompletados { get; set; }
+    public float KmRecorridos { get; set; }
 
-namespace ProyectoNET.Shared;
+    // Constructor vacío (necesario para SignalR/deserialización)
+    public CarreraData() {}
 
- public class CarreraData
+    // ¡NUEVO! Constructor de copia
+    public CarreraData(CarreraData source)
     {
-        public int CarreraId { get; set; }
-        public int CorredorId { get; set; }
-        public string Checkpoint { get; set; } = string.Empty;
-        public double Velocidad { get; set; }
-        public int TramosCompletados { get; set; }
+        CarreraId = source.CarreraId;
+        CorredorId = source.CorredorId;
+        Checkpoint = source.Checkpoint;
+        Velocidad = source.Velocidad;
+        TramosCompletados = source.TramosCompletados;
+        KmRecorridos = source.KmRecorridos;
     }
+}

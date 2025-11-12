@@ -1,11 +1,12 @@
 using MassTransit;
 using ProyectoNET.Shared;
+using ProyectoNET.Shared.WebApp;
 
 namespace ProyectoNET.SimulatorWorker.Consumers;
 
 public class IniciarCarreraConsumer(
     ILogger<IniciarCarreraConsumer> logger,
-    IBus bus) // Usar IBus en lugar de IPublishEndpoint
+    IBus bus) 
     : IConsumer<IniciarCarreraCommand>
 {
     private readonly Random _random = new();
@@ -17,11 +18,20 @@ public class IniciarCarreraConsumer(
         
         // 1. Simular la carrera completa primero
         var simulacionCompleta = SimularCarreraCompleta(command);
-        
+
         logger.LogInformation("✅ Simulación para la carrera {IdCarrera} finalizada. Enviando eventos", command.IdCarrera);
         
-        // 2. Enviar eventos en background para no bloquear el consumer
-        // Esto permite que RabbitMQ haga ACK inmediatamente
+        
+        var eventoInicio = new CarreraIniciadaEvent(
+            command.IdCarrera,
+            command.IdCorredores,
+            command.TotalPuntosDeControl
+        );
+        
+        // Publicamos el evento
+        await bus.Publish(eventoInicio);
+
+        // 2. Enviar eventos en background
         _ = Task.Run(async () =>
         {
             try
@@ -31,10 +41,7 @@ public class IniciarCarreraConsumer(
             catch (Exception ex)
             {
                 logger.LogError(ex, "❌ Error al enviar eventos para la carrera {IdCarrera}", command.IdCarrera);
-                
             }
-
-            
         });
         
         logger.LogInformation("🚀 Simulación de carrera {IdCarrera} iniciada en background", command.IdCarrera);
@@ -51,41 +58,26 @@ public class IniciarCarreraConsumer(
             var tiemposPorTramo = new List<TiempoPorTramoDTO>();
             var tiempoAcumulado = TimeSpan.Zero;
             
-            // Generar ritmo base del corredor (minutos por km, entre 4 y 8 min/km)
             var ritmoBaseMinPorKm = 4.0 + _random.NextDouble() * 4.0;
             
             for (int i = 0; i < command.TotalPuntosDeControl.Count; i++)
             {
                 var puntoActual = command.TotalPuntosDeControl[i];
                 
-                // Calcular distancia del tramo
+                // ... (tu lógica de distanciaTramo, ritmo, fatiga, etc.) ...
                 float distanciaTramo;
-                if (i == 0)
-                {
-                    distanciaTramo = puntoActual.Km; // Desde inicio hasta primer checkpoint
-                }
-                else
-                {
-                    var puntoAnterior = command.TotalPuntosDeControl[i - 1];
-                    distanciaTramo = puntoActual.Km - puntoAnterior.Km;
-                }
+                if (i == 0) { distanciaTramo = puntoActual.Km; }
+                else { distanciaTramo = puntoActual.Km - command.TotalPuntosDeControl[i - 1].Km; }
                 
-                // Variar el ritmo del corredor (±25% del ritmo base para simular fatiga/recuperación)
                 var variacion = 0.75 + _random.NextDouble() * 0.5;
                 var ritmoTramoMinPorKm = ritmoBaseMinPorKm * variacion;
-                
-                // Simular fatiga progresiva (cada tramo es ~2% más lento en promedio)
                 var factorFatiga = 1.0 + (i * 0.02);
                 ritmoTramoMinPorKm *= factorFatiga;
                 
-                // Calcular TIEMPO del tramo basado en el ritmo
                 var tiempoTramo = TimeSpan.FromMinutes(distanciaTramo * ritmoTramoMinPorKm);
                 tiempoAcumulado += tiempoTramo;
-                
-                // Calcular VELOCIDAD en base al tiempo y distancia recorrida
                 var velocidadKmh = (float)(distanciaTramo / tiempoTramo.TotalHours);
                 
-                // Agregar tiempo del tramo
                 var desdePuntoId = i == 0 ? 0 : command.TotalPuntosDeControl[i - 1].IdPuntoDeControl;
                 tiemposPorTramo.Add(new TiempoPorTramoDTO(
                     desdePuntoId,
@@ -99,7 +91,8 @@ public class IniciarCarreraConsumer(
                     IdCorredor = idCorredor,
                     TiempoReal = tiempoAcumulado,
                     Checkpoint = puntoActual,
-                    VelocidadKmh = velocidadKmh, // Velocidad CALCULADA del tramo
+                    KmRecorridos = puntoActual.Km, // <-- ¡AÑADIDO! (1 de 3)
+                    VelocidadKmh = velocidadKmh, 
                     TiemposPorTramo = new List<TiempoPorTramoDTO>(tiemposPorTramo)
                 });
             }
@@ -112,27 +105,21 @@ public class IniciarCarreraConsumer(
     
     private async Task EnviarEventosEnTiempoReal(int idCarrera, Dictionary<int, List<EventoCorredor>> simulacion)
     {
-        // Ordenar todos los eventos cronológicamente
+        // ... (tu lógica de ordenar eventos y calcular tiempo) ...
         var todosLosEventos = simulacion
-            .SelectMany(kvp => kvp.Value.Select(e => new
-            {
-                Evento = e,
-                IdCorredor = kvp.Key
-            }))
+            .SelectMany(kvp => kvp.Value.Select(e => new { Evento = e, IdCorredor = kvp.Key }))
             .OrderBy(x => x.Evento.TiempoReal)
             .ToList();
         
         var tiempoInicio = DateTime.UtcNow;
-        var factorAceleracion = 20.0; // 10x más rápido
+        var factorAceleracion = 20.0; 
         
         foreach (var item in todosLosEventos)
         {
-            // Calcular cuánto tiempo debe esperar (en tiempo acelerado)
             var tiempoSimuladoEnSegundos = item.Evento.TiempoReal.TotalSeconds;
             var tiempoRealEnSegundos = tiempoSimuladoEnSegundos / factorAceleracion;
             var tiempoObjetivo = tiempoInicio.AddSeconds(tiempoRealEnSegundos);
             
-            // Esperar hasta el momento correcto
             var esperaMs = (int)(tiempoObjetivo - DateTime.UtcNow).TotalMilliseconds;
             if (esperaMs > 0)
             {
@@ -144,6 +131,7 @@ public class IniciarCarreraConsumer(
                 idCarrera,
                 item.IdCorredor,
                 item.Evento.Checkpoint,
+                item.Evento.KmRecorridos, // <-- ¡AÑADIDO! (2 de 3)
                 item.Evento.VelocidadKmh,
                 item.Evento.TiemposPorTramo
             );
@@ -168,6 +156,7 @@ public class IniciarCarreraConsumer(
         public int IdCorredor { get; set; }
         public TimeSpan TiempoReal { get; set; }
         public PuntosDeControlDTO Checkpoint { get; set; } = null!;
+        public float KmRecorridos { get; set; } // <-- ¡AÑADIDO! (3 de 3)
         public float VelocidadKmh { get; set; }
         public List<TiempoPorTramoDTO> TiemposPorTramo { get; set; } = new();
     }

@@ -6,6 +6,7 @@ using ProyectoNET.Carreras.API.Data;
 using Microsoft.EntityFrameworkCore;
 using ProyectoNET.Carreras.API.Mappers;
 using ProyectoNET.Carreras.API.Models.Repositories;
+using ProyectoNET.Carreras.API.Services;
 var builder = WebApplication.CreateBuilder(args);
 
 // =================================================================
@@ -23,12 +24,17 @@ builder.AddNpgsqlDbContext<CarrerasDbContext>("carreras-db");
 builder.Services.AddMassTransit(config =>
 {
     config.AddConsumer<TiempoRegistradoConsumer>();
+    config.AddConsumer<CarreraIniciadaConsumer>();
     config.UsingRabbitMq((ctx, cfg) =>
     {
         cfg.Host(builder.Configuration.GetConnectionString("rabbitmq-bus"));
         cfg.ReceiveEndpoint("tiempos-queue", e =>
         {
             e.ConfigureConsumer<TiempoRegistradoConsumer>(ctx);
+        });
+        cfg.ReceiveEndpoint("carrera-iniciada-queue", e =>
+        {
+            e.ConfigureConsumer<CarreraIniciadaConsumer>(ctx);
         });
     });
 });
@@ -66,6 +72,10 @@ builder.Services.AddSingleton<CarreraMapper>();
 builder.AddAzureBlobServiceClient("blobstorage");
 builder.Services.AddScoped<IBlobStorageService, BlobStorageService>();
 builder.Services.AddTransient<BlobStorageSeeder>(); // para que se suba la imagen default al blobstorage siempre
+
+//Carrera State service
+builder.Services.AddSingleton<ICarreraStateService, InMemoryCarreraStateService>();
+builder.Services.AddHostedService<EstadoCarreraBroadcaster>();
 
 // ===============================================
 // 2. CONSTRUIR LA APLICACIÓN

@@ -1,64 +1,97 @@
 ﻿@page "/carrera-tiempo-real/{CarreraId}"
 @rendermode InteractiveServer
 @layout Layout
+@using ProyectoNET.Shared.WebApp 
+@using System.Globalization 
 
 <div class="container-fluid">
-    <h1 class="mb-3 text-center">Carrera San Fernandoasd en tiempo real!</h1>
-   <div class="mx-auto mb-3 text-center rounded-3 bg-body-secondary w-100 d-flex p-2 justify-content-between">
-    <Largada Class="text-black" style="height: 2rem;" />
+    <h1 class="mb-3 text-center">Carrera San Fernando en tiempo real!</h1>
 
-    <div class="flex-fill d-flex align-items-end px-3">
+    <div class="mx-auto mb-3 text-center rounded-3 bg-body-secondary w-100 d-flex p-2 justify-content-between">
+        <Largada Class="text-black" style="height: 2rem;" />
 
-    <div class="w-100" style="position: relative; min-height: 32px; border-bottom: 4px dashed #6c757d;">
-        <Checkpoint style="position: absolute; bottom: 0px; left: 0%; height: 2rem;" />
-        <Checkpoint style="position: absolute; bottom: 0px; left: 10%; height: 2rem;" />
-        <Checkpoint style="position: absolute; bottom: 0px; left: 40%; height: 2rem;" />
-        <Checkpoint style="position: absolute; bottom: 0px; left: 70%; height: 2rem;" />
-
-        <Punto_Corredor id="1" style="@($"position: absolute; bottom: 2px; left: 15%; height: 1.5rem; color: {GetRandomColor()};")" />
-        <Punto_Corredor id="2" style="@($"position: absolute; bottom: 2px; left: 16%; height: 2rem; color: {GetRandomColor()}; filter: drop-shadow(0 0 10px black);")" />
-
-    </div>
-</div>
-
-    <Llegada Class="text-primary" style="height: 2rem;" />
-</div>
-    <div class="d-flex">
-    <table class="table table-dark table-striped table-hover rounded-3 overflow-hidden w-50">
-        <thead>
-            <tr>
-                <th>Posición</th>
-                <th>Dorsal</th>
-                <th>Apellido</th>
-                <th>Último Checkpoint</th>
-                <th>Velocidad Estimada (km/h)</th>
-            </tr>
-        </thead>
-        <tbody>
-          @*   @if (carreraData.Any())
-            {
-                @foreach (var item in carreraData.OrderBy(x => x.CorredorId))
+        <div class="flex-fill d-flex align-items-end px-3">
+            <div class="w-100" style="position: relative; min-height: 32px; border-bottom: 4px dashed #6c757d;">
+                
+                @foreach (var punto in _puntosDeControl)
                 {
-                    <tr @key="item.CorredorId">
-                        <td>@item.CarreraId</td>
-                        <td><strong>@item.CorredorId</strong></td>
-                        <td>@item.Checkpoint</td>
-                        <td>@item.Velocidad.ToString("F2")</td>
-                        <td>@item.TramosCompletados</td>
-                    </tr>
+                    <div class="checkpoint-wrapper" style="@($"left: {GetPosicionPorcentaje(punto.Km).ToString(CultureInfo.InvariantCulture)}%;")">
+                        <Checkpoint />
+                    </div>
                 }
-            }
-            else
-            {
-                <tr>
-                    <td colspan="5" class="text-center text-muted">Esperando datos de simulación...</td>
-                </tr>
-            } *@
-            
-        </tbody>
-    </table>
-    <div class="w-50 bg-pink-200">
-        Corredor Data
+
+                @if (_carreraIniciada)
+                {
+                    @foreach (var corredor in _listaOrdenadaCorredores)
+                    {
+                        <div @key="corredor.CorredorId" 
+                             class="punto-corredor-wrapper @(corredor.CorredorId == _corredorResaltadoId ? "resaltado" : "")"
+                             style="@($"left: {GetPosicionPorcentaje(corredor.KmRecorridos).ToString(CultureInfo.InvariantCulture)}%;")">
+                            
+                             <Punto_Corredor id="@corredor.CorredorId" 
+                                             style="@($"color: {_coloresCorredores[corredor.CorredorId]};")" />
+                        </div>
+                    }
+                }
+            </div>
+        </div>
+
+        <Llegada Class="text-primary" style="height: 2rem;" />
     </div>
+
+    <div class="d-flex gap-3">
+        
+        <div class="w-75">
+            <div class="mb-3">
+              <input type="text" 
+                     @bind="TerminoBusqueda" 
+                     @bind:event="oninput" 
+                     placeholder="Buscar por Dorsal (ID)..." 
+                     class="form-control" />
+            </div>
+
+            <table class="table table-dark table-striped table-hover rounded-3 overflow-hidden">
+                <thead>
+                    <tr> <th>Posición</th> <th>Dorsal</th> <th>Último Checkpoint</th> <th>Velocidad (km/h)</th> <th>Tramos</th> </tr>
+                </thead>
+                <tbody>
+                @if (_corredoresMostrados.Any())
+                {
+                    @foreach (var item in _corredoresMostrados)
+                    {
+                        <tr @key="item.CorredorId"
+                            @onmouseenter="@(() => ResaltarCorredor(item.CorredorId))"
+                            @onmouseleave="QuitarResaltado">
+                            
+                            <td>@(_listaOrdenadaCorredores.IndexOf(item) + 1)</td> 
+                            <td><strong>@item.CorredorId</strong></td>
+                            <td>@item.Checkpoint</td>
+                            <td>@item.Velocidad.ToString("F2")</td>
+                            <td>@item.TramosCompletados</td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr> <td colspan="5" class="text-center text-muted">@(_carreraIniciada ? "Cargando corredores..." : "Esperando inicio de carrera...")</td> </tr>
+                }
+                </tbody>
+            </table>
+
+            @if (string.IsNullOrWhiteSpace(TerminoBusqueda) && _totalPaginas > 1)
+            {
+                <nav class="d-flex justify-content-between">
+                    <button class="btn btn-primary" @onclick="PaginaAnterior" disabled="@(_paginaActual == 0)">
+                        &laquo; Anterior
+                    </button>
+                    <span>
+                        Página <strong>@(_paginaActual + 1)</strong> de <strong>@_totalPaginas</strong>
+                    </span>
+                    <button class="btn btn-primary" @onclick="PaginaSiguiente" disabled="@(_paginaActual >= _totalPaginas - 1)">
+                        Siguiente &raquo;
+                    </button>
+                </nav>
+            }
+        </div>
     </div>
 </div>
