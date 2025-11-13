@@ -62,7 +62,7 @@ builder.Services.AddCors(options =>
             "https://localhost:5001",   // Blazor o MVC
             "http://127.0.0.1:5500",    // Live Server de VSCode
             "https://localhost:7188",
-            "https://localhost:7182"// API de usuarios si se comunican entre sí
+            "https://localhost:7182"// 
         )
               .AllowAnyHeader()
               .AllowAnyMethod()
