@@ -113,7 +113,7 @@ A continuación se describen los casos de usos principales en base a las funcion
 
 El siguiente diagrama ilustra la arquitectura del sistema, destacando los componentes clave y sus interacciones:
 
-<img width="1605" height="765" alt="image" src="https://github.com/user-attachments/assets/10470c47-217c-427f-a150-78fbccaf3729" />
+<img width="1118" height="570" alt="image" src="https://github.com/user-attachments/assets/20d65983-df96-4bf5-9210-f14786ab1a17" />
 
 ### Stack Tecnológico y Decisiones Clave 🎯
 
@@ -128,6 +128,7 @@ La arquitectura se basa en un conjunto de tecnologías y patrones seleccionados 
 | **Mensajería Asíncrona**| `RabbitMQ` (Bus de Mensajes) | Desacopla los servicios y garantiza la resiliencia en el manejo de eventos masivos (ej. tiempos de carrera en tiempo real). |
 | **Persistencia de Datos** | `Entity Framework Core` + `PostgreSQL` | Base de datos centralizada en PostgreSQL |
 | **Tareas en Segundo Plano**| `Worker Service` | Simulación de hardware (lectura de chips RFID) y generación de datos en tiempo real de forma asíncrona y desacoplada de la UI. |
+| **Persistencia de eventos**| `Redis` | Encargado de almacenar casi en tiempo real los eventos para mantener el estado de las carreras. |
 
 ## 🖼️ Maquetado de la Interfaz de Usuario y Administrador
 
@@ -218,6 +219,8 @@ La arquitectura se basa en un conjunto de tecnologías y patrones seleccionados 
 
 ## 🤔 Cambios importantes
 - *Migracion SQLite -> PostgreSQL*: En un principio decidimos implementar SQLite para facilitar el desarrollo, pero carece de sentido en un entorno con varias instancias de API el utilizar bases de datos aisladas. Optamos por tener 2 bases de datos centralizadas PostgreSQL.
+- *Inclusión de nuevo servicio SimuladorConsumer*: Para lidiar con la complejidad del manejo de los eventos, decidimos separar la lógica de recepción de eventos de Carrera API, esto nos permitirá escalar por separado los simuladores, ya que las tareas de Carrera API no suponen una gran demanda de recursos comparado a lo que es la recepción y procesamiento de eventos.
+- *Comunicación entre servicios mediante endpoints -> Comunicación mediante eventos*: Por comodidad optamos por manejar la sincronización de datos entre servicios, mediante endpoints.
 
 
 

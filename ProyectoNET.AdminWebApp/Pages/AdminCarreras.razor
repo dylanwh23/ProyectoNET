@@ -1,0 +1,596 @@
+﻿@page "/"
+@using System.Net.Http.Json
+@using Microsoft.AspNetCore.Components.Forms
+@using Microsoft.AspNetCore.Components.Web
+@using Microsoft.JSInterop
+@using ProyectoNET.Shared
+@using ProyectoNET.Shared.AdminWebApp
+@rendermode @(new Microsoft.AspNetCore.Components.Web.InteractiveServerRenderMode())
+@inject HttpClient Http
+@inject IConfiguration Configuration
+@inject IJSRuntime JS
+
+<PageTitle>Panel de Administrador - Carreras</PageTitle>
+
+<div class="container-fluid">
+    <div class="row">
+        <!-- Sidebar -->
+        <div class="col-md-2 sidebar p-4">
+            <h3 class="mb-4"><i class="fas fa-flag-checkered"></i> RaceAdmin</h3>
+            <ul class="nav flex-column">
+                <li class="nav-item mb-2">
+                    <a class="nav-link active" href="#"><i class="fas fa-tachometer-alt me-2"></i> Dashboard</a>
+                </li>
+                <li class="nav-item mb-2">
+                    <a class="nav-link" href="#"><i class="fas fa-flag me-2"></i> Carreras</a>
+                </li>
+                <li class="nav-item mb-2">
+                    <a class="nav-link" href="#"><i class="fas fa-users me-2"></i> Participantes</a>
+                </li>
+                <li class="nav-item mb-2">
+                    <a class="nav-link" href="#"><i class="fas fa-trophy me-2"></i> Resultados</a>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Main Content -->
+        <div class="col-md-10 main-content">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2><i class="fas fa-flag-checkered me-2"></i> Gestión de Carreras</h2>
+                <button class="btn btn-success" @onclick="AbrirModalCrear">
+                    <i class="fas fa-plus me-2"></i> Crear Carrera
+                </button>
+            </div>
+
+            <!-- Estadísticas -->
+            <div class="row mb-4">
+                <div class="col-md-3">
+                    <div class="card">
+                        <div class="card-body text-center">
+                            <h3 class="text-primary">@_estadisticas.TotalCarreras</h3>
+                            <p class="text-muted mb-0">Carreras Totales</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card">
+                        <div class="card-body text-center">
+                            <h3 class="text-success">@_estadisticas.EnCurso</h3>
+                            <p class="text-muted mb-0">En Curso</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card">
+                        <div class="card-body text-center">
+                            <h3 class="text-warning">@_estadisticas.Pendientes</h3>
+                            <p class="text-muted mb-0">Pendientes</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card">
+                        <div class="card-body text-center">
+                            <h3 class="text-secondary">@_estadisticas.Finalizadas</h3>
+                            <p class="text-muted mb-0">Finalizadas</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tabla de Carreras -->
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0"><i class="fas fa-list me-2"></i> Lista de Carreras</h5>
+                    <button class="btn btn-light btn-sm" @onclick="CargarCarreras">
+                        <i class="fas fa-sync-alt me-1"></i> Actualizar
+                    </button>
+                </div>
+                <div class="card-body">
+                    @if (_cargando)
+                    {
+                        <div class="text-center">
+                            <div class="spinner-border text-primary" role="status">
+                                <span class="visually-hidden">Cargando...</span>
+                            </div>
+                        </div>
+                    }
+                    else if (_carreras.Any())
+                    {
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Nombre</th>
+                                        <th>Distancia</th>
+                                        <th>Participantes</th>
+                                        <th>Puntos de Control</th>
+                                        <th>Estado</th>
+                                        <th>Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var carrera in _carreras)
+                                    {
+                                        <tr>
+                                            <td>#@carrera.Id</td>
+                                            <td>@carrera.Nombre</td>
+                                            <td>@(carrera.Distancia?.ToString("F2") ?? "-") km</td>
+                                            <td>@carrera.TotalCorredores</td>
+                                            <td>@carrera.TotalPuntosControl</td>
+                                            <td>
+                                                <span class="status-badge @ObtenerClaseEstado(carrera.Estado)">
+                                                    @carrera.Estado
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <button class="btn btn-sm btn-info" @onclick="() => VerDetalle(carrera.Id)">
+                                                    <i class="fas fa-eye"></i>
+                                                </button>
+                                                <button class="btn btn-sm btn-danger" @onclick="() => EliminarCarrera(carrera.Id)">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                                @if (carrera.Estado == "Pendiente")
+                                                {
+                                                    <button class="btn btn-sm btn-success" @onclick="() => AbrirModalIniciar(carrera.Id)">
+                                                        <i class="fas fa-flag-checkered me-1"></i> Iniciar
+                                                    </button>
+                                                }
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    }
+                    else
+                    {
+                        <p class="text-center text-muted">No hay carreras registradas</p>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Crear Carrera -->
+@if (_mostrarModalCrear)
+{
+    <div class="modal fade show d-block" tabindex="-1" style="background: rgba(0,0,0,0.5);">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
+                    <h5 class="modal-title"><i class="fas fa-plus-circle me-2"></i> Crear Nueva Carrera</h5>
+                    <button type="button" class="btn-close btn-close-white" @onclick="CerrarModalCrear"></button>
+                </div>
+                <div class="modal-body">
+                    <EditForm Model="_nuevaCarrera" OnValidSubmit="CrearCarrera">
+                        <DataAnnotationsValidator />
+                        <ValidationSummary />
+
+                        <div class="mb-3">
+                            <label class="form-label">Nombre *</label>
+                            <InputText class="form-control" @bind-Value="_nuevaCarrera.Nombre" />
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Descripción *</label>
+                            <InputTextArea class="form-control" @bind-Value="_nuevaCarrera.Descripcion" rows="2" />
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Ubicación *</label>
+                            <InputText class="form-control" @bind-Value="_nuevaCarrera.Ubicacion" />
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Fecha de Inicio *</label>
+                            <InputDate Type="InputDateType.DateTimeLocal" class="form-control" @bind-Value="_nuevaCarrera.FechaInicio" />
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Costo de Inscripción</label>
+                            <InputNumber class="form-control" @bind-Value="_nuevaCarrera.CostoInscripcion" />
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Máximo de Participantes</label>
+                            <InputNumber class="form-control" @bind-Value="_nuevaCarrera.CantidadMaximaParticipantes" />
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Imagen (opcional)</label>
+                            <InputFile class="form-control" OnChange="SubirImagen" accept="image/*" />
+                        </div>
+
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" @onclick="CerrarModalCrear">Cancelar</button>
+                            <button type="submit" class="btn btn-success" disabled="@_guardando">
+                                @if (_guardando)
+                                {
+                                    <span class="spinner-border spinner-border-sm me-2"></span>
+                                }
+                                <i class="fas fa-check me-2"></i> Crear Carrera
+                            </button>
+                        </div>
+                    </EditForm>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+<!-- Modal Iniciar Carrera -->
+@if (_mostrarModalIniciar)
+{
+    <div class="modal fade show d-block" tabindex="-1" style="background: rgba(0,0,0,0.5);">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header bg-success text-white">
+                    <h5 class="modal-title"><i class="fas fa-flag-checkered me-2"></i> Iniciar Carrera</h5>
+                    <button type="button" class="btn-close btn-close-white" @onclick="CerrarModalIniciar"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">IDs de Corredores (separados por coma)</label>
+                        <textarea class="form-control" @bind="_idsCorredoresTexto" rows="2" placeholder="Ej: 1, 2, 3"></textarea>
+                    </div>
+
+                    <div class="border p-3 rounded">
+                        <h6>Puntos de Control</h6>
+                        @foreach (var punto in _puntosControlTemp)
+                        {
+                            <div class="d-flex align-items-center mb-2 gap-2">
+                                <input type="number" class="form-control" style="width: 100px;" 
+                                       @bind="punto.IdPuntoDeControl" placeholder="ID" />
+                                <input type="number" class="form-control" style="width: 120px;" 
+                                       @bind="punto.Km" placeholder="Km" step="0.1" />
+                                <button type="button" class="btn btn-sm btn-outline-danger" 
+                                        @onclick="() => _puntosControlTemp.Remove(punto)">
+                                    🗑️
+                                </button>
+                            </div>
+                        }
+                        <button type="button" class="btn btn-sm btn-outline-primary mt-2" 
+                                @onclick="AgregarPuntoControl">
+                            + Agregar punto
+                        </button>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" @onclick="CerrarModalIniciar">Cancelar</button>
+                    <button class="btn btn-success" @onclick="IniciarCarrera" disabled="@_guardando">
+                        @if (_guardando)
+                        {
+                            <span class="spinner-border spinner-border-sm me-2"></span>
+                        }
+                        Iniciar Carrera
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    private string _apiCarreras = "";
+    private string _apiUsuarios = "";
+
+    private List<CarreraDto> _carreras = new();
+    private EstadisticasDto _estadisticas = new();
+    private bool _cargando = false;
+    private bool _guardando = false;
+    private bool _componenteRenderizado = false; // ⭐ NUEVO
+
+    // Modales
+    private bool _mostrarModalCrear = false;
+    private bool _mostrarModalIniciar = false;
+    private CrearCarreraDto _nuevaCarrera = new();
+    private IBrowserFile? _imagenSeleccionada;
+
+    // Iniciar carrera
+    private int _carreraAIniciar = 0;
+    private string _idsCorredoresTexto = "";
+    private List<PuntoControlTemp> _puntosControlTemp = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        _apiCarreras = Configuration["ApiSettings:CarrerasApi"]!;
+        _apiUsuarios = Configuration["ApiSettings:UsuariosUrl"]!;
+
+        // Opcional: Validar que existan
+        if (string.IsNullOrEmpty(_apiCarreras) || string.IsNullOrEmpty(_apiUsuarios))
+        {
+            throw new InvalidOperationException("Las URLs de las APIs no están configuradas en appsettings.json");
+        }
+
+        await CargarCarreras();
+    }
+
+    // ⭐ NUEVO: Mover la configuración del timer aquí
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            _componenteRenderizado = true;
+
+            // Recargar cada 10 segundos
+            _ = Task.Run(async () =>
+            {
+                while (true)
+                {
+                    await Task.Delay(10000);
+                    await InvokeAsync(async () => await CargarCarreras());
+                }
+            });
+        }
+    }
+
+    private async Task CargarCarreras()
+    {
+        _cargando = true;
+        try
+        {
+            var url = $"{_apiCarreras}/api/Carreras";
+            Console.WriteLine($"🔍 URL Base API: {_apiCarreras}");
+            Console.WriteLine($"🔍 URL Completa: {url}");
+            Console.WriteLine($"🔍 HttpClient BaseAddress: {Http.BaseAddress}");
+
+            _carreras = await Http.GetFromJsonAsync<List<CarreraDto>>(url) ?? new();
+
+            Console.WriteLine($"✅ Carreras cargadas: {_carreras.Count}");
+
+            try
+            {
+                var urlEnCurso = $"{_apiCarreras}/api/Carreras/en-curso";
+                var carrerasEnCurso = await Http.GetFromJsonAsync<List<CarreraDto>>(urlEnCurso) ?? new();
+                var idsEnCurso = carrerasEnCurso.Select(c => c.Id).ToHashSet();
+
+                foreach (var carrera in _carreras)
+                {
+                    if (idsEnCurso.Contains(carrera.Id))
+                    {
+                        carrera.Estado = "En Curso";
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"⚠️ Error al cargar carreras en curso: {ex.Message}");
+            }
+
+            ActualizarEstadisticas();
+        }
+        catch (HttpRequestException ex)
+        {
+            Console.WriteLine($"❌ Error HTTP: {ex.Message}");
+            Console.WriteLine($"❌ StatusCode: {ex.StatusCode}");
+            await MostrarAlerta($"Error al cargar carreras: {ex.Message}", "danger");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"❌ Error completo: {ex}");
+            await MostrarAlerta($"Error al cargar carreras: {ex.Message}", "danger");
+        }
+        finally
+        {
+            _cargando = false;
+            StateHasChanged();
+        }
+    }
+
+    private void ActualizarEstadisticas()
+    {
+        _estadisticas.TotalCarreras = _carreras.Count;
+        _estadisticas.EnCurso = _carreras.Count(c => c.Estado?.Contains("Curso") == true || c.Estado?.Contains("Activ") == true);
+        _estadisticas.Pendientes = _carreras.Count(c => c.Estado == "Pendiente" || string.IsNullOrEmpty(c.Estado));
+        _estadisticas.Finalizadas = _carreras.Count(c => c.Estado?.Contains("Finaliz") == true);
+    }
+
+    private string ObtenerClaseEstado(string? estado)
+    {
+        if (string.IsNullOrEmpty(estado)) return "status-pending";
+
+        var estadoLower = estado.ToLower();
+        if (estadoLower.Contains("curso") || estadoLower.Contains("activ")) return "status-active";
+        if (estadoLower.Contains("finaliz")) return "status-finished";
+        return "status-pending";
+    }
+
+    private void AbrirModalCrear()
+    {
+        _nuevaCarrera = new CrearCarreraDto
+        {
+            FechaInicio = DateTime.UtcNow.AddDays(7) // ⭐ Usar UTC desde el inicio
+        };
+        _imagenSeleccionada = null;
+        _mostrarModalCrear = true;
+    }
+
+    private void CerrarModalCrear()
+    {
+        _mostrarModalCrear = false;
+    }
+
+    private void SubirImagen(InputFileChangeEventArgs e)
+    {
+        _imagenSeleccionada = e.File;
+    }
+
+    private async Task CrearCarrera()
+    {
+        _guardando = true;
+        try
+        {
+            // ⭐ Convertir la fecha a UTC antes de enviar
+            if (_nuevaCarrera.FechaInicio.HasValue)
+            {
+                _nuevaCarrera.FechaInicio = _nuevaCarrera.FechaInicio.Value.ToUniversalTime();
+            }
+
+            var response = await Http.PostAsJsonAsync("api/Carreras", _nuevaCarrera);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                var errorContent = await response.Content.ReadAsStringAsync();
+                Console.WriteLine($"❌ ERROR DEL SERVIDOR: {errorContent}");
+                await MostrarAlerta($"Error del servidor", "danger");
+                return;
+            }
+
+            var carrera = await response.Content.ReadFromJsonAsync<CarreraDto>();
+
+            if (_imagenSeleccionada != null && carrera != null)
+            {
+                var formData = new MultipartFormDataContent();
+                var fileContent = new StreamContent(_imagenSeleccionada.OpenReadStream(maxAllowedSize: 5 * 1024 * 1024));
+                fileContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue(_imagenSeleccionada.ContentType);
+                formData.Add(fileContent, "imagen", _imagenSeleccionada.Name);
+
+                await Http.PostAsync($"api/Carreras/{carrera.Id}/imagen", formData);
+            }
+
+            await MostrarAlerta("Carrera creada exitosamente ✅", "success");
+            CerrarModalCrear();
+            await CargarCarreras();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"❌ Error: {ex}");
+            await MostrarAlerta($"Error al crear carrera: {ex.Message}", "danger");
+        }
+        finally
+        {
+            _guardando = false;
+        }
+    }
+
+    private void AbrirModalIniciar(int idCarrera)
+    {
+        _carreraAIniciar = idCarrera;
+        _idsCorredoresTexto = "";
+        _puntosControlTemp = new();
+        _mostrarModalIniciar = true;
+    }
+
+    private void CerrarModalIniciar()
+    {
+        _mostrarModalIniciar = false;
+    }
+
+    private void AgregarPuntoControl()
+    {
+        _puntosControlTemp.Add(new PuntoControlTemp());
+    }
+
+    private async Task IniciarCarrera()
+    {
+        _guardando = true;
+        try
+        {
+            var idCorredores = _idsCorredoresTexto
+                .Split(',')
+                .Select(s => int.TryParse(s.Trim(), out var id) ? id : 0)
+                .Where(id => id > 0)
+                .ToList();
+
+            var puntosControl = _puntosControlTemp
+                .Where(p => p.IdPuntoDeControl > 0 && p.Km > 0)
+                .Select(p => new PuntoControlInicioDto
+                {
+                    IdPuntoDeControl = p.IdPuntoDeControl,
+                    Km = (float)p.Km
+                })
+                .ToList();
+
+            var dto = new IniciarCarreraDto
+            {
+                IdCarrera = _carreraAIniciar,
+                IdCorredores = idCorredores,
+                TotalPuntosDeControl = puntosControl
+            };
+
+            var response = await Http.PostAsJsonAsync($"{_apiCarreras}/carrera/iniciar", dto);
+            response.EnsureSuccessStatusCode();
+
+            await MostrarAlerta("🏁 Carrera iniciada correctamente", "success");
+            CerrarModalIniciar();
+            await Task.Delay(1000);
+            await CargarCarreras();
+        }
+        catch (Exception ex)
+        {
+            await MostrarAlerta($"Error al iniciar carrera: {ex.Message}", "danger");
+        }
+        finally
+        {
+            _guardando = false;
+        }
+    }
+
+    private async Task EliminarCarrera(int id)
+    {
+        // ⭐ CAMBIO: Verificar si JS está disponible
+        if (!_componenteRenderizado)
+        {
+            await MostrarAlerta("Por favor espere a que la página cargue completamente", "warning");
+            return;
+        }
+
+        if (!await JS.InvokeAsync<bool>("confirm", "¿Está seguro de eliminar esta carrera?"))
+            return;
+
+        try
+        {
+            var response = await Http.DeleteAsync($"{_apiCarreras}/api/Carreras/{id}");
+            response.EnsureSuccessStatusCode();
+
+            await MostrarAlerta("Carrera eliminada exitosamente", "success");
+            await CargarCarreras();
+        }
+        catch (Exception ex)
+        {
+            await MostrarAlerta($"Error al eliminar: {ex.Message}", "danger");
+        }
+    }
+
+    private async Task VerDetalle(int id)
+    {
+        await MostrarAlerta("Detalle de carrera (por implementar)", "info");
+    }
+
+    // ⭐ CAMBIO IMPORTANTE: Proteger las llamadas JS
+    private async Task MostrarAlerta(string mensaje, string tipo)
+    {
+        if (!_componenteRenderizado)
+        {
+            // Si no está renderizado, solo log en consola
+            Console.WriteLine($"[{tipo.ToUpper()}] {mensaje}");
+            return;
+        }
+
+        try
+        {
+            await JS.InvokeVoidAsync("mostrarAlerta", mensaje, tipo);
+        }
+        catch (InvalidOperationException)
+        {
+            Console.WriteLine($"[{tipo.ToUpper()}] {mensaje}");
+        }
+    }
+
+    public class EstadisticasDto
+    {
+        public int TotalCarreras { get; set; }
+        public int EnCurso { get; set; }
+        public int Pendientes { get; set; }
+        public int Finalizadas { get; set; }
+    }
+
+    public class PuntoControlTemp
+    {
+        public int IdPuntoDeControl { get; set; }
+        public decimal Km { get; set; }
+    }
+}

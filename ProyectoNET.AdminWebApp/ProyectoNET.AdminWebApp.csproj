@@ -5,5 +5,13 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ProyectoNET.Shared\ProyectoNET.Shared.csproj" />
+    
+    <!-- Otras referencias que puedas tener -->
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Views\Shared\" />
+  </ItemGroup>
 
 </Project>
