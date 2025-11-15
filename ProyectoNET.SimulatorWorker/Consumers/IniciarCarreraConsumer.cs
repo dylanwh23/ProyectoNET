@@ -1,6 +1,6 @@
 using MassTransit;
 using ProyectoNET.Shared;
-using ProyectoNET.Shared.WebApp;
+using ProyectoNET.Shared.EventosRabbit;
 
 namespace ProyectoNET.SimulatorWorker.Consumers;
 
@@ -11,24 +11,27 @@ public class IniciarCarreraConsumer(
 {
     private readonly Random _random = new();
 
+    // ✅ NUEVO: Configuración de salidas tipo maratón
+    private const int CORREDORES_POR_OLEADA = 50; // Grupos grandes de ~50 corredores
+    private const int INTERVALO_ENTRE_OLEADAS_SEGUNDOS = 30; // 30 segundos entre oleadas
+    private const int VARIACION_SALIDA_DENTRO_OLEADA_MAX_SEGUNDOS = 5; // Variación aleatoria dentro de la oleada
+
     public async Task Consume(ConsumeContext<IniciarCarreraCommand> context)
     {
         var command = context.Message;
         logger.LogInformation("▶️ Iniciando simulación para la carrera {IdCarrera}.", command.IdCarrera);
 
-        // 1. Simular la carrera completa primero
+        // 1. Simular la carrera completa con salidas escalonadas
         var simulacionCompleta = SimularCarreraCompleta(command);
 
         logger.LogInformation("✅ Simulación para la carrera {IdCarrera} finalizada. Enviando eventos", command.IdCarrera);
         
-        
-        var eventoInicio = new CarreraIniciadaEvent(
+        var eventoInicio = new CarreraIniciada(
             command.IdCarrera,
             command.IdCorredores,
             command.TotalPuntosDeControl
         );
         
-        // Publicamos el evento
         await bus.Publish(eventoInicio);
 
         // 2. Enviar eventos en background
@@ -52,11 +55,19 @@ public class IniciarCarreraConsumer(
     {
         var eventosPorCorredor = new Dictionary<int, List<EventoCorredor>>();
 
+        // ✅ NUEVO: Calcular tiempo de salida para cada corredor
+        var tiemposSalida = CalcularTiemposDeSalida(command.IdCorredores);
+
         foreach (var idCorredor in command.IdCorredores)
         {
             var eventos = new List<EventoCorredor>();
             var tiemposPorTramo = new List<TiempoPorTramoDTO>();
-            var tiempoAcumulado = TimeSpan.Zero;
+            
+            // ✅ MODIFICADO: Tiempo para llegar al checkpoint 1 (desde que se da el pistoletazo)
+            var tiempoHastaCheckpoint1 = tiemposSalida[idCorredor];
+            
+            // ✅ NUEVO: Tiempo oficial del corredor (desde que cruza checkpoint 1)
+            var tiempoOficial = TimeSpan.Zero;
 
             // Generar ritmo base del corredor (minutos por km, entre 4 y 8 min/km)
             var ritmoBaseMinPorKm = 4.0 + _random.NextDouble() * 4.0;
@@ -87,7 +98,19 @@ public class IniciarCarreraConsumer(
 
                 // Calcular TIEMPO del tramo
                 var tiempoTramo = TimeSpan.FromMinutes(distanciaTramo * ritmoTramoMinPorKm);
-                tiempoAcumulado += tiempoTramo;
+                
+                // ✅ MODIFICADO: Actualizar tiempos según el checkpoint
+                if (i == 0)
+                {
+                    // Checkpoint 1: sumar el tiempo de salida
+                    tiempoHastaCheckpoint1 += tiempoTramo;
+                    tiempoOficial = TimeSpan.Zero; // El tiempo oficial aún no comienza
+                }
+                else
+                {
+                    // Después del checkpoint 1: acumular tiempo oficial
+                    tiempoOficial += tiempoTramo;
+                }
 
                 // Calcular VELOCIDAD
                 var velocidadKmh = (float)(distanciaTramo / tiempoTramo.TotalHours);
@@ -104,9 +127,10 @@ public class IniciarCarreraConsumer(
                 eventos.Add(new EventoCorredor
                 {
                     IdCorredor = idCorredor,
-                    TiempoReal = tiempoAcumulado,
+                    TiempoReal = tiempoHastaCheckpoint1 + tiempoOficial, // Tiempo absoluto desde el pistoletazo
+                    TiempoOficial = i == 0 ? TimeSpan.Zero : tiempoOficial, // ✅ NUEVO: Tiempo desde checkpoint 1
+                    TiempoSalida = tiemposSalida[idCorredor],
                     Checkpoint = puntoActual,
-                    KmRecorridos = puntoActual.Km, // <-- ¡AÑADIDO! (1 de 3)
                     VelocidadKmh = velocidadKmh, 
                     TiemposPorTramo = new List<TiempoPorTramoDTO>(tiemposPorTramo)
                 });
@@ -118,20 +142,51 @@ public class IniciarCarreraConsumer(
         return eventosPorCorredor;
     }
 
-    // ✅ MODIFICADO: Agregado parámetro totalCorredores y lógica de finalización
+    // ✅ NUEVO: Método para calcular tiempos de salida tipo maratón
+    private Dictionary<int, TimeSpan> CalcularTiemposDeSalida(List<int> idCorredores)
+    {
+        var tiemposSalida = new Dictionary<int, TimeSpan>();
+        var tiempoBaseOleada = TimeSpan.Zero;
+        var numeroOleada = 1;
+
+        for (int i = 0; i < idCorredores.Count; i++)
+        {
+            // Nueva oleada cada X corredores
+            if (i > 0 && i % CORREDORES_POR_OLEADA == 0)
+            {
+                tiempoBaseOleada += TimeSpan.FromSeconds(INTERVALO_ENTRE_OLEADAS_SEGUNDOS);
+                numeroOleada++;
+                logger.LogInformation("🌊 Oleada {NumOleada} sale en: {Tiempo}", 
+                    numeroOleada, 
+                    tiempoBaseOleada.ToString(@"mm\:ss"));
+            }
+
+            // Dentro de cada oleada, los corredores salen casi simultáneamente
+            // pero con pequeñas variaciones (0-5 segundos) para simular posiciones en la línea de salida
+            var variacionDentroOleada = TimeSpan.FromSeconds(_random.NextDouble() * VARIACION_SALIDA_DENTRO_OLEADA_MAX_SEGUNDOS);
+            tiemposSalida[idCorredores[i]] = tiempoBaseOleada + variacionDentroOleada;
+        }
+
+        logger.LogInformation("✅ Total de {TotalCorredores} corredores distribuidos en {NumOleadas} oleadas", 
+            idCorredores.Count, 
+            numeroOleada);
+
+        return tiemposSalida;
+    }
+
     private async Task EnviarEventosEnTiempoReal(
         int idCarrera,
         Dictionary<int, List<EventoCorredor>> simulacion,
         int totalCorredores)
     {
-        // ... (tu lógica de ordenar eventos y calcular tiempo) ...
+        // Ordenar eventos por tiempo real (que ahora incluye el tiempo de salida)
         var todosLosEventos = simulacion
             .SelectMany(kvp => kvp.Value.Select(e => new { Evento = e, IdCorredor = kvp.Key }))
             .OrderBy(x => x.Evento.TiempoReal)
             .ToList();
 
         var tiempoInicio = DateTime.UtcNow;
-        var factorAceleracion = 20.0;
+        var factorAceleracion = 5;
 
         foreach (var item in todosLosEventos)
         {
@@ -148,36 +203,35 @@ public class IniciarCarreraConsumer(
             }
 
             // Publicar evento de progreso
-            var evento = new ProgresoCorredorActualizado(
+            var evento = new CorredorData(
                 idCarrera,
                 item.IdCorredor,
-                item.Evento.Checkpoint,
-                item.Evento.KmRecorridos, // <-- ¡AÑADIDO! (2 de 3)
                 item.Evento.VelocidadKmh,
-                item.Evento.TiemposPorTramo
+                item.Evento.Checkpoint.IdPuntoDeControl
             );
 
             await bus.Publish(evento);
 
+            // ✅ MODIFICADO: Mostrar tiempo oficial (desde checkpoint 1)
             logger.LogInformation(
-                "📍 Corredor {IdCorredor} pasó por checkpoint {Km}km a {Velocidad:F2} km/h (tiempo: {Tiempo})",
+                "📍 Corredor {IdCorredor} pasó por checkpoint {Km}km a {Velocidad:F2} km/h (tiempo oficial: {TiempoOficial} | oleada: {TiempoSalida})",
                 item.IdCorredor,
                 item.Evento.Checkpoint.Km,
                 item.Evento.VelocidadKmh,
-                item.Evento.TiempoReal.ToString(@"hh\:mm\:ss")
+                item.Evento.TiempoOficial.ToString(@"hh\:mm\:ss"),
+                item.Evento.TiempoSalida.ToString(@"mm\:ss")
             );
         }
 
         logger.LogInformation("🏁 Todos los eventos de la carrera {IdCarrera} han sido enviados.", idCarrera);
 
-        // ✅ NUEVO: Publicar evento de finalización de carrera
-        var eventoFinalizacion = new CarreraFinalizadaEvent
-        {
-            IdCarrera = idCarrera,
-            FechaFin = DateTime.UtcNow,
-            TotalCorredores = totalCorredores,
-            CorredoresFinalizados = simulacion.Count
-        };
+        // Publicar evento de finalización de carrera
+        var eventoFinalizacion = new CarreraFinalizadaEvent(
+            idCarrera,
+            DateTime.UtcNow,
+            totalCorredores,
+            simulacion.Count
+        );
 
         await bus.Publish(eventoFinalizacion);
 
@@ -188,14 +242,17 @@ public class IniciarCarreraConsumer(
         );
     }
 
-    // Clase auxiliar
+    // ✅ MODIFICADO: Clase auxiliar con TiempoOficial
     private class EventoCorredor
     {
         public int IdCorredor { get; set; }
-        public TimeSpan TiempoReal { get; set; }
+        public TimeSpan TiempoReal { get; set; } // Tiempo absoluto desde el pistoletazo (para ordenar eventos)
+        public TimeSpan TiempoOficial { get; set; } // ✅ NUEVO: Tiempo oficial desde checkpoint 1 (para el podio)
+        public TimeSpan TiempoSalida { get; set; } // Momento en que salió su oleada
         public PuntosDeControlDTO Checkpoint { get; set; } = null!;
-        public float KmRecorridos { get; set; } // <-- ¡AÑADIDO! (3 de 3)
-        public float VelocidadKmh { get; set; }
+        public double VelocidadKmh { get; set; }
         public List<TiempoPorTramoDTO> TiemposPorTramo { get; set; } = new();
     }
+    
+    public record TiempoPorTramoDTO(int DesdePuntoDeControlId, int HastaPuntoDeControlId, TimeSpan Tiempo);
 }

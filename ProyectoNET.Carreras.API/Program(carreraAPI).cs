@@ -1,12 +1,18 @@
 using MassTransit;
-using ProyectoNET.Carreras.API.Consumers;
 using ProyectoNET.Carreras.API.Hubs;
-using ProyectoNET.Shared;
+using ProyectoNET.Shared.EventosRabbit;
+using ProyectoNET.Shared.WebApp;
 using ProyectoNET.Carreras.API.Data;
+using ProyectoNET.Shared.WebApp;
 using Microsoft.EntityFrameworkCore;
 using ProyectoNET.Carreras.API.Mappers;
 using ProyectoNET.Carreras.API.Models.Repositories;
-using ProyectoNET.Carreras.API.Services;
+using RabbitMQ.Client;
+using ProyectoNET.Carreras.API.Sagas;
+using MassTransit.RedisIntegration;
+using OpenTelemetry.Context;
+using ProyectoNET.Carreras.API.Consumers;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // =================================================================
@@ -18,36 +24,35 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddSignalR();
 builder.Services.AddControllers();
 builder.AddNpgsqlDbContext<CarrerasDbContext>("carreras-db");
+builder.AddRedisClient("redis");
 
 
 // Configuración de MassTransit (se mantiene igual)
+// ...
+
+
+// Agregar MassTransit
 builder.Services.AddMassTransit(config =>
 {
-    config.AddConsumer<TiempoRegistradoConsumer>();
-    config.AddConsumer<CarreraIniciadaConsumer>();
-    config.AddConsumer<CarreraFinalizadaConsumer>();
-
-    config.UsingRabbitMq((ctx, cfg) =>
+    config.AddConsumer<CorredorDataConsumer>();
+    config.UsingRabbitMq((context, cfg) =>
     {
+        
         cfg.Host(builder.Configuration.GetConnectionString("rabbitmq-bus"));
-
-        // ✅ Cola para TiempoRegistrado
-        cfg.ReceiveEndpoint("tiempos-queue", e =>
+        cfg.ReceiveEndpoint("corredor-data-processor", e =>
         {
-            e.ConfigureConsumer<TiempoRegistradoConsumer>(ctx);
-        });
-        cfg.ReceiveEndpoint("carrera-iniciada-queue", e =>
-        {
-            e.ConfigureConsumer<CarreraIniciadaConsumer>(ctx);
+            // ✅ AQUÍ ESTÁ LA LÍNEA
+            // Establece el PrefetchCount para este endpoint
+            e.PrefetchCount = 200; 
 
-            // ✅ Cola explícita para CarreraFinalizada con Publish/Subscribe
-            cfg.ReceiveEndpoint("carrera-finalizada", e =>
-                {
-                    e.ConfigureConsumer<CarreraFinalizadaConsumer>(ctx);
-                });
+            // 3. Conectas el consumidor a este endpoint
+            e.ConfigureConsumer<CorredorDataConsumer>(context);
         });
+          
     });
 });
+
+// ...
 
 // *** CAMBIO CLAVE 1: CORRECCIÓN EN LA POLÍTICA DE CORS ***
 // Se usa una política con nombre para ser más explícitos y evitar conflictos.
@@ -83,9 +88,6 @@ builder.AddAzureBlobServiceClient("blobstorage");
 builder.Services.AddScoped<IBlobStorageService, BlobStorageService>();
 builder.Services.AddTransient<BlobStorageSeeder>(); // para que se suba la imagen default al blobstorage siempre
 
-//Carrera State service
-builder.Services.AddSingleton<ICarreraStateService, InMemoryCarreraStateService>();
-builder.Services.AddHostedService<EstadoCarreraBroadcaster>();
 
 // ===============================================
 // 2. CONSTRUIR LA APLICACIÓN

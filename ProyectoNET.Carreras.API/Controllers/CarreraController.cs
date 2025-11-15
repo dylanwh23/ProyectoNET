@@ -6,6 +6,7 @@ using ProyectoNET.Carreras.API.Mappers;
 using ProyectoNET.Carreras.API.Models;
 using ProyectoNET.Carreras.API.Models.Repositories;
 using ProyectoNET.Shared;
+using ProyectoNET.Shared.EventosRabbit;
 
 [ApiController]
 [Route("")]
@@ -160,7 +161,7 @@ public class CarreraController : ControllerBase
             _logger.LogInformation($"✅ Estado actualizado a: {carrera.EstadoCarrera}");
 
             // 3️⃣ Enviar comando a la cola del simulador
-            var endpoint = await _bus.GetSendEndpoint(new Uri("queue:simulador-carreras"));
+            var endpoint = await _bus.GetSendEndpoint(new Uri("queue:IniciarCarrera"));
             await endpoint.Send(command);
 
             _logger.LogInformation($"📨 Comando enviado al simulador para carrera {command.IdCarrera}");
@@ -228,13 +229,13 @@ public class CarreraController : ControllerBase
     {
         try
         {
-            var evento = new ProyectoNET.Shared.CarreraFinalizadaEvent
-            {
-                IdCarrera = id,
-                FechaFin = DateTime.UtcNow,
-                TotalCorredores = 3,
-                CorredoresFinalizados = 3
-            };
+            var evento = new ProyectoNET.Shared.EventosRabbit.CarreraFinalizadaEvent
+            (
+                id,
+                DateTime.UtcNow,
+                3,
+                3
+            );
 
             await _bus.Publish(evento);
 

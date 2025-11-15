@@ -14,12 +14,17 @@ var blobStorage = builder.AddAzureStorage("storage")
 
 //rabbi
 var rabbitmq = builder.AddRabbitMQ("rabbitmq-bus").WithManagementPlugin()
-    .WithDataVolume("rabbitmq_data");
-              
+    .WithDataVolume("rabbitmq_data-v2");
+
+
+//redis 
+var redis = builder.AddRedis("redis");
+
 
 var carrerasApi = builder.AddProject<Projects.ProyectoNET_Carreras_API>("carreras-api")
        .WithReference(rabbitmq)
        .WithReference(dbCarreraAPI)
+       .WithReference(redis)
        .WithReference(blobStorage);
 var usuariosApi = builder.AddProject<Projects.ProyectoNET_Usuarios_API>("usuarios-api")
        .WithReference(rabbitmq)
