@@ -218,6 +218,8 @@ La arquitectura se basa en un conjunto de tecnologías y patrones seleccionados 
 
 ## 🤔 Cambios importantes
 - *Migracion SQLite -> PostgreSQL*: En un principio decidimos implementar SQLite para facilitar el desarrollo, pero carece de sentido en un entorno con varias instancias de API el utilizar bases de datos aisladas. Optamos por tener 2 bases de datos centralizadas PostgreSQL.
+- *Inclusión de nuevo servicio SimuladorConsumer*: Para lidiar con la complejidad del manejo de los eventos, decidimos separar la lógica de recepción de eventos de Carrera API, esto nos permitirá escalar por separado los simuladores, ya que las tareas de Carrera API no suponen una gran demanda de recursos comparado a lo que es la recepción y procesamiento de eventos.
+- *Comunicación entre servicios mediante endpoints -> Comunicación mediante eventos*: Por comodidad optamos por manejar la sincronización de datos entre servicios, mediante endpoints.
 
 
 
