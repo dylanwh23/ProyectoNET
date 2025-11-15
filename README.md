@@ -113,7 +113,7 @@ A continuación se describen los casos de usos principales en base a las funcion
 
 El siguiente diagrama ilustra la arquitectura del sistema, destacando los componentes clave y sus interacciones:
 
-<img width="1605" height="765" alt="image" src="https://github.com/user-attachments/assets/10470c47-217c-427f-a150-78fbccaf3729" />
+<img width="1118" height="570" alt="image" src="https://github.com/user-attachments/assets/20d65983-df96-4bf5-9210-f14786ab1a17" />
 
 ### Stack Tecnológico y Decisiones Clave 🎯
 
