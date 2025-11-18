@@ -7,7 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+<PackageReference Include="Aspire.StackExchange.Redis" Version="13.0.0" />
 <PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="8.0.6" />
+<PackageReference Include="Microsoft.AspNetCore.SignalR.StackExchangeRedis" Version="8.0.0" />
+<PackageReference Include="StackExchange.Redis" Version="2.9.32" />
   </ItemGroup>
 
   <ItemGroup>

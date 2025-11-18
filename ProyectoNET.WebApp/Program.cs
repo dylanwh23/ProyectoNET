@@ -1,4 +1,5 @@
 ﻿using ProyectoNET.WebApp.Components;
+using ProyectoNET.WebApp.Hubs;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorComponents()
@@ -16,7 +17,10 @@ builder.Services.AddHttpClient("api", (sp, client) =>
     client.BaseAddress = new Uri(apiUrl);
 });
 
+builder.AddRedisClient("redis");
 
+builder.Services.AddSignalR()
+    .AddStackExchangeRedis(builder.Configuration.GetConnectionString("redis")!);
 
 var app = builder.Build();
 
@@ -30,6 +34,8 @@ if (!app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseAntiforgery();
+
+app.MapHub<CarrerasHub>("/carrerasHub");
 
 // 3. MAPEAR LOS COMPONENTES DE BLAZOR.
 // ESTE ES EL CAMBIO CLAVE:

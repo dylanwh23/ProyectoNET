@@ -24,7 +24,6 @@ var redis = builder.AddRedis("redis");
 var carrerasApi = builder.AddProject<Projects.ProyectoNET_Carreras_API>("carreras-api")
        .WithReference(rabbitmq)
        .WithReference(dbCarreraAPI)
-       .WithReference(redis)
        .WithReference(blobStorage);
 var usuariosApi = builder.AddProject<Projects.ProyectoNET_Usuarios_API>("usuarios-api")
        .WithReference(rabbitmq)
@@ -36,6 +35,7 @@ builder.AddProject<Projects.ProyectoNET_SimulatorWorker>("simulator-worker")
 builder.AddProject<Projects.ProyectoNET_WebApp>("webapp")
        .WithReference(carrerasApi)  
        .WithReference(usuariosApi)
+       .WithReference(redis)
        .WithEnvironment("ASPNETCORE_ENVIRONMENT", "Development");
 //front admin     
 builder.AddProject<Projects.ProyectoNET_AdminWebApp>("admin-webapp")
@@ -43,5 +43,8 @@ builder.AddProject<Projects.ProyectoNET_AdminWebApp>("admin-webapp")
        .WithReference(usuariosApi)
        .WithHttpEndpoint(port: 7072);
 
-
+builder.AddProject<Projects.ProyectoNET_SimulatorConsumer>("simulator-consumer")
+       .WithReference(redis)
+       .WithReference(rabbitmq)
+       .WithReplicas(5);       
 builder.Build().Run();

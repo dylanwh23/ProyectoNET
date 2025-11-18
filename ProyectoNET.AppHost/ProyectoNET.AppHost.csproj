@@ -23,6 +23,7 @@
     <ProjectReference Include="..\ProyectoNET.WebApp\ProyectoNET.WebApp.csproj" />
     <ProjectReference Include="..\ProyectoNET.SimulatorWorker\ProyectoNET.SimulatorWorker.csproj" />
     <ProjectReference Include="..\ProyectoNET.AdminWebApp\ProyectoNET.AdminWebApp.csproj" />
+    <ProjectReference Include="..\ProyectoNET.SimulatorConsumer\ProyectoNET.SimulatorConsumer.csproj" />
   </ItemGroup>
 
 </Project>
