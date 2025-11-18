@@ -1,5 +1,4 @@
 using MassTransit;
-using ProyectoNET.Shared;
 using ProyectoNET.Shared.EventosRabbit;
 
 namespace ProyectoNET.SimulatorWorker.Consumers;

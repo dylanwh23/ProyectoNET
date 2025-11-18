@@ -1,17 +1,11 @@
 using MassTransit;
 using ProyectoNET.Carreras.API.Hubs;
-using ProyectoNET.Shared.EventosRabbit;
-using ProyectoNET.Shared.WebApp;
 using ProyectoNET.Carreras.API.Data;
-using ProyectoNET.Shared.WebApp;
 using Microsoft.EntityFrameworkCore;
 using ProyectoNET.Carreras.API.Mappers;
 using ProyectoNET.Carreras.API.Models.Repositories;
-using RabbitMQ.Client;
-using ProyectoNET.Carreras.API.Sagas;
-using MassTransit.RedisIntegration;
-using OpenTelemetry.Context;
 using ProyectoNET.Carreras.API.Consumers;
+using ProyectoNET.Shared.AdminWebApp;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -34,21 +28,26 @@ builder.AddRedisClient("redis");
 // Agregar MassTransit
 builder.Services.AddMassTransit(config =>
 {
+    // ✅ Agregar el nuevo consumer
     config.AddConsumer<CorredorDataConsumer>();
+    config.AddConsumer<CarreraFinalizadaConsumer>();
+
     config.UsingRabbitMq((context, cfg) =>
     {
-        
         cfg.Host(builder.Configuration.GetConnectionString("rabbitmq-bus"));
+
+        // Endpoint existente para datos de corredores
         cfg.ReceiveEndpoint("corredor-data-processor", e =>
         {
-            // ✅ AQUÍ ESTÁ LA LÍNEA
-            // Establece el PrefetchCount para este endpoint
-            e.PrefetchCount = 200; 
-
-            // 3. Conectas el consumidor a este endpoint
+            e.PrefetchCount = 200;
             e.ConfigureConsumer<CorredorDataConsumer>(context);
         });
-          
+
+        // ✅ NUEVO: Endpoint para carrera finalizada
+        cfg.ReceiveEndpoint("carrera-finalizada-queue", e =>
+        {
+            e.ConfigureConsumer<CarreraFinalizadaConsumer>(context);
+        });
     });
 });
 
@@ -162,5 +161,6 @@ if (app.Environment.IsDevelopment())
 // 4. EJECUTAR LA APLICACIÓN
 // ===============================================
 app.Run();
+
 
 
