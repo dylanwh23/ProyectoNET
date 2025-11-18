@@ -7,10 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <FrameworkReference Include="Microsoft.AspNetCore.App" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="Aspire.RabbitMQ.Client" Version="13.0.0" />
     <PackageReference Include="Aspire.StackExchange.Redis" Version="13.0.0" />
     <PackageReference Include="MassTransit" Version="8.5.5" />
@@ -19,7 +15,6 @@
     <PackageReference Include="Microsoft.AspNetCore.SignalR" Version="1.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.SignalR.Core" Version="1.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.SignalR.Protocols.Json" Version="10.0.0" />
-    <PackageReference Include="Microsoft.AspNetCore.SignalR.StackExchangeRedis" Version="8.0.0" />
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="10.0.0" />
     <PackageReference Include="StackExchange.Redis" Version="2.9.32" />
   </ItemGroup>
