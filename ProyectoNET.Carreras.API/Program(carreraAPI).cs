@@ -5,7 +5,6 @@ using Microsoft.EntityFrameworkCore;
 using ProyectoNET.Carreras.API.Mappers;
 using ProyectoNET.Carreras.API.Models.Repositories;
 
-
 var builder = WebApplication.CreateBuilder(args);
 
 // =================================================================
@@ -143,5 +142,6 @@ if (app.Environment.IsDevelopment())
 // 4. EJECUTAR LA APLICACIÓN
 // ===============================================
 app.Run();
+
 
 

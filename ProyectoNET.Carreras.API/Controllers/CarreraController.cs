@@ -223,28 +223,5 @@ public class CarreraController : ControllerBase
         return Ok("Respuesta del Microservicio de Carreras");
     }
 
-    // ✅ ENDPOINT DE PRUEBA - Para verificar que el consumer funciona
-    [HttpPost("test/finalizar-carrera/{id}")]
-    public async Task<IActionResult> TestFinalizarCarrera(int id)
-    {
-        try
-        {
-            var evento = new ProyectoNET.Shared.EventosRabbit.CarreraFinalizadaEvent
-            (
-                id,
-                DateTime.UtcNow,
-                3,
-                3
-            );
-
-            await _bus.Publish(evento);
-
-            return Ok(new { mensaje = $"Evento de finalización publicado para carrera {id}" });
-        }
-        catch (Exception ex)
-        {
-            return StatusCode(500, new { error = ex.Message });
-        }
-    }
 
 }

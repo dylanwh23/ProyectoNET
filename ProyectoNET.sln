@@ -22,12 +22,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProyectoNET.AdminWebApp", "
 		{AB989FA1-5A0B-495C-A7FD-C4892B5EB15B} = {AB989FA1-5A0B-495C-A7FD-C4892B5EB15B}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlazorApp1", "BlazorApp1\BlazorApp1.csproj", "{84A74054-EAA0-4BD2-A7CA-DE0F69E9C2B1}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlazorApp2", "BlazorApp2\BlazorApp2.csproj", "{312E96D6-3B81-4E94-89D2-1AEDD55D75B2}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProyectoNET.SimulatorConsumer", "ProyectoNET.SimulatorConsumer\ProyectoNET.SimulatorConsumer.csproj", "{69FB1415-A61A-4619-A42F-69E9692381B7}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
