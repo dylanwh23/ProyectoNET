@@ -7,6 +7,7 @@ using ProyectoNET.Carreras.API.Mappers;
 using ProyectoNET.Carreras.API.Models;
 using ProyectoNET.Carreras.API.Models.Repositories;
 using ProyectoNET.Shared;
+using ProyectoNET.Shared.AdminWebApp;
 using ProyectoNET.Shared.EventosRabbit;
 
 [ApiController]
@@ -20,6 +21,7 @@ public class CarreraController : ControllerBase
     private readonly IBlobStorageService _blobStorageService;
     private readonly IBus _bus;
     private readonly ILogger<CarreraController> _logger;
+    private readonly CarrerasDbContext _context;
 
     public CarreraController(
         ICarreraRepository carreraRepository,
@@ -28,7 +30,8 @@ public class CarreraController : ControllerBase
         CarreraMapper mapper,
         IBlobStorageService blobStorageService,
         IBus bus,
-        ILogger<CarreraController> logger)
+        ILogger<CarreraController> logger,
+        CarrerasDbContext context)
     {
         _carreraRepository = carreraRepository;
         _participanteRepository = participanteRepository;
@@ -37,14 +40,32 @@ public class CarreraController : ControllerBase
         _blobStorageService = blobStorageService;
         _bus = bus;
         _logger = logger;
+        _context = context;
     }
 
     [HttpPost("api/carreras")]
     public async Task<IActionResult> CrearCarrera([FromBody] CreateCarreraDTO request)
     {
-        var carrera = _mapper.ToEntity(request);
-        await _carreraRepository.AddAsync(carrera);
-        return CreatedAtAction(nameof(ObtenerCarrera), new { id = carrera.Id }, carrera);
+        try
+        {
+            // 1. Convertir DTO a Entidad
+            var carrera = _mapper.ToEntity(request);
+
+            // 2. Guardar en BD (EF Core asigna los IDs aquí)
+            await _carreraRepository.AddAsync(carrera);
+
+            // 3. ♻️ CONVERTIR A DTO ANTES DE DEVOLVER (Rompe el ciclo infinito)
+            var carreraResponse = _mapper.ToDTO(carrera);
+
+            // 4. Devolver el DTO, no la entidad
+            return CreatedAtAction(nameof(ObtenerCarrera), new { id = carrera.Id }, carreraResponse);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "❌ Error al crear carrera");
+            // Esto te permite ver el error real en la consola del navegador
+            return StatusCode(500, new { error = ex.Message, detalle = ex.InnerException?.Message });
+        }
     }
 
     [HttpGet("api/carreras/{id}")]
@@ -62,9 +83,20 @@ public class CarreraController : ControllerBase
     [HttpGet("api/carreras")]
     public async Task<IActionResult> ObtenerCarreras()
     {
-        var carreras = await _carreraRepository.GetAllAsync();
-        var carrerasDTO = carreras.Select(c => _mapper.ToCarrerasListDTO(c));
-        return Ok(carrerasDTO);
+        try
+        {
+            var carreras = await _context.Carreras
+                .Include(c => c.LugaresRetiroEquipamiento) // ✅ AGREGAR ESTO
+                .ToListAsync();
+
+            var carrerasDTO = carreras.Select(c => _mapper.ToCarrerasListDTO(c));
+            return Ok(carrerasDTO);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error al obtener carreras");
+            return StatusCode(500, new { error = ex.Message });
+        }
     }
 
     [HttpGet("api/carreras/en-curso")]
@@ -225,8 +257,38 @@ public class CarreraController : ControllerBase
     }
 
 
-    
-    
+    [HttpGet("{id}/detalle")]
+    public async Task<ActionResult<DetalleCarreraDto>> ObtenerDetalle(int id)
+    {
+        // ✅ CAMBIO CLAVE: Usar _carreraRepository en lugar de _context directo.
+        // El repositorio ya tiene el .Include(...) configurado, así que traerá los lugares.
+        var carrera = await _carreraRepository.GetByIdAsync(id);
 
-    
+        if (carrera == null)
+            return NotFound();
+
+        var detalle = new DetalleCarreraDto
+        {
+            Id = carrera.Id,
+            Nombre = carrera.Nombre,
+            Descripcion = carrera.Descripcion,
+            Ubicacion = carrera.Ubicacion,
+            FechaInicio = carrera.FechaInicio,
+            FechaFin = carrera.FechaFin,
+            CostoInscripcion = carrera.CostoInscripcion,
+            CantidadMaximaParticipantes = carrera.CantidadMaximaParticipantes,
+            Estado = carrera.EstadoCarrera.ToString(),
+            ImagenUrl = carrera.ImagenPromocional,
+
+            // Mapeo seguro de la lista
+            LugaresRetiroEquipamiento = carrera.LugaresRetiroEquipamiento?
+                .Select(l => l.Nombre)
+                .ToList() ?? new()
+        };
+
+        return Ok(detalle);
+    }
+
+
+
 }

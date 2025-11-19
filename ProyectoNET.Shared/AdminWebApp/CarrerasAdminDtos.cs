@@ -22,6 +22,8 @@ public class CarreraDto
     public int TotalPuntosControl { get; set; }
     public decimal? Distancia { get; set; }
     public DateTime? FechaInicio { get; set; }
+
+    public List<string> LugaresRetiroEquipamiento { get; set; } = new();
 }
 
 // DTO para crear carrera
@@ -45,6 +47,8 @@ public class CrearCarreraDto
     public DateTime? FechaInicio { get; set; }
     public long CostoInscripcion { get; set; }
     public int CantidadMaximaParticipantes { get; set; }
+    public List<string> LugaresRetiroEquipamiento { get; set; } = new();
+
 }
 
 // DTO para iniciar carrera
@@ -63,7 +67,6 @@ public class PuntoControlInicioDto
 
 // En ProyectoNET.Shared/AdminWebApp o donde tengas tus DTOs
 
-
 public class DetalleCarreraDto
 {
     public int Id { get; set; }
@@ -77,25 +80,5 @@ public class DetalleCarreraDto
     public int? CantidadMaximaParticipantes { get; set; }
     public string Estado { get; set; } = "Pendiente";
     public string? ImagenUrl { get; set; }
-
-    // Información adicional
-    public int TotalParticipantes { get; set; }
-    public int TotalPuntosControl { get; set; }
-    public List<ParticipanteResumenDto> Participantes { get; set; } = new();
-    public List<PuntoControlResumenDto> PuntosControl { get; set; } = new();
-}
-
-public class ParticipanteResumenDto
-{
-    public int Id { get; set; }
-    public string NombreCompleto { get; set; } = string.Empty;
-    public int? Dorsal { get; set; }
-    public string? Categoria { get; set; }
-}
-
-public class PuntoControlResumenDto
-{
-    public int Id { get; set; }
-    public string Nombre { get; set; } = string.Empty;
-    public float? Kilometro { get; set; }
+    public List<string> LugaresRetiroEquipamiento { get; set; } = new();
 }
