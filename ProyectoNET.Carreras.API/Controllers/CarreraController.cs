@@ -1,5 +1,6 @@
 using MassTransit;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using ProyectoNET.Carreras.API.Controllers.DTOs;
 using ProyectoNET.Carreras.API.Data;
 using ProyectoNET.Carreras.API.Mappers;
@@ -224,4 +225,8 @@ public class CarreraController : ControllerBase
     }
 
 
+    
+    
+
+    
 }
