@@ -1,46 +1,170 @@
 @page "/carreras-disponibles"
 @using ProyectoNET.Shared
 @layout Layout
-@code {
 
+@code {
+    // Tu código C# aquí
+
+    private double CalcularPorcentajeCupos(int actuales, int maximos)
+    {
+        return maximos > 0 ? ((double)actuales / maximos) * 100 : 0;
+    }
+
+    private string GetCuposClass(double porcentaje)
+    {
+        if (porcentaje >= 80) return "danger";
+        if (porcentaje >= 60) return "warning";
+        return "";
+    }
+
+    private string GetBadgeClass(int actuales, int maximos)
+    {
+        var porcentaje = CalcularPorcentajeCupos(actuales, maximos);
+        if (porcentaje >= 90) return "badge-cupos-limitados";
+        if (porcentaje >= 50) return "badge-disponible";
+        return "badge-proximo";
+    }
+
+    private string GetBadgeText(int actuales, int maximos)
+    {
+        var porcentaje = CalcularPorcentajeCupos(actuales, maximos);
+        if (porcentaje >= 90) return "¡Últimos Cupos!";
+        if (porcentaje >= 50) return "Disponible";
+        return "Muchos Cupos";
+    }
 }
 
-
-
-<div class="container-fluid text-center py-5 hero text-white">
-  <h1 class="display-3">Carreras en curso!</h1>
-  <input type="text" placeholder="Buscar carrera..." class="form-control mx-auto w-75" />
-</div>
-
-<div class="container my-3">
-  <div class="row row-cols-1 row-cols-md-3 g-5">
-  @foreach(var carrera in _carreras){
-    <div class="col">
-      <div class="card">
-        <div class="ratio ratio-16x9">
-          <img src="@carrera.ImagenPromocional" class="card-img-top" alt="...">
-        </div>
-        <div class="card-body"> 
-          <h5 class="card-title text-center">@carrera.Nombre</h5>
-          <ul class="list-group list-group-flush text-start">    
-    <li class="list-group-item d-flex flex-column">
-        <strong>Descripción:</strong>
-        <span class="d-inline-block text-truncate" style="max-width: 100%;">
-          @carrera.Descripcion
-        </span>
-    </li>
-    <li class="list-group-item"><strong>Ubicación:</strong> @carrera.Ubicacion</li>
-    <li class="list-group-item"><strong>Fecha de Inicio:</strong> @carrera.FechaInicio.ToString("dd/MM/yyyy")</li>
-    <li class="list-group-item"><strong>Costo Inscripción:</strong> @carrera.CostoInscripcion.ToString("C")</li>
-    <li class="list-group-item"><strong>Cantidad Participantes:</strong> @carrera.CantidadParticipantes / @carrera.CantidadMaximaParticipantes</li>
-
-</ul>
-        </div>
-        <button class="card-footer btn btn-primary">
-          Inscribirme a la carrera!
-        </button>
-      </div>
+<!-- Hero Section -->
+<div class="carreras-hero text-center text-white">
+    <h1>Carreras Disponibles 2026</h1>
+    <div class="search-container">
+        <input type="text"
+               placeholder="Buscar por nombre, ubicación o fecha..."
+               class="form-control search-input" />
+        <i class="fas fa-search search-icon"></i>
     </div>
-    }
-  </div>
 </div>
+
+
+
+<!-- Grid de Carreras -->
+<div class="container mb-5">
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+        @foreach (var carrera in _carreras)
+        {
+            var porcentajeCupos = CalcularPorcentajeCupos(carrera.CantidadParticipantes, carrera.CantidadMaximaParticipantes);
+
+            <div class="col">
+                <div class="carrera-card-disponible">
+                    <!-- Imagen con Badge -->
+                    <div class="card-img-wrapper">
+                        @if (!string.IsNullOrEmpty(carrera.ImagenPromocional))
+                        {
+                            <img src="@carrera.ImagenPromocional"
+                                 class="card-img-top"
+                                 alt="@carrera.Nombre"
+                                 loading="lazy"
+                                 onerror="this.style.display='none'">
+                        }
+                        <span class="carrera-badge @GetBadgeClass(carrera.CantidadParticipantes, carrera.CantidadMaximaParticipantes)">
+                            @GetBadgeText(carrera.CantidadParticipantes, carrera.CantidadMaximaParticipantes)
+                        </span>
+                    </div>
+
+                    <!-- Contenido de la Tarjeta -->
+                    <div class="card-body p-4">
+                        <h5 class="card-title">@carrera.Nombre</h5>
+
+                        <!-- Información Organizada -->
+                        <ul class="info-list">
+                            <!-- Descripción -->
+                            <li class="info-item">
+                                <div class="info-icon">
+                                    <i class="fas fa-info-circle"></i>
+                                </div>
+                                <div class="info-content">
+                                    <div class="info-label">Descripción</div>
+                                    <div class="carrera-descripcion">
+                                        @carrera.Descripcion
+                                    </div>
+                                </div>
+                            </li>
+
+                            <!-- Ubicación -->
+                            <li class="info-item">
+                                <div class="info-icon">
+                                    <i class="fas fa-map-marker-alt"></i>
+                                </div>
+                                <div class="info-content">
+                                    <div class="info-label">Ubicación</div>
+                                    <div class="info-value">@carrera.Ubicacion</div>
+                                </div>
+                            </li>
+
+                            <!-- Fecha -->
+                            <li class="info-item">
+                                <div class="info-icon">
+                                    <i class="fas fa-calendar-check"></i>
+                                </div>
+                                <div class="info-content">
+                                    <div class="info-label">Fecha</div>
+                                    <div class="info-value">@carrera.FechaInicio.ToString("dd/MM/yyyy")</div>
+                                </div>
+                            </li>
+
+                            <!-- Precio -->
+                            <li class="info-item">
+                                <div class="info-icon">
+                                    <i class="fas fa-ticket-alt"></i>
+                                </div>
+                                <div class="info-content">
+                                    <div class="info-label">Inversión</div>
+                                    <div class="info-value info-value-large">@carrera.CostoInscripcion.ToString("C")</div>
+                                </div>
+                            </li>
+
+                            <!-- Cupos con barra de progreso -->
+                            <li class="info-item">
+                                <div class="info-icon">
+                                    <i class="fas fa-users"></i>
+                                </div>
+                                <div class="info-content">
+                                    <div class="info-label">Cupos Disponibles</div>
+                                    <div class="info-value mb-2">
+                                        @carrera.CantidadParticipantes / @carrera.CantidadMaximaParticipantes
+                                    </div>
+                                    <div class="cupos-bar">
+                                        <div class="cupos-progress @GetCuposClass(porcentajeCupos)"
+                                             style="width: @porcentajeCupos.ToString("F0")%">
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- Botón de Inscripción -->
+                    <button class="btn-inscribir-carrera">
+                        <i class="fas fa-bolt"></i>
+                        <span>Inscribirme Ahora</span>
+                        <i class="fas fa-arrow-right"></i>
+                    </button>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+<!-- Empty State (si no hay carreras) -->
+@if (_carreras == null || !_carreras.Any())
+{
+    <div class="container">
+        <div class="empty-state">
+            <div class="empty-state-icon">
+                <i class="fas fa-search"></i>
+            </div>
+            <h3>No hay carreras disponibles</h3>
+            <p>Vuelve pronto para ver nuevos eventos.</p>
+        </div>
+    </div>
+}
