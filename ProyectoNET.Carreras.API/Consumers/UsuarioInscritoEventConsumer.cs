@@ -42,10 +42,11 @@ namespace ProyectoNET.Carreras.API.Consumers
             // Check if this user is already a participant in this race to prevent duplicates
             if (carrera.Participantes.Any(p => p.UserId == message.IdUsuario))
             {
-                _logger.LogInformation("User {UserId} is already a participant in Carrera {CarreraId}. Skipping duplicate inscription.", message.IdCarrera, message.IdCarrera);
+                _logger.LogWarning("⚠️  INSCRIPCIÓN DUPLICADA DETECTADA: Usuario {UserId} ya está inscrito en Carrera {CarreraId}. Saltando inscripción.", message.IdUsuario, message.IdCarrera);
                 return;
             }
 
+            _logger.LogInformation("✅ Creando nuevo participante para UserId: {UserId} en CarreraId: {CarreraId}", message.IdUsuario, message.IdCarrera);
             var participante = new Participante
             {
                 UserId = message.IdUsuario,

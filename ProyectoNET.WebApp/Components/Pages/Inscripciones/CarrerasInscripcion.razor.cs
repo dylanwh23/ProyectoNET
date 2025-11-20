@@ -149,7 +149,7 @@ namespace ProyectoNET.WebApp.Components.Pages.Inscripciones
 
                     if (result != null)
                     {
-                        mensajeExito = $"¡Felicidades, {currentInscripcionModel.Nombre}! Te has inscrito exitosamente a '{carreraSeleccionada.Nombre}'.";
+                        mensajeExito = $"¡Felicidades, {currentInscripcionModel.Nombre}! Te has inscrito exitosamente a '{carreraSeleccionada.Nombre}'.te llego tu contraseña al mail";
                         passwordGenerada = result.GeneratedPassword ?? "";
 
                         Logger.LogInformation("Inscripción exitosa para ID Carrera: {Id}", currentInscripcionModel.CarreraId);
