@@ -5,20 +5,18 @@ using ProyectoNET.Carreras.API.Data;
 using ProyectoNET.Carreras.API.Hubs;
 using ProyectoNET.Carreras.API.Mappers;
 using ProyectoNET.Carreras.API.Models.Repositories;
-<<<<<<< HEAD
 using ProyectoNET.Carreras.API.Consumers;
 using ProyectoNET.Shared.EventosRabbit;
-=======
 using ProyectoNET.Carreras.API.Services;
  
->>>>>>> 065190dfb5980212a864560e2cd06c7d22cef03d
+
 
 var builder = WebApplication.CreateBuilder(args);
 
 // =================================================================
 // 1. CONFIGURAR SERVICIOS (Contenedor de Inyección de Dependencias)
 // =================================================================
-
+builder.Services.AddScoped<IGeoProcessingService, GeoProcessingService>();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddSignalR();
@@ -35,7 +33,7 @@ builder.Services.AddMassTransit(config =>
 {
     // Registrar el Consumer
     config.AddConsumer<UsuarioInscritoEventConsumer>();
-
+    config.AddConsumer<CarreraFinalizadaConsumer>();
     config.UsingRabbitMq((context, cfg) =>
     {
         // Obtenemos la cadena de conexión que inyecta .NET Aspire / Docker
@@ -62,7 +60,7 @@ builder.Services.AddMassTransit(config =>
             e.Durable = true;
             e.AutoDelete = false;
             e.ConfigureConsumer<CarreraFinalizadaConsumer>(context);
-        });    
+        });
         // Configuración del endpoint para la cola específica
         cfg.ReceiveEndpoint("usuario-inscrito-carrera-queue", e =>
         {

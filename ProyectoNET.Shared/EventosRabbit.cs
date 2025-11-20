@@ -63,7 +63,6 @@ public class DetalleCarreraDto
     public string? ImagenUrl { get; set; }
     public List<string> LugaresRetiroEquipamiento { get; set; } = new();
 }
-// ⭐ NUEVO: Evento cuando un usuario se inscribe a una carrera
 public record UsuarioInscritoEvent(
     int IdUsuario, 
     int IdCarrera,

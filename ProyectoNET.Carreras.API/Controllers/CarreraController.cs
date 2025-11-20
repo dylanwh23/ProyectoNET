@@ -405,6 +405,25 @@ public class CarreraController : ControllerBase
         return Ok(detalle);
     }
 
+    // ✅ NUEVO ENDPOINT: Obtener IDs de usuarios inscritos en una carrera
+    [HttpGet("api/carreras/{id}/participantes-ids")]
+    public async Task<IActionResult> ObtenerIdsParticipantes(int id)
+    {
+        // 1. (Opcional) Verificar que la carrera exista
+        var carrera = await _carreraRepository.GetByIdAsync(id);
+        if (carrera == null)
+        {
+            return NotFound($"La carrera {id} no existe.");
+        }
 
+        // 2. Obtener los participantes usando el repositorio
+        var participantes = await _participanteRepository.GetByCarreraIdAsync(id);
+
+        // 3. Extraer solo los UserId (que son los IDs de los usuarios reales)
+        // Si prefieres el ID de la inscripción (PK), cambia p.UserId por p.Id
+        var userIds = participantes.Select(p => p.UserId).ToList();
+
+        return Ok(userIds);
+    }
 
 }

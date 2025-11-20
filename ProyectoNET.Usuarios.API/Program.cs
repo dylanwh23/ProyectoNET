@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using ProyectoNET.Usuarios.API.Data;
+using ProyectoNET.Usuarios.API.Services; // Añadir este using
 using MassTransit;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -14,6 +15,10 @@ builder.Services.AddControllers();
 
 // Configurar PostgreSQL
 builder.AddNpgsqlDbContext<UsuariosDbContext>("usuarios-db");
+
+// Configurar servicio de email
+builder.Services.AddTransient<IEmailService, EmailService>(); // Registrar EmailService
+
 
 // =================================================================
 // CONFIGURACIÓN DE MASSTRANSIT (CORREGIDA)
