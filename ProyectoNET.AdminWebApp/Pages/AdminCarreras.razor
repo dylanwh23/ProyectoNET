@@ -194,15 +194,42 @@
                         <div class="mb-3">
                             <label class="form-label">Imagen (opcional)</label>
                             <InputFile class="form-control" OnChange="SubirImagen" accept="image/*" />
+                            @if (_imagenSeleccionada != null)
+                            {
+                                <small class="text-success">
+                                    <i class="fas fa-check-circle me-1"></i>
+                                    Imagen seleccionada: @_imagenSeleccionada.Name
+                                </small>
+                            }
                         </div>
 
-                        <!-- ⭐ NUEVO: Lugares de Entrega Simple -->
+                        <!-- ⭐ NUEVO: Archivo GeoJSON -->
+                        <div class="mb-3">
+                            <label class="form-label">
+                                <i class="fas fa-route me-1"></i> Ruta GeoJSON (opcional)
+                            </label>
+                            <InputFile class="form-control"
+                                       OnChange="SubirGeoJSON"
+                                       accept=".geojson,.json,application/geo+json" />
+                            @if (_archivoGeoJSON != null)
+                            {
+                                <small class="text-success">
+                                    <i class="fas fa-check-circle me-1"></i>
+                                    Archivo seleccionado: @_archivoGeoJSON.Name
+                                </small>
+                            }
+                            <small class="form-text text-muted d-block mt-1">
+                                <i class="fas fa-info-circle me-1"></i>
+                                Sube un archivo .geojson con la ruta de la carrera
+                            </small>
+                        </div>
+
+                        <!-- Lugares de Entrega -->
                         <div class="mb-3">
                             <label class="form-label">
                                 <i class="fas fa-map-marker-alt me-1"></i> Lugares de Retiro de Equipamiento
                             </label>
 
-                            <!-- Input para agregar lugares de retiro -->
                             <div class="input-group mb-2">
                                 <input type="text"
                                        class="form-control"
@@ -217,7 +244,6 @@
                                 </button>
                             </div>
 
-                            <!-- Lista de lugares agregados -->
                             @if (_lugaresEntregaTemp.Any())
                             {
                                 <div class="border rounded p-2 bg-light">
@@ -247,7 +273,9 @@
                         </div>
 
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" @onclick="CerrarModalCrear">Cancelar</button>
+                            <button type="button" class="btn btn-secondary" @onclick="CerrarModalCrear">
+                                <i class="fas fa-times me-1"></i> Cancelar
+                            </button>
                             <button type="submit" class="btn btn-success" disabled="@_guardando">
                                 @if (_guardando)
                                 {
@@ -583,21 +611,32 @@
         return "status-pending";
     }
 
+    private void EliminarLugarEntrega(string lugar)
+    {
+        _lugaresEntregaTemp.Remove(lugar);
+    }
+
+    // ⭐ NUEVO: Variable para el archivo GeoJSON
+    private IBrowserFile? _archivoGeoJSON;
+
     private void AbrirModalCrear()
     {
         _nuevaCarrera = new CrearCarreraDto
         {
-            FechaInicio = DateTime.UtcNow.AddDays(7) // ⭐ Usar UTC desde el inicio
+            FechaInicio = DateTime.UtcNow.AddDays(7)
         };
         _imagenSeleccionada = null;
+        _archivoGeoJSON = null; // ⭐ NUEVO
         _lugaresEntregaTemp = new();
         _nuevoLugarEntrega = "";
         _mostrarModalCrear = true;
     }
 
-    private void EliminarLugarEntrega(string lugar)
+    // ⭐ NUEVO: Método para seleccionar archivo GeoJSON
+    private void SubirGeoJSON(InputFileChangeEventArgs e)
     {
-        _lugaresEntregaTemp.Remove(lugar);
+        _archivoGeoJSON = e.File;
+        Console.WriteLine($"📍 Archivo GeoJSON seleccionado: {_archivoGeoJSON?.Name}");
     }
 
     private async Task CrearCarrera()
@@ -610,8 +649,10 @@
                 _nuevaCarrera.FechaInicio = _nuevaCarrera.FechaInicio.Value.ToUniversalTime();
             }
 
-            // ⭐ Asignar lugares
             _nuevaCarrera.LugaresRetiroEquipamiento = _lugaresEntregaTemp.ToList();
+
+            Console.WriteLine($"📤 Enviando carrera: {_nuevaCarrera.Nombre}");
+            Console.WriteLine($"📍 Lugares: {_nuevaCarrera.LugaresRetiroEquipamiento.Count}");
 
             var response = await Http.PostAsJsonAsync("api/Carreras", _nuevaCarrera);
 
@@ -625,14 +666,72 @@
 
             var carrera = await response.Content.ReadFromJsonAsync<CarreraDto>();
 
-            if (_imagenSeleccionada != null && carrera != null)
+            if (carrera == null)
             {
-                var formData = new MultipartFormDataContent();
-                var fileContent = new StreamContent(_imagenSeleccionada.OpenReadStream(maxAllowedSize: 5 * 1024 * 1024));
-                fileContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue(_imagenSeleccionada.ContentType);
-                formData.Add(fileContent, "imagen", _imagenSeleccionada.Name);
+                await MostrarAlerta("Error: No se recibió la carrera creada", "danger");
+                return;
+            }
 
-                await Http.PostAsync($"api/Carreras/{carrera.Id}/imagen", formData);
+            Console.WriteLine($"✅ Carrera creada con ID: {carrera.Id}");
+
+            // ⭐ SUBIR IMAGEN (si existe)
+            if (_imagenSeleccionada != null)
+            {
+                try
+                {
+                    Console.WriteLine($"📸 Subiendo imagen...");
+                    var formDataImagen = new MultipartFormDataContent();
+                    var fileContent = new StreamContent(_imagenSeleccionada.OpenReadStream(maxAllowedSize: 5 * 1024 * 1024));
+                    fileContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue(_imagenSeleccionada.ContentType);
+                    formDataImagen.Add(fileContent, "imagen", _imagenSeleccionada.Name);
+
+                    var imagenResponse = await Http.PostAsync($"api/Carreras/{carrera.Id}/imagen", formDataImagen);
+
+                    if (imagenResponse.IsSuccessStatusCode)
+                    {
+                        Console.WriteLine($"✅ Imagen subida correctamente");
+                    }
+                    else
+                    {
+                        Console.WriteLine($"⚠️ Error al subir imagen: {imagenResponse.StatusCode}");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"⚠️ Error al subir imagen: {ex.Message}");
+                }
+            }
+
+            // ⭐ SUBIR GEOJSON (si existe)
+            if (_archivoGeoJSON != null)
+            {
+                try
+                {
+                    Console.WriteLine($"📍 Subiendo archivo GeoJSON: {_archivoGeoJSON.Name}");
+
+                    var formDataRuta = new MultipartFormDataContent();
+                    var geoJsonContent = new StreamContent(_archivoGeoJSON.OpenReadStream(maxAllowedSize: 10 * 1024 * 1024)); // 10MB máx
+                    geoJsonContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/geo+json");
+                    formDataRuta.Add(geoJsonContent, "archivoRuta", _archivoGeoJSON.Name);
+
+                    var rutaResponse = await Http.PostAsync($"api/carreras/{carrera.Id}/ruta", formDataRuta);
+
+                    if (rutaResponse.IsSuccessStatusCode)
+                    {
+                        Console.WriteLine($"✅ Ruta GeoJSON subida correctamente");
+                    }
+                    else
+                    {
+                        var errorRuta = await rutaResponse.Content.ReadAsStringAsync();
+                        Console.WriteLine($"⚠️ Error al subir ruta: {rutaResponse.StatusCode} - {errorRuta}");
+                        await MostrarAlerta($"Carrera creada pero hubo un error al subir la ruta", "warning");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"⚠️ Error al subir ruta: {ex.Message}");
+                    await MostrarAlerta($"Carrera creada pero hubo un error al subir la ruta: {ex.Message}", "warning");
+                }
             }
 
             await MostrarAlerta("Carrera creada exitosamente ✅", "success");
@@ -641,7 +740,7 @@
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"❌ Error: {ex}");
+            Console.WriteLine($"❌ Error completo: {ex}");
             await MostrarAlerta($"Error al crear carrera: {ex.Message}", "danger");
         }
         finally
