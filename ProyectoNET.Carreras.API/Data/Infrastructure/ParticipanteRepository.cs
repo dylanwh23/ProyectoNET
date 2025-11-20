@@ -34,5 +34,12 @@ public class ParticipanteRepository : IParticipanteRepository
         _context.Participantes.Remove(participante);
         await _context.SaveChangesAsync();
     }
- 
+    // En ParticipanteRepository.cs
+    public async Task<IEnumerable<Participante>> GetByCarreraIdAsync(int carreraId)
+    {
+        return await _context.Participantes
+            .Where(p => p.CarreraId == carreraId)
+            .ToListAsync();
+    }
+
 }

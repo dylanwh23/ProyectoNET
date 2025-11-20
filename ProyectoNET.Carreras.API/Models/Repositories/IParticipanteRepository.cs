@@ -8,5 +8,6 @@ namespace ProyectoNET.Carreras.API.Models.Repositories
         Task AddAsync(Participante participante);
         Task UpdateAsync(Participante participante);
         Task DeleteAsync(Participante participante);
+        Task<IEnumerable<Participante>> GetByCarreraIdAsync(int carreraId);
     }
 }

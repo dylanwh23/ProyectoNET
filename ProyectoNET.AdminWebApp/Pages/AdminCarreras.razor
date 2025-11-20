@@ -295,47 +295,44 @@
 @if (_mostrarModalIniciar)
 {
     <div class="modal fade show d-block" tabindex="-1" style="background: rgba(0,0,0,0.5);">
-        <div class="modal-dialog modal-lg">
+        <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header bg-success text-white">
                     <h5 class="modal-title"><i class="fas fa-flag-checkered me-2"></i> Iniciar Carrera</h5>
                     <button type="button" class="btn-close btn-close-white" @onclick="CerrarModalIniciar"></button>
                 </div>
-                <div class="modal-body">
-                    <div class="mb-3">
-                        <label class="form-label">IDs de Corredores (separados por coma)</label>
-                        <textarea class="form-control" @bind="_idsCorredoresTexto" rows="2" placeholder="Ej: 1, 2, 3"></textarea>
+                <div class="modal-body text-center py-4">
+
+                    <div class="mb-4">
+                        <i class="fas fa-running text-success" style="font-size: 3rem;"></i>
                     </div>
 
-                    <div class="border p-3 rounded">
-                        <h6>Puntos de Control</h6>
-                        @foreach (var punto in _puntosControlTemp)
-                        {
-                            <div class="d-flex align-items-center mb-2 gap-2">
-                                <input type="number" class="form-control" style="width: 100px;" 
-                                       @bind="punto.IdPuntoDeControl" placeholder="ID" />
-                                <input type="number" class="form-control" style="width: 120px;" 
-                                       @bind="punto.Km" placeholder="Km" step="0.1" />
-                                <button type="button" class="btn btn-sm btn-outline-danger" 
-                                        @onclick="() => _puntosControlTemp.Remove(punto)">
-                                    🗑️
-                                </button>
-                            </div>
-                        }
-                        <button type="button" class="btn btn-sm btn-outline-primary mt-2" 
-                                @onclick="AgregarPuntoControl">
-                            + Agregar punto
-                        </button>
+                    <h5>¿Estás listo para dar la largada?</h5>
+
+                    <p class="text-muted mb-4">
+                        Al iniciar, se notificará a todos los corredores inscritos y comenzará el seguimiento en tiempo real.
+                    </p>
+
+                    <div class="alert alert-light border">
+                        <small class="text-muted d-block mb-1">Se cargarán automáticamente:</small>
+                        <div class="fw-bold text-dark">
+                            <i class="fas fa-users me-1"></i> Participantes Inscritos
+                        </div>
+                        <div class="fw-bold text-dark">
+                            <i class="fas fa-map-signs me-1"></i> Puntos de Control (Ruta)
+                        </div>
                     </div>
+
                 </div>
-                <div class="modal-footer">
+                <div class="modal-footer justify-content-center">
                     <button class="btn btn-secondary" @onclick="CerrarModalIniciar">Cancelar</button>
-                    <button class="btn btn-success" @onclick="IniciarCarrera" disabled="@_guardando">
+
+                    <button class="btn btn-lg btn-success px-5" @onclick="IniciarCarrera" disabled="@_guardando">
                         @if (_guardando)
                         {
                             <span class="spinner-border spinner-border-sm me-2"></span>
                         }
-                        Iniciar Carrera
+                        <i class="fas fa-play me-2"></i> ¡LARGADA!
                     </button>
                 </div>
             </div>
@@ -794,39 +791,43 @@
         _guardando = true;
         try
         {
-            var idCorredores = _idsCorredoresTexto
-                .Split(',')
-                .Select(s => int.TryParse(s.Trim(), out var id) ? id : 0)
-                .Where(id => id > 0)
-                .ToList();
+            // 1. Obtener IDs de corredores automáticamente
+            var idsCorredores = await Http.GetFromJsonAsync<List<int>>($"api/carreras/{_carreraAIniciar}/participantes-ids");
 
-            var puntosControl = _puntosControlTemp
-                .Where(p => p.IdPuntoDeControl > 0 && p.Km > 0)
-                .Select(p => new PuntoControlInicioDto
-                {
-                    IdPuntoDeControl = p.IdPuntoDeControl,
-                    Km = (float)p.Km
-                })
-                .ToList();
+            if (idsCorredores == null || !idsCorredores.Any())
+            {
+                await MostrarAlerta("⚠️ No hay participantes inscritos. No se puede iniciar.", "warning");
+                _guardando = false;
+                return;
+            }
 
+            // 2. Armar el DTO (Ya NO enviamos puntos manuales, se envían vacíos o el backend usa el GeoJSON)
             var dto = new IniciarCarreraDto
             {
                 IdCarrera = _carreraAIniciar,
-                IdCorredores = idCorredores,
-                TotalPuntosDeControl = puntosControl
+                IdCorredores = idsCorredores,
+                TotalPuntosDeControl = new() // Lista vacía, ya que el backend usa la Ruta GeoJSON
             };
 
-            var response = await Http.PostAsJsonAsync($"{_apiCarreras}/carrera/iniciar", dto);
-            response.EnsureSuccessStatusCode();
+            // 3. Enviar comando
+            var response = await Http.PostAsJsonAsync("carrera/iniciar", dto);
 
-            await MostrarAlerta("🏁 Carrera iniciada correctamente", "success");
-            CerrarModalIniciar();
-            await Task.Delay(1000);
-            await CargarCarreras();
+            if (response.IsSuccessStatusCode)
+            {
+                await MostrarAlerta($"¡Carrera iniciada exitosamente! 🏁", "success");
+                CerrarModalIniciar();
+                await CargarCarreras();
+            }
+            else
+            {
+                var error = await response.Content.ReadAsStringAsync();
+                await MostrarAlerta($"Error al iniciar: {error}", "danger");
+            }
         }
         catch (Exception ex)
         {
-            await MostrarAlerta($"Error al iniciar carrera: {ex.Message}", "danger");
+            Console.WriteLine($"❌ Error: {ex}");
+            await MostrarAlerta($"Error de conexión", "danger");
         }
         finally
         {
