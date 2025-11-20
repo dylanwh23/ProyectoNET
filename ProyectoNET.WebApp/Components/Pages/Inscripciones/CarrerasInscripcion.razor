@@ -4,163 +4,169 @@
 @using ProyectoNET.WebApp.Models
 @layout Layout
 
-<div class="container-fluid text-center py-5 hero text-white">
-    <h1 class="display-3">Carreras en curso!</h1>
-    <input type="text" placeholder="Buscar carrera..." class="form-control mx-auto w-75" />
-    @if (!string.IsNullOrEmpty(debugMessage))
+@code {
+    // Tu código C# aquí
+
+    private double CalcularPorcentajeCupos(int actuales, int maximos)
     {
-        <div class="alert alert-info mt-3">Debug: @debugMessage</div>
+        return maximos > 0 ? ((double)actuales / maximos) * 100 : 0;
     }
+
+    private string GetCuposClass(double porcentaje)
+    {
+        if (porcentaje >= 80) return "danger";
+        if (porcentaje >= 60) return "warning";
+        return "";
+    }
+
+    private string GetBadgeClass(int actuales, int maximos)
+    {
+        var porcentaje = CalcularPorcentajeCupos(actuales, maximos);
+        if (porcentaje >= 90) return "badge-cupos-limitados";
+        if (porcentaje >= 50) return "badge-disponible";
+        return "badge-proximo";
+    }
+
+    private string GetBadgeText(int actuales, int maximos)
+    {
+        var porcentaje = CalcularPorcentajeCupos(actuales, maximos);
+        if (porcentaje >= 90) return "¡Últimos Cupos!";
+        if (porcentaje >= 50) return "Disponible";
+        return "Muchos Cupos";
+    }
+}
+
+<!-- Hero Section -->
+<div class="carreras-hero text-center text-white">
+    <h1>Carreras Disponibles 2026</h1>
+    <div class="search-container">
+        <input type="text"
+               placeholder="Buscar por nombre, ubicación o fecha..."
+               class="form-control search-input" />
+        <i class="fas fa-search search-icon"></i>
+    </div>
 </div>
 
-<div class="container my-3">
-    <div class="row row-cols-1 row-cols-md-3 g-5">
+
+
+<!-- Grid de Carreras -->
+<div class="container mb-5">
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
         @foreach (var carrera in _carreras)
         {
+            var porcentajeCupos = CalcularPorcentajeCupos(carrera.CantidadParticipantes, carrera.CantidadMaximaParticipantes);
+
             <div class="col">
-                <div class="card">
-                    <div class="ratio ratio-16x9">
-                        <img src="@carrera.ImagenPromocional" class="card-img-top" alt="...">
+                <div class="carrera-card-disponible">
+                    <!-- Imagen con Badge -->
+                    <div class="card-img-wrapper">
+                        @if (!string.IsNullOrEmpty(carrera.ImagenPromocional))
+                        {
+                            <img src="@carrera.ImagenPromocional"
+                                 class="card-img-top"
+                                 alt="@carrera.Nombre"
+                                 loading="lazy"
+                                 onerror="this.style.display='none'">
+                        }
+                        <span class="carrera-badge @GetBadgeClass(carrera.CantidadParticipantes, carrera.CantidadMaximaParticipantes)">
+                            @GetBadgeText(carrera.CantidadParticipantes, carrera.CantidadMaximaParticipantes)
+                        </span>
                     </div>
-                    <div class="card-body">
-                        <h5 class="card-title text-center">@carrera.Nombre</h5>
-                        <ul class="list-group list-group-flush text-start">
-                            <li class="list-group-item d-flex flex-column">
-                                <strong>Descripción:</strong>
-                                <span class="d-inline-block text-truncate" style="max-width: 100%;">
-                                    @carrera.Descripcion
-                                </span>
+
+                    <!-- Contenido de la Tarjeta -->
+                    <div class="card-body p-4">
+                        <h5 class="card-title">@carrera.Nombre</h5>
+
+                        <!-- Información Organizada -->
+                        <ul class="info-list">
+                            <!-- Descripción -->
+                            <li class="info-item">
+                                <div class="info-icon">
+                                    <i class="fas fa-info-circle"></i>
+                                </div>
+                                <div class="info-content">
+                                    <div class="info-label">Descripción</div>
+                                    <div class="carrera-descripcion">
+                                        @carrera.Descripcion
+                                    </div>
+                                </div>
                             </li>
-                            <li class="list-group-item"><strong>Ubicación:</strong> @carrera.Ubicacion</li>
-                            <li class="list-group-item"><strong>Fecha de Inicio:</strong> @carrera.FechaInicio.ToString("dd/MM/yyyy")</li>
-                            <li class="list-group-item"><strong>Costo Inscripción:</strong> @carrera.CostoInscripcion.ToString("C")</li>
-                            <li class="list-group-item"><strong>Cantidad Participantes:</strong> @carrera.CantidadParticipantes / @carrera.CantidadMaximaParticipantes</li>
+
+                            <!-- Ubicación -->
+                            <li class="info-item">
+                                <div class="info-icon">
+                                    <i class="fas fa-map-marker-alt"></i>
+                                </div>
+                                <div class="info-content">
+                                    <div class="info-label">Ubicación</div>
+                                    <div class="info-value">@carrera.Ubicacion</div>
+                                </div>
+                            </li>
+
+                            <!-- Fecha -->
+                            <li class="info-item">
+                                <div class="info-icon">
+                                    <i class="fas fa-calendar-check"></i>
+                                </div>
+                                <div class="info-content">
+                                    <div class="info-label">Fecha</div>
+                                    <div class="info-value">@carrera.FechaInicio.ToString("dd/MM/yyyy")</div>
+                                </div>
+                            </li>
+
+                            <!-- Precio -->
+                            <li class="info-item">
+                                <div class="info-icon">
+                                    <i class="fas fa-ticket-alt"></i>
+                                </div>
+                                <div class="info-content">
+                                    <div class="info-label">Inversión</div>
+                                    <div class="info-value info-value-large">@carrera.CostoInscripcion.ToString("C")</div>
+                                </div>
+                            </li>
+
+                            <!-- Cupos con barra de progreso -->
+                            <li class="info-item">
+                                <div class="info-icon">
+                                    <i class="fas fa-users"></i>
+                                </div>
+                                <div class="info-content">
+                                    <div class="info-label">Cupos Disponibles</div>
+                                    <div class="info-value mb-2">
+                                        @carrera.CantidadParticipantes / @carrera.CantidadMaximaParticipantes
+                                    </div>
+                                    <div class="cupos-bar">
+                                        <div class="cupos-progress @GetCuposClass(porcentajeCupos)"
+                                             style="width: @porcentajeCupos.ToString("F0")%">
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
                         </ul>
                     </div>
 
-                    <button type="button"
-                            class="card-footer btn btn-primary"
-                            data-bs-toggle="modal" 
-                            data-bs-target="#inscripcionModal-@carrera.Id.ToString()"
-                            @onclick="(() => ReiniciarFormulario(carrera.Id))">
-                        Inscribirme a la carrera! (ID: @carrera.Id)
+                    <!-- Botón de Inscripción -->
+                    <button class="btn-inscribir-carrera">
+                        <i class="fas fa-bolt"></i>
+                        <span>Inscribirme Ahora</span>
+                        <i class="fas fa-arrow-right"></i>
                     </button>
-                </div>
-            </div>
-
-            <div class="modal fade" id="inscripcionModal-@carrera.Id.ToString()" tabindex="-1" aria-labelledby="@($"inscripcionModalLabel-{carrera.Id}")" aria-hidden="true">
-                <div class="modal-dialog modal-lg" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header bg-primary text-white">
-                            <h5 class="modal-title" id="@($"inscripcionModalLabel-{carrera.Id}")">🏃‍♂️ Inscripción Rápida: @carrera.Nombre</h5>
-                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            <div class="card mb-4 border-info">
-                                <div class="card-header bg-info text-white">
-                                    <h6 class="mb-0">📍 Carrera Seleccionada (ID Interno: @carrera.Id)</h6>
-                                </div>
-                                <div class="card-body">
-                                    <div class="row">
-                                        <div class="col-md-4">
-                                            <img src="@carrera.ImagenPromocional" class="img-fluid rounded" alt="@carrera.Nombre">
-                                        </div>
-                                        <div class="col-md-8">
-                                            <h6 class="card-title">@carrera.Nombre</h6>
-                                            <p class="card-text small">@carrera.Descripcion</p>
-                                            <p class="small mb-1"><strong>📍 Ubicación:</strong> @carrera.Ubicacion</p>
-                                            <p class="small mb-1"><strong>📅 Fecha:</strong> @carrera.FechaInicio.ToString("dd/MM/yyyy")</p>
-                                            <p class="small mb-0"><strong>💰 Costo:</strong> @carrera.CostoInscripcion.ToString("C")</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            @if (!string.IsNullOrEmpty(mensajeExito))
-                            {
-                                <div class="alert alert-success" role="alert">
-                                    <h6>✅ ¡Inscripción Exitosa!</h6>
-                                    <p>@mensajeExito</p>
-                                    @if (!string.IsNullOrEmpty(passwordGenerada))
-                                    {
-                                        <hr>
-                                        <p><strong>🔑 Tu contraseña temporal es:</strong> <code>@passwordGenerada</code></p>
-                                        <small class="text-muted">Guarda esta contraseña para futuras consultas.</small>
-                                    }
-                                </div>
-                            }
-
-                            @if (!string.IsNullOrEmpty(mensajeError))
-                            {
-                                <div class="alert alert-danger" role="alert">
-                                    ❌ @mensajeError
-                                </div>
-                            }
-
-                            @if (string.IsNullOrEmpty(mensajeExito))
-                            {
-                                <EditForm Model="@inscripcionModel" OnValidSubmit="@ProcesarInscripcion" FormName="@($"FormularioDeInscripcion_{carrera.Id}")">
-                                    <DataAnnotationsValidator />
-
-                                    <InputNumber @bind-Value="inscripcionModel.CarreraId" hidden />
-
-                                    <div class="mb-3">
-                                        <label for="@($"nombre_{carrera.Id}")" class="form-label">Nombre</label>
-                                        <InputText id="@($"nombre_{carrera.Id}")" class="form-control" @bind-Value="inscripcionModel.Nombre" />
-                                        <ValidationMessage For="@(() => inscripcionModel.Nombre)" />
-                                    </div>
-
-                                    <div class="mb-3">
-                                        <label for="@($"apellido_{carrera.Id}")" class="form-label">Apellido</label>
-                                        <InputText id="@($"apellido_{carrera.Id}")" class="form-control" @bind-Value="inscripcionModel.Apellido" />
-                                        <ValidationMessage For="@(() => inscripcionModel.Apellido)" />
-                                    </div>
-
-                                    <div class="mb-3">
-                                        <label for="@($"email_{carrera.Id}")" class="form-label">Correo Electrónico</label>
-                                        <InputText type="email" id="@($"email_{carrera.Id}")" class="form-control" @bind-Value="inscripcionModel.Email" />
-                                        <ValidationMessage For="@(() => inscripcionModel.Email)" />
-                                    </div>
-
-                                    <div class="mb-3">
-                                        <label for="@($"fechaNacimiento_{carrera.Id}")" class="form-label">Fecha de Nacimiento</label>
-                                        <InputDate id="@($"fechaNacimiento_{carrera.Id}")" class="form-control" @bind-Value="inscripcionModel.FechaNacimiento" />
-                                        <ValidationMessage For="@(() => inscripcionModel.FechaNacimiento)" />
-                                    </div>
-
-                                    <div class="mb-3">
-                                        <label for="@($"lugarDeEntrega_{carrera.Id}")" class="form-label">Lugar de Entrega del Kit</label>
-                                        <InputSelect id="@($"lugarDeEntrega_{carrera.Id}")" class="form-select" @bind-Value="inscripcionModel.LugarDeEntregaId">
-                                            <option value="0">-- Selecciona un lugar --</option>
-                                            <option value="1">Sucursal Centro</option>
-                                            <option value="2">Sucursal Pocitos</option>
-                                            <option value="3">Sucursal Carrasco</option>
-                                        </InputSelect>
-                                        <ValidationMessage For="@(() => inscripcionModel.LugarDeEntregaId)" />
-                                    </div>
-
-                                    <div class="d-grid">
-                                        <button type="submit" class="btn btn-primary btn-lg" disabled="@isProcessing">
-                                            @if (isProcessing)
-                                            {
-                                                <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-                                                <text>Procesando</text>
-                                            }
-                                            else
-                                            {
-                                                <text>Inscribirme</text>
-                                            }
-                                        </button>
-                                    </div>
-                                </EditForm>
-                            }
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" @onclick="@CerrarModal">Cancelar</button>
-                        </div>
-                    </div>
                 </div>
             </div>
         }
     </div>
 </div>
+
+<!-- Empty State (si no hay carreras) -->
+@if (_carreras == null || !_carreras.Any())
+{
+    <div class="container">
+        <div class="empty-state">
+            <div class="empty-state-icon">
+                <i class="fas fa-search"></i>
+            </div>
+            <h3>No hay carreras disponibles</h3>
+            <p>Vuelve pronto para ver nuevos eventos.</p>
+        </div>
+    </div>
+}

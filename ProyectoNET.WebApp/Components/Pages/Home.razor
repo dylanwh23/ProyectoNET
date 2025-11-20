@@ -1,61 +1,249 @@
 ﻿@page "/"
 @layout Layout
 
-<div class="text-center mt-5">
-    <h1 class="display-5 fw-bold">Organice su evento deportivo con nosotros</h1>
-    <p class="col-lg-8 mx-auto fs-5 text-muted mt-3">
-        Lorem ipsum dolor sit amet et delectus accommodare his consul copiosae legendos at vix ad
-        putent delectus delicata usu. Vidit dissentiet eos cu eum an brute copiosae hendrerit.
-    </p>
+<div class="hero-section">
+    <div class="container">
+        <span class="badge mb-3">
+            🚀 ¡La temporada 2026 ya comenzó!
+        </span>
+        <h1>Superá tus límites</h1>
+        <p class="lead mx-auto mb-4" style="max-width: 700px;">
+            La plataforma líder para la gestión y participación en eventos deportivos.
+            Cronometraje preciso, inscripciones seguras y la mejor comunidad de corredores.
+        </p>
 
-    <div class="d-flex justify-content-center gap-3 mt-4">
-        <NavLink href="/carreras-disponibles" class="btn btn-outline-dark btn-lg px-4">Inscribirse a una carrera!</NavLink>
+        <!-- Trust Indicators -->
+        <div class="mb-4 d-flex flex-wrap justify-content-center gap-2">
+            <span class="trust-badge">
+                <i class="fas fa-check-circle"></i> Inscripción en 3 minutos
+            </span>
+            <span class="trust-badge">
+                <i class="fas fa-shield-alt"></i> Pago 100% seguro
+            </span>
+            <span class="trust-badge">
+                <i class="fas fa-users"></i> 12,500+ corredores
+            </span>
+        </div>
+
+        <div class="d-flex justify-content-center gap-3 flex-wrap">
+            <a href="/carreras-disponibles" class="btn btn-primary btn-lg rounded-pill">
+                <i class="fas fa-running me-2"></i> Buscar Carreras
+            </a>
+            <a href="/carreras-disponibles" class="btn btn-outline-light btn-lg rounded-pill">
+                Inscripciones
+            </a>
+        </div>
     </div>
 </div>
 
+<section class="features-section">
+    <div class="container">
+        <div class="row text-center g-5">
+            <div class="col-md-4 fade-in">
+                <div class="feature-icon">
+                    <i class="fas fa-stopwatch"></i>
+                </div>
+                <h5>Tiempos en Vivo</h5>
+                <p>Accedé a tus resultados y estadísticas inmediatamente después de cruzar la meta.</p>
+            </div>
+            <div class="col-md-4 fade-in">
+                <div class="feature-icon">
+                    <i class="fas fa-shield-alt"></i>
+                </div>
+                <h5>Inscripción Segura</h5>
+                <p>Plataforma de pagos integrada y gestión de cupos garantizada.</p>
+            </div>
+            <div class="col-md-4 fade-in">
+                <div class="feature-icon">
+                    <i class="fas fa-medal"></i>
+                </div>
+                <h5>Ranking Oficial</h5>
+                <p>Competí contra corredores de tu categoría y sumá puntos para el campeonato.</p>
+            </div>
+        </div>
+    </div>
+</section>
 
-<section class="container my-5">
-    <h2 class="fw-bold mb-5 text-center">Carreras destacadas</h2>
-    <div class="row g-4 justify-content-center">
+<section class="races-section">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h6 class="section-subtitle">Próximos Eventos</h6>
+            <h2 class="section-title">Carreras Destacadas</h2>
+            <div class="title-divider"></div>
+        </div>
 
-        <div class="col-12 col-md-4">
-            <div class="card carrera-card h-100 border-0 shadow-lg">
-                <img src="images/carrera1.jpg" class="card-img-top" alt="Carrera 1">
-                <div class="card-body text-center">
-                    <h5 class="card-title fw-bold">Maratón Ciudadana 10K</h5>
-                    <p class="card-text text-muted">
-                        Una carrera urbana ideal para corredores de todos los niveles.
-                    </p>
-                    <a href="/carreras/1" class="btn btn-dark">Ver más</a>
+        <div class="row g-4 justify-content-center">
+            <div class="col-12 col-md-6 col-lg-4">
+                <div class="carrera-card h-100">
+                    <div class="position-relative">
+                        <img src="https://images.unsplash.com/photo-1452626038306-9aae5e0b4149?auto=format&fit=crop&q=80&w=800" class="card-img-top" alt="Maratón">
+                        <span class="badge position-absolute top-0 end-0 m-3 rounded-pill">Próximamente</span>
+                        <div class="urgency-badge">
+                            <i class="fas fa-fire me-2"></i>Solo quedan 45 cupos disponibles
+                        </div>
+                    </div>
+                    <div class="card-body p-4">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <small class="text-primary"><i class="fas fa-calendar-alt me-1"></i> 15 Ene 2026</small>
+                            <small class="text-muted"><i class="fas fa-map-marker-alt me-1"></i> Centro</small>
+                        </div>
+                        <h4 class="card-title">Maratón Ciudadana 10K</h4>
+                        <p class="card-text mb-3">
+                            La carrera urbana más esperada del año. Recorre los puntos históricos de la ciudad.
+                        </p>
+
+                        <div class="mb-3">
+                            <div class="info-row">
+                                <div class="info-icon"><i class="fas fa-users"></i></div>
+                                <div>
+                                    <small class="text-muted d-block">Participantes</small>
+                                    <strong>500 corredores</strong>
+                                </div>
+                            </div>
+                            <div class="info-row">
+                                <div class="info-icon"><i class="fas fa-dollar-sign"></i></div>
+                                <div>
+                                    <small class="text-muted d-block">Inversión</small>
+                                    <strong>$1,200 UYU</strong>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button class="btn btn-inscribir">
+                            <i class="fas fa-ticket-alt me-2"></i>Inscribirse Ahora
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-12 col-md-6 col-lg-4">
+                <div class="carrera-card h-100">
+                    <div class="position-relative">
+                        <img src="https://images.unsplash.com/photo-1533560906234-8f85e1db6d66?auto=format&fit=crop&q=80&w=800" class="card-img-top" alt="Trail">
+                        <span class="badge position-absolute top-0 end-0 m-3 rounded-pill">Próximamente</span>
+                        <div class="urgency-badge">
+                            <i class="fas fa-bolt me-2"></i>Inscripción temprana - 20% OFF
+                        </div>
+                    </div>
+                    <div class="card-body p-4">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <small class="text-primary"><i class="fas fa-calendar-alt me-1"></i> 02 Dic 2025</small>
+                            <small class="text-muted"><i class="fas fa-mountain me-1"></i> Sierras</small>
+                        </div>
+                        <h4 class="card-title">Trail Sierra Norte</h4>
+                        <p class="card-text mb-3">
+                            Desafía la montaña en este trail técnico de 25K y 42K con vistas increíbles.
+                        </p>
+
+                        <div class="mb-3">
+                            <div class="info-row">
+                                <div class="info-icon"><i class="fas fa-mountain"></i></div>
+                                <div>
+                                    <small class="text-muted d-block">Distancias</small>
+                                    <strong>25K y 42K</strong>
+                                </div>
+                            </div>
+                            <div class="info-row">
+                                <div class="info-icon"><i class="fas fa-dollar-sign"></i></div>
+                                <div>
+                                    <small class="text-muted d-block">Desde</small>
+                                    <strong style="text-decoration: line-through; opacity: 0.6;">$2,000</strong> <strong class="text-success">$1,600 UYU</strong>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button class="btn btn-inscribir">
+                            <i class="fas fa-ticket-alt me-2"></i>Inscribirse Ahora
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-12 col-md-6 col-lg-4">
+                <div class="carrera-card h-100">
+                    <div class="position-relative">
+                        <img src="https://images.unsplash.com/photo-1516487200832-22858f33821e?auto=format&fit=crop&q=80&w=800" class="card-img-top" alt="Nocturna">
+                        <span class="badge position-absolute top-0 end-0 m-3 rounded-pill">Próximamente</span>
+                        <div class="urgency-badge">
+                            <i class="fas fa-star me-2"></i>Evento más popular del mes
+                        </div>
+                    </div>
+                    <div class="card-body p-4">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <small class="text-primary"><i class="fas fa-calendar-alt me-1"></i> 20 Dic 2025</small>
+                            <small class="text-muted"><i class="fas fa-moon me-1"></i> Costanera</small>
+                        </div>
+                        <h4 class="card-title">Carrera Nocturna 5K</h4>
+                        <p class="card-text mb-3">
+                            Luces, música y deporte se unen en esta experiencia única nocturna.
+                        </p>
+
+                        <div class="mb-3">
+                            <div class="info-row">
+                                <div class="info-icon"><i class="fas fa-gift"></i></div>
+                                <div>
+                                    <small class="text-muted d-block">Incluye</small>
+                                    <strong>Remera + Kit LED</strong>
+                                </div>
+                            </div>
+                            <div class="info-row">
+                                <div class="info-icon"><i class="fas fa-dollar-sign"></i></div>
+                                <div>
+                                    <small class="text-muted d-block">Inversión</small>
+                                    <strong>$900 UYU</strong>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button class="btn btn-inscribir">
+                            <i class="fas fa-ticket-alt me-2"></i>Inscribirse Ahora
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
+    </div>
+</section>
 
-        <div class="col-12 col-md-4">
-            <div class="card carrera-card h-100 border-0 shadow-lg">
-                <img src="images/carrera2.jpg" class="card-img-top" alt="Carrera 2">
-                <div class="card-body text-center">
-                    <h5 class="card-title fw-bold">Trail Sierra Norte</h5>
-                    <p class="card-text text-muted">
-                        Aventura y naturaleza en una exigente competencia de montaña.
-                    </p>
-                    <a href="/carreras/2" class="btn btn-dark">Ver más</a>
+<div class="container">
+    <div class="cta-section text-center text-white">
+        <h2 class="mb-3">¿Listo para tu próxima carrera?</h2>
+        <p class="lead mb-4">Inscribite en minutos y asegurá tu lugar. Miles de corredores ya lo hicieron.</p>
+        <a href="/carreras-disponibles" class="btn btn-light btn-lg rounded-pill">
+            Ver Carreras Disponibles
+            <i class="fas fa-arrow-right ms-2"></i>
+        </a>
+    </div>
+</div>
+
+<!-- Stats Section -->
+<section class="stats-section py-5">
+    <div class="container">
+        <div class="row text-center g-4">
+            <div class="col-6 col-md-3">
+                <div class="stat-item">
+                    <div class="stat-number">12,500+</div>
+                    <div class="stat-label">Corredores</div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="stat-item">
+                    <div class="stat-number">150+</div>
+                    <div class="stat-label">Carreras</div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="stat-item">
+                    <div class="stat-number">98%</div>
+                    <div class="stat-label">Satisfacción</div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="stat-item">
+                    <div class="stat-number">5 años</div>
+                    <div class="stat-label">De Experiencia</div>
                 </div>
             </div>
         </div>
-
-        <div class="col-12 col-md-4">
-            <div class="card carrera-card h-100 border-0 shadow-lg">
-                <img src="images/carrera3.jpg" class="card-img-top" alt="Carrera 3">
-                <div class="card-body text-center">
-                    <h5 class="card-title fw-bold">Carrera Nocturna 5K</h5>
-                    <p class="card-text text-muted">
-                        Disfrutá de una experiencia única corriendo bajo las luces de la ciudad.
-                    </p>
-                    <a href="/carreras/3" class="btn btn-dark">Ver más</a>
-                </div>
-            </div>
-        </div>
-
     </div>
 </section>
