@@ -15,6 +15,7 @@ builder.Services.AddSignalR()
 builder.Services.AddMassTransit(x =>
 {
     x.AddConsumer<CorredorDataConsumer>();
+    x.AddConsumer<CarreraIniciadaConsumer>();
 
     x.UsingRabbitMq((context, cfg) =>
     {
@@ -24,6 +25,7 @@ builder.Services.AddMassTransit(x =>
             e.Durable = true; 
             e.AutoDelete = false;
             e.ConfigureConsumer<CorredorDataConsumer>(context);
+            e.ConfigureConsumer<CarreraIniciadaConsumer>(context);
         });
     });
 });

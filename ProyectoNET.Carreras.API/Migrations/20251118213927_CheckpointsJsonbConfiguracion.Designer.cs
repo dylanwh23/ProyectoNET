@@ -12,8 +12,8 @@ using ProyectoNET.Carreras.API.Data;
 namespace ProyectoNET.Carreras.API.Migrations
 {
     [DbContext(typeof(CarrerasDbContext))]
-    [Migration("20251023202343_AddEstadoCarrera")]
-    partial class AddEstadoCarrera
+    [Migration("20251118213927_CheckpointsJsonbConfiguracion")]
+    partial class CheckpointsJsonbConfiguracion
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -35,6 +35,9 @@ namespace ProyectoNET.Carreras.API.Migrations
 
                     b.Property<int>("CantidadMaximaParticipantes")
                         .HasColumnType("integer");
+
+                    b.Property<string>("Checkpoints")
+                        .HasColumnType("jsonb");
 
                     b.Property<long>("CostoInscripcion")
                         .HasColumnType("bigint");
@@ -61,6 +64,9 @@ namespace ProyectoNET.Carreras.API.Migrations
 
                     b.Property<string>("Nombre")
                         .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("RutaGeoJson")
                         .HasColumnType("text");
 
                     b.Property<string>("Ubicacion")

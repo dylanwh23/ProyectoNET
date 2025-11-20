@@ -7,7 +7,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace ProyectoNET.Carreras.API.Migrations
 {
     /// <inheritdoc />
-    public partial class AddEstadoCarrera : Migration
+    public partial class CheckpointsJsonbConfiguracion : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -44,12 +44,24 @@ namespace ProyectoNET.Carreras.API.Migrations
                 nullable: false,
                 defaultValue: 0);
 
+            migrationBuilder.AddColumn<string>(
+                name: "Checkpoints",
+                table: "Carreras",
+                type: "jsonb",
+                nullable: true);
+
             migrationBuilder.AddColumn<int>(
                 name: "EstadoCarrera",
                 table: "Carreras",
                 type: "integer",
                 nullable: false,
                 defaultValue: 0);
+
+            migrationBuilder.AddColumn<string>(
+                name: "RutaGeoJson",
+                table: "Carreras",
+                type: "text",
+                nullable: true);
 
             migrationBuilder.CreateTable(
                 name: "LugaresDeEntrega",
@@ -113,7 +125,15 @@ namespace ProyectoNET.Carreras.API.Migrations
                 table: "Participantes");
 
             migrationBuilder.DropColumn(
+                name: "Checkpoints",
+                table: "Carreras");
+
+            migrationBuilder.DropColumn(
                 name: "EstadoCarrera",
+                table: "Carreras");
+
+            migrationBuilder.DropColumn(
+                name: "RutaGeoJson",
                 table: "Carreras");
 
             migrationBuilder.RenameColumn(

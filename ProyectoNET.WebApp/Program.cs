@@ -19,7 +19,11 @@ builder.Services.AddHttpClient("api", (sp, client) =>
 
 builder.AddRedisClient("redis");
 
-builder.Services.AddSignalR()
+builder.Services.AddSignalR(hubOptions =>
+{
+    hubOptions.MaximumReceiveMessageSize = 5 * 1024 * 1024; 
+    hubOptions.EnableDetailedErrors = true;
+})
     .AddStackExchangeRedis(builder.Configuration.GetConnectionString("redis")!);
 
 var app = builder.Build();

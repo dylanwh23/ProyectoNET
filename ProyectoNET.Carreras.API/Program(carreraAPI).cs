@@ -4,6 +4,8 @@ using ProyectoNET.Carreras.API.Data;
 using Microsoft.EntityFrameworkCore;
 using ProyectoNET.Carreras.API.Mappers;
 using ProyectoNET.Carreras.API.Models.Repositories;
+using ProyectoNET.Carreras.API.Services;
+ 
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,7 +19,7 @@ builder.Services.AddSignalR();
 builder.Services.AddControllers();
 builder.AddNpgsqlDbContext<CarrerasDbContext>("carreras-db");
 builder.AddRedisClient("redis");
-
+builder.Services.AddScoped<IGeoProcessingService, GeoProcessingService>();
 
 // Configuración de MassTransit (se mantiene igual)
 // ...
@@ -102,18 +104,37 @@ app.MapControllers();
 
 
 // para aplicar las migraciones al iniciar la aplicación
+const int maxRetries = 5;
+TimeSpan delay = TimeSpan.FromSeconds(5);
+
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
-    try
+    var logger = services.GetRequiredService<ILogger<Program>>();
+    
+    // Bucle de reintento para garantizar que la DB de Aspire esté levantada
+    for (int i = 0; i < maxRetries; i++)
     {
-        var dbContext = services.GetRequiredService<CarrerasDbContext>();
-        dbContext.Database.Migrate();
-    }
-    catch (Exception ex)
-    {
-        var logger = services.GetRequiredService<ILogger<Program>>();
-        logger.LogError(ex, "Ocurrió un error al aplicar las migraciones.");
+        try
+        {
+            var dbContext = services.GetRequiredService<CarrerasDbContext>();
+            await dbContext.Database.MigrateAsync();
+            break; 
+        }
+        catch (Exception ex)
+        {
+            if (i < maxRetries - 1)
+            {
+                logger.LogWarning(ex, "❌ Falló el intento de acceso a la DB. Reintentando en {DelaySeconds} segundos...", delay.TotalSeconds);
+                await Task.Delay(delay); 
+            }
+            else
+            {
+                logger.LogError(ex, "❌ ERROR FATAL: No se pudo conectar a la DB de Aspire después de {MaxRetries} intentos.", maxRetries);
+                // Aquí, la app fallará al iniciar si no puede conectar
+                throw; 
+            }
+        }
     }
 }
 /**/

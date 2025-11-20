@@ -6,6 +6,188 @@
   background-repeat: no-repeat;
 }
 /* _content/ProyectoNET.WebApp/Components/Pages/Carreras/CarreraTiempoReal.razor.rz.scp.css */
+.map-container-style[b-rhwjx031n6] {
+    height: 600px !important; 
+    width: 100% !important;
+    background-color: #e0e0e0;
+    display: block !important;
+    border-radius: 4px;
+}
+
+[b-rhwjx031n6] .leaflet-container, 
+[b-rhwjx031n6] .leaflet-pane { 
+    height: 100% !important; 
+    width: 100% !important; 
+}
+
+[b-rhwjx031n6] .leaflet-tile-pane img { 
+    visibility: visible !important; 
+    max-width: none !important; 
+}
+
+[b-rhwjx031n6] .leaflet-popup-content-wrapper {
+    background-color: rgba(255, 255, 255, 0.95);
+    border-radius: 4px;
+}
+
+[b-rhwjx031n6] .leaflet-tooltip {
+    background-color: rgba(0, 0, 0, 0.7) !important;
+    color: white !important;
+    border: none !important;
+    border-radius: 4px;
+    font-size: 12px;
+}
+
+/* ESTILOS PARA TABLA DE CLASIFICACIÓN */
+.table-section-header[b-rhwjx031n6] {
+    background-color: #f8f9fa !important;
+}
+
+.table-warning[b-rhwjx031n6] {
+    background-color: #fff3cd !important;
+    border-left: 4px solid #ffc107 !important;
+}
+
+.table-warning:hover[b-rhwjx031n6] {
+    background-color: #ffe69c !important;
+}
+
+.table-info-distancia[b-rhwjx031n6] {
+    background-color: #d1ecf1 !important;
+    border-left: 4px solid #17a2b8 !important;
+}
+
+.table-info-distancia:hover[b-rhwjx031n6] {
+    background-color: #b8e0e8 !important;
+}
+
+/* 🎨 ESTILOS PARA LA TARJETA INLINE DEL CORREDOR BUSCADO */
+.runner-card-inline[b-rhwjx031n6] {
+    background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+    border-radius: 6px;
+    padding: 10px 12px;
+    color: white;
+    box-shadow: 0 2px 8px rgba(40, 167, 69, 0.3);
+    border: 2px solid #1e7e34;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.runner-header-inline[b-rhwjx031n6] {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.runner-badge[b-rhwjx031n6] {
+    font-weight: 700;
+    font-size: 16px;
+    background-color: rgba(255, 255, 255, 0.2);
+    padding: 2px 10px;
+    border-radius: 4px;
+}
+
+.position-badge[b-rhwjx031n6] {
+    background-color: rgba(255, 255, 255, 0.95);
+    color: #28a745;
+    font-weight: 600;
+    font-size: 12px;
+    padding: 3px 8px;
+    border-radius: 12px;
+}
+
+.runner-stats-inline[b-rhwjx031n6] {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 6px;
+}
+
+@media (max-width: 1400px) {
+    .runner-stats-inline[b-rhwjx031n6] {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+.stat-inline[b-rhwjx031n6] {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 11px;
+    background-color: rgba(0, 0, 0, 0.15);
+    padding: 4px 6px;
+    border-radius: 4px;
+}
+
+.stat-icon[b-rhwjx031n6] {
+    font-size: 14px;
+}
+
+.stat-value-inline[b-rhwjx031n6] {
+    font-weight: 600;
+    font-family: 'Courier New', monospace;
+    white-space: nowrap;
+}
+
+/* ESTILOS COMPACTOS PARA LA TARJETA ORIGINAL (por si la quieres mantener en otro lugar) */
+.runner-card-compact[b-rhwjx031n6] {
+    background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+    border-radius: 8px;
+    color: white;
+    box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+    overflow: hidden;
+    border: 2px solid #1e7e34;
+}
+
+.runner-card-header-compact[b-rhwjx031n6] {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px;
+    background-color: rgba(0, 0, 0, 0.1);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.runner-avatar-compact[b-rhwjx031n6] {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: white;
+    padding: 3px;
+    flex-shrink: 0;
+}
+
+.runner-stats-compact[b-rhwjx031n6] {
+    padding: 10px;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 6px;
+}
+
+.stat-compact[b-rhwjx031n6] {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 4px 0;
+    font-size: 12px;
+}
+
+.stat-compact .label[b-rhwjx031n6] {
+    font-weight: 500;
+    opacity: 0.95;
+}
+
+.stat-compact .value[b-rhwjx031n6] {
+    font-weight: 600;
+    background-color: rgba(255, 255, 255, 0.2);
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-family: 'Courier New', monospace;
+}
 /* _content/ProyectoNET.WebApp/Components/Pages/Inscripciones/CarrerasInscripcion.razor.rz.scp.css */
 .hero[b-rnaycjoq31]{
   background-image: url('/images/fondo-carreras.png');
