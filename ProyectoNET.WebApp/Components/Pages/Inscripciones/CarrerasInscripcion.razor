@@ -1,46 +1,166 @@
 @page "/carreras-disponibles"
+@using System.ComponentModel.DataAnnotations
 @using ProyectoNET.Shared
+@using ProyectoNET.WebApp.Models
 @layout Layout
-@code {
-
-}
-
-
 
 <div class="container-fluid text-center py-5 hero text-white">
-  <h1 class="display-3">Carreras en curso!</h1>
-  <input type="text" placeholder="Buscar carrera..." class="form-control mx-auto w-75" />
+    <h1 class="display-3">Carreras en curso!</h1>
+    <input type="text" placeholder="Buscar carrera..." class="form-control mx-auto w-75" />
+    @if (!string.IsNullOrEmpty(debugMessage))
+    {
+        <div class="alert alert-info mt-3">Debug: @debugMessage</div>
+    }
 </div>
 
 <div class="container my-3">
-  <div class="row row-cols-1 row-cols-md-3 g-5">
-  @foreach(var carrera in _carreras){
-    <div class="col">
-      <div class="card">
-        <div class="ratio ratio-16x9">
-          <img src="@carrera.ImagenPromocional" class="card-img-top" alt="...">
-        </div>
-        <div class="card-body"> 
-          <h5 class="card-title text-center">@carrera.Nombre</h5>
-          <ul class="list-group list-group-flush text-start">    
-    <li class="list-group-item d-flex flex-column">
-        <strong>Descripción:</strong>
-        <span class="d-inline-block text-truncate" style="max-width: 100%;">
-          @carrera.Descripcion
-        </span>
-    </li>
-    <li class="list-group-item"><strong>Ubicación:</strong> @carrera.Ubicacion</li>
-    <li class="list-group-item"><strong>Fecha de Inicio:</strong> @carrera.FechaInicio.ToString("dd/MM/yyyy")</li>
-    <li class="list-group-item"><strong>Costo Inscripción:</strong> @carrera.CostoInscripcion.ToString("C")</li>
-    <li class="list-group-item"><strong>Cantidad Participantes:</strong> @carrera.CantidadParticipantes / @carrera.CantidadMaximaParticipantes</li>
+    <div class="row row-cols-1 row-cols-md-3 g-5">
+        @foreach (var carrera in _carreras)
+        {
+            <div class="col">
+                <div class="card">
+                    <div class="ratio ratio-16x9">
+                        <img src="@carrera.ImagenPromocional" class="card-img-top" alt="...">
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title text-center">@carrera.Nombre</h5>
+                        <ul class="list-group list-group-flush text-start">
+                            <li class="list-group-item d-flex flex-column">
+                                <strong>Descripción:</strong>
+                                <span class="d-inline-block text-truncate" style="max-width: 100%;">
+                                    @carrera.Descripcion
+                                </span>
+                            </li>
+                            <li class="list-group-item"><strong>Ubicación:</strong> @carrera.Ubicacion</li>
+                            <li class="list-group-item"><strong>Fecha de Inicio:</strong> @carrera.FechaInicio.ToString("dd/MM/yyyy")</li>
+                            <li class="list-group-item"><strong>Costo Inscripción:</strong> @carrera.CostoInscripcion.ToString("C")</li>
+                            <li class="list-group-item"><strong>Cantidad Participantes:</strong> @carrera.CantidadParticipantes / @carrera.CantidadMaximaParticipantes</li>
+                        </ul>
+                    </div>
 
-</ul>
-        </div>
-        <button class="card-footer btn btn-primary">
-          Inscribirme a la carrera!
-        </button>
-      </div>
+                    <button type="button"
+                            class="card-footer btn btn-primary"
+                            data-bs-toggle="modal" 
+                            data-bs-target="#inscripcionModal-@carrera.Id.ToString()"
+                            @onclick="(() => ReiniciarFormulario(carrera.Id))">
+                        Inscribirme a la carrera! (ID: @carrera.Id)
+                    </button>
+                </div>
+            </div>
+
+            <div class="modal fade" id="inscripcionModal-@carrera.Id.ToString()" tabindex="-1" aria-labelledby="@($"inscripcionModalLabel-{carrera.Id}")" aria-hidden="true">
+                <div class="modal-dialog modal-lg" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header bg-primary text-white">
+                            <h5 class="modal-title" id="@($"inscripcionModalLabel-{carrera.Id}")">🏃‍♂️ Inscripción Rápida: @carrera.Nombre</h5>
+                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="card mb-4 border-info">
+                                <div class="card-header bg-info text-white">
+                                    <h6 class="mb-0">📍 Carrera Seleccionada (ID Interno: @carrera.Id)</h6>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <img src="@carrera.ImagenPromocional" class="img-fluid rounded" alt="@carrera.Nombre">
+                                        </div>
+                                        <div class="col-md-8">
+                                            <h6 class="card-title">@carrera.Nombre</h6>
+                                            <p class="card-text small">@carrera.Descripcion</p>
+                                            <p class="small mb-1"><strong>📍 Ubicación:</strong> @carrera.Ubicacion</p>
+                                            <p class="small mb-1"><strong>📅 Fecha:</strong> @carrera.FechaInicio.ToString("dd/MM/yyyy")</p>
+                                            <p class="small mb-0"><strong>💰 Costo:</strong> @carrera.CostoInscripcion.ToString("C")</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            @if (!string.IsNullOrEmpty(mensajeExito))
+                            {
+                                <div class="alert alert-success" role="alert">
+                                    <h6>✅ ¡Inscripción Exitosa!</h6>
+                                    <p>@mensajeExito</p>
+                                    @if (!string.IsNullOrEmpty(passwordGenerada))
+                                    {
+                                        <hr>
+                                        <p><strong>🔑 Tu contraseña temporal es:</strong> <code>@passwordGenerada</code></p>
+                                        <small class="text-muted">Guarda esta contraseña para futuras consultas.</small>
+                                    }
+                                </div>
+                            }
+
+                            @if (!string.IsNullOrEmpty(mensajeError))
+                            {
+                                <div class="alert alert-danger" role="alert">
+                                    ❌ @mensajeError
+                                </div>
+                            }
+
+                            @if (string.IsNullOrEmpty(mensajeExito))
+                            {
+                                <EditForm Model="@inscripcionModel" OnValidSubmit="@ProcesarInscripcion" FormName="@($"FormularioDeInscripcion_{carrera.Id}")">
+                                    <DataAnnotationsValidator />
+
+                                    <InputNumber @bind-Value="inscripcionModel.CarreraId" hidden />
+
+                                    <div class="mb-3">
+                                        <label for="@($"nombre_{carrera.Id}")" class="form-label">Nombre</label>
+                                        <InputText id="@($"nombre_{carrera.Id}")" class="form-control" @bind-Value="inscripcionModel.Nombre" />
+                                        <ValidationMessage For="@(() => inscripcionModel.Nombre)" />
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label for="@($"apellido_{carrera.Id}")" class="form-label">Apellido</label>
+                                        <InputText id="@($"apellido_{carrera.Id}")" class="form-control" @bind-Value="inscripcionModel.Apellido" />
+                                        <ValidationMessage For="@(() => inscripcionModel.Apellido)" />
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label for="@($"email_{carrera.Id}")" class="form-label">Correo Electrónico</label>
+                                        <InputText type="email" id="@($"email_{carrera.Id}")" class="form-control" @bind-Value="inscripcionModel.Email" />
+                                        <ValidationMessage For="@(() => inscripcionModel.Email)" />
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label for="@($"fechaNacimiento_{carrera.Id}")" class="form-label">Fecha de Nacimiento</label>
+                                        <InputDate id="@($"fechaNacimiento_{carrera.Id}")" class="form-control" @bind-Value="inscripcionModel.FechaNacimiento" />
+                                        <ValidationMessage For="@(() => inscripcionModel.FechaNacimiento)" />
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label for="@($"lugarDeEntrega_{carrera.Id}")" class="form-label">Lugar de Entrega del Kit</label>
+                                        <InputSelect id="@($"lugarDeEntrega_{carrera.Id}")" class="form-select" @bind-Value="inscripcionModel.LugarDeEntregaId">
+                                            <option value="0">-- Selecciona un lugar --</option>
+                                            <option value="1">Sucursal Centro</option>
+                                            <option value="2">Sucursal Pocitos</option>
+                                            <option value="3">Sucursal Carrasco</option>
+                                        </InputSelect>
+                                        <ValidationMessage For="@(() => inscripcionModel.LugarDeEntregaId)" />
+                                    </div>
+
+                                    <div class="d-grid">
+                                        <button type="submit" class="btn btn-primary btn-lg" disabled="@isProcessing">
+                                            @if (isProcessing)
+                                            {
+                                                <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                                                <text>Procesando</text>
+                                            }
+                                            else
+                                            {
+                                                <text>Inscribirme</text>
+                                            }
+                                        </button>
+                                    </div>
+                                </EditForm>
+                            }
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" @onclick="@CerrarModal">Cancelar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
     </div>
-    }
-  </div>
 </div>

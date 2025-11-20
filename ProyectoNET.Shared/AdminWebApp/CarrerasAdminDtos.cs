@@ -22,6 +22,9 @@ public class CarreraDto
     public int TotalPuntosControl { get; set; }
     public decimal? Distancia { get; set; }
     public DateTime? FechaInicio { get; set; }
+    public decimal CostoInscripcion { get; set; }
+    public int CantidadParticipantes { get; set; }
+    public int CantidadMaximaParticipantes { get; set; }
 }
 
 // DTO para crear carrera
@@ -43,8 +46,9 @@ public class CrearCarreraDto
     public string Ubicacion { get; set; } = string.Empty;
 
     public DateTime? FechaInicio { get; set; }
-    public long CostoInscripcion { get; set; }
+    public decimal CostoInscripcion { get; set; } // Changed to decimal for consistency
     public int CantidadMaximaParticipantes { get; set; }
+    public string? ImagenPromocional { get; set; } // Added for validation context
 }
 
 // DTO para iniciar carrera

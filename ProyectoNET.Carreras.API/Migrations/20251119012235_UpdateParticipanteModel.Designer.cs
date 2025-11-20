@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using ProyectoNET.Carreras.API.Data;
@@ -11,9 +12,11 @@ using ProyectoNET.Carreras.API.Data;
 namespace ProyectoNET.Carreras.API.Migrations
 {
     [DbContext(typeof(CarrerasDbContext))]
-    partial class CarrerasDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251119012235_UpdateParticipanteModel")]
+    partial class UpdateParticipanteModel
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

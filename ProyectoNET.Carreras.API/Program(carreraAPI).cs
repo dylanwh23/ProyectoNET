@@ -4,6 +4,8 @@ using ProyectoNET.Carreras.API.Data;
 using Microsoft.EntityFrameworkCore;
 using ProyectoNET.Carreras.API.Mappers;
 using ProyectoNET.Carreras.API.Models.Repositories;
+using ProyectoNET.Carreras.API.Consumers;
+using ProyectoNET.Shared.EventosRabbit;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,28 +17,55 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddSignalR();
 builder.Services.AddControllers();
+
+// Bases de datos y Caché
 builder.AddNpgsqlDbContext<CarrerasDbContext>("carreras-db");
 builder.AddRedisClient("redis");
 
-
-// Configuración de MassTransit (se mantiene igual)
-// ...
-
-
-// Agregar MassTransit
+// =================================================================
+// CONFIGURACIÓN DE MASSTRANSIT (CORREGIDA)
+// =================================================================
 builder.Services.AddMassTransit(config =>
 {
+    // Registrar el Consumer
+    config.AddConsumer<UsuarioInscritoEventConsumer>();
+
     config.UsingRabbitMq((context, cfg) =>
     {
-        cfg.Host(builder.Configuration.GetConnectionString("rabbitmq-bus"));
+        // Obtenemos la cadena de conexión que inyecta .NET Aspire / Docker
+        // Ejemplo: "amqp://guest:guest@localhost:60035"
+        var rabbitMqConnectionString = builder.Configuration.GetConnectionString("rabbitmq-bus");
+
+        if (!string.IsNullOrEmpty(rabbitMqConnectionString))
+        {
+            // ✅ SOLUCIÓN: Usamos directamente la URI. 
+            // MassTransit detectará automáticamente el puerto dinámico (ej. 60035)
+            cfg.Host(new Uri(rabbitMqConnectionString));
+        }
+        else
+        {
+            // Fallback por defecto (solo si no hay cadena de conexión)
+            cfg.Host("localhost", "/", h =>
+            {
+                h.Username("guest");
+                h.Password("guest");
+            });
+        }
+
+        // Configuración del endpoint para la cola específica
+        cfg.ReceiveEndpoint("usuario-inscrito-carrera-queue", e =>
+        {
+            e.ConfigureConsumer<UsuarioInscritoEventConsumer>(context);
+        });
+        
+        // Configuración general de endpoints
+        cfg.ConfigureEndpoints(context); 
     });
 });
 
-// ...
-
-// *** CAMBIO CLAVE 1: CORRECCIÓN EN LA POLÍTICA DE CORS ***
-// Se usa una política con nombre para ser más explícitos y evitar conflictos.
-// Asegúrate de que el puerto "7072" coincida con el de tu WebApp. En tu screenshot era 7072.
+// =================================================================
+// CONFIGURACIÓN DE CORS
+// =================================================================
 var corsPolicyName = "WebAppPolicy";
 builder.Services.AddCors(options =>
 {
@@ -47,27 +76,29 @@ builder.Services.AddCors(options =>
             "https://localhost:5001",   // Blazor o MVC
             "http://127.0.0.1:5500",    // Live Server de VSCode
             "https://localhost:7188",
-            "https://localhost:7182"// 
+            "https://localhost:7182",
+            "https://localhost:7072"    // Tu WebApp actual
         )
-              .AllowAnyHeader()
-              .AllowAnyMethod()
-              .AllowCredentials(); // Crucial para SignalR
+        .AllowAnyHeader()
+        .AllowAnyMethod()
+        .AllowCredentials(); // Crucial para SignalR
     });
 });
 
-//Repositorios
+// =================================================================
+// REPOSITORIOS Y SERVICIOS
+// =================================================================
 builder.Services.AddScoped<ICarreraRepository, CarreraRepository>();
 builder.Services.AddScoped<IParticipanteRepository, ParticipanteRepository>();
 builder.Services.AddScoped<ILugarDeEntregaRepository, LugarDeEntregaRepository>();
 
-//Mapperly
+// Mapperly
 builder.Services.AddSingleton<CarreraMapper>();
 
-//Cliente blob storage (imagenes)
+// Cliente Blob Storage (Imágenes)
 builder.AddAzureBlobServiceClient("blobstorage");
 builder.Services.AddScoped<IBlobStorageService, BlobStorageService>();
-builder.Services.AddTransient<BlobStorageSeeder>(); // para que se suba la imagen default al blobstorage siempre
-
+builder.Services.AddTransient<BlobStorageSeeder>(); 
 
 // ===============================================
 // 2. CONSTRUIR LA APLICACIÓN
@@ -75,11 +106,9 @@ builder.Services.AddTransient<BlobStorageSeeder>(); // para que se suba la image
 var app = builder.Build();
 
 // =================================================================
-// 3. CONFIGURAR EL PIPELINE DE PETICIONES HTTP (Middleware)
-// ¡EL ORDEN AQUÍ ES MUY IMPORTANTE!
+// 3. PIPELINE HTTP
 // =================================================================
 
-// Configuración para el entorno de desarrollo
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -88,20 +117,20 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-// *** CAMBIO CLAVE 2: POSICIÓN CORRECTA DEL MIDDLEWARE DE CORS ***
-// Debe ir ANTES de la autenticación/autorización y de mapear los endpoints.
+// CORS debe ir ANTES de Auth y MapControllers
 app.UseCors(corsPolicyName);
 
 app.UseAuthorization();
 
-// Mapeo de los endpoints (Hub de SignalR y Controladores)
+// Endpoints
 app.MapHub<CarreraHub>("/carreraHub");
 app.MapControllers();
 
-// Endpoints de Minimal API (se mantienen igual)
+// =================================================================
+// 4. MIGRACIONES Y SEEDERS
+// =================================================================
 
-
-// para aplicar las migraciones al iniciar la aplicación
+// Aplicar migraciones de EF Core
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
@@ -116,14 +145,12 @@ using (var scope = app.Services.CreateScope())
         logger.LogError(ex, "Ocurrió un error al aplicar las migraciones.");
     }
 }
-/**/
 
-// Seeder para el blob storage (imagen default)
+// Inicializar Blob Storage (Seed)
 if (app.Environment.IsDevelopment())
 {
     try
     {
-        // Obtenemos el servicio y lo ejecutamos
         using (var scope = app.Services.CreateScope())
         {
             var seeder = scope.ServiceProvider.GetRequiredService<BlobStorageSeeder>();
@@ -136,12 +163,8 @@ if (app.Environment.IsDevelopment())
         logger.LogError(ex, "Ocurrió un error al inicializar el Blob Storage Seeder.");
     }
 }
-/**/
 
 // ===============================================
-// 4. EJECUTAR LA APLICACIÓN
+// 5. EJECUTAR
 // ===============================================
 app.Run();
-
-
-

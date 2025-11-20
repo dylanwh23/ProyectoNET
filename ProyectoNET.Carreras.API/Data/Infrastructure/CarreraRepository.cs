@@ -12,7 +12,12 @@ public class CarreraRepository : ICarreraRepository
     // Implementation of ICarreraRepository methods
     public async Task<IEnumerable<Carrera>> GetAllAsync()
     {
-        return await _context.Carreras.ToListAsync();
+        // Explicitly exclude Participantes for general GetAll to prevent serialization issues
+        // if the DTOs don't need them directly.
+        return await _context.Carreras
+                             .Include(c => c.LugaresRetiroEquipamiento) // Include if needed by DTOs
+                             .AsNoTracking() // Optional: if data is read-only
+                             .ToListAsync();
     }
     public async Task<Carrera> GetByIdAsync(int id)
     {
@@ -37,6 +42,8 @@ public class CarreraRepository : ICarreraRepository
     {
         return await _context.Carreras
             .Where(c => c.EstadoCarrera == Carrera.Estado.EnProgreso)
+            .Include(c => c.LugaresRetiroEquipamiento) // Include if needed by DTOs
+            .AsNoTracking()
             .ToListAsync();
     }
 
@@ -44,6 +51,8 @@ public class CarreraRepository : ICarreraRepository
     {
         return await _context.Carreras
             .Where(c => c.EstadoCarrera == Carrera.Estado.Pendiente)
+            .Include(c => c.LugaresRetiroEquipamiento) // Include if needed by DTOs
+            .AsNoTracking()
             .ToListAsync();
     }
 }
