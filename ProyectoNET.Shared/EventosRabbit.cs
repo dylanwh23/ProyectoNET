@@ -48,10 +48,21 @@ public record CorredorData
     }
 }
 
-
-
-
-// ⭐ NUEVO: Evento cuando un usuario se inscribe a una carrera
+public class DetalleCarreraDto
+{
+    public int Id { get; set; }
+    public string Nombre { get; set; } = string.Empty;
+    public string? Descripcion { get; set; }
+    public string? Ubicacion { get; set; }
+    public DateTime? FechaInicio { get; set; }
+    public DateTime? FechaFin { get; set; }
+    public float? Distancia { get; set; }
+    public decimal? CostoInscripcion { get; set; }
+    public int? CantidadMaximaParticipantes { get; set; }
+    public string Estado { get; set; } = "Pendiente";
+    public string? ImagenUrl { get; set; }
+    public List<string> LugaresRetiroEquipamiento { get; set; } = new();
+}
 public record UsuarioInscritoEvent(
     int IdUsuario, 
     int IdCarrera,
