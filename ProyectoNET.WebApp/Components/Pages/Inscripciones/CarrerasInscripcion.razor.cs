@@ -5,6 +5,7 @@ using ProyectoNET.Shared;
 using ProyectoNET.Shared.WebApp;
 using ProyectoNET.WebApp.Models;
 using System.Text.Json;
+using System.Net.Http.Json; // Añadir para GetFromJsonAsync
 using System.Text;
 using Microsoft.JSInterop;
 
@@ -13,6 +14,7 @@ namespace ProyectoNET.WebApp.Components.Pages.Inscripciones
     public partial class CarrerasInscripcion : ComponentBase
     {
         private List<CarreraInscripcionCard> _carreras = new List<CarreraInscripcionCard>();
+        private List<LugarDeEntregaDto> _lugaresDeEntrega = new List<LugarDeEntregaDto>(); // Nueva lista para lugares de entrega
 
         // Variables para el modal de inscripción
         private InscripcionCarreraViewModel inscripcionModel = new();
@@ -46,10 +48,12 @@ namespace ProyectoNET.WebApp.Components.Pages.Inscripciones
                 {
                     _carreras = result;
                 }
+
+                // La carga de lugares de entrega se moverá a ReiniciarFormulario
             }
             catch (Exception ex)
             {
-                Logger.LogError(ex, "Error al cargar la lista de carreras desde la API.");
+                Logger.LogError(ex, "Error al cargar la lista de carreras o lugares de entrega desde la API.");
             }
         }
 
@@ -64,7 +68,7 @@ namespace ProyectoNET.WebApp.Components.Pages.Inscripciones
         }
 
         // --- CORRECCIÓN PRINCIPAL AQUÍ ---
-        private void ReiniciarFormulario(int carreraId)
+        private async Task ReiniciarFormulario(int carreraId) // Cambiar a Task porque ahora es async
         {
             selectedCarreraId = carreraId;
 
@@ -73,6 +77,27 @@ namespace ProyectoNET.WebApp.Components.Pages.Inscripciones
             {
                 CarreraId = carreraId
             };
+
+            // Cargar lugares de entrega filtrados por carreraId
+            try
+            {
+                var httpClient = HttpClientFactory.CreateClient("api");
+                var lugaresDeEntregaResult = await httpClient.GetFromJsonAsync<List<LugarDeEntregaDto>>($"api/LugarDeEntrega/porcarrera/{carreraId}"); // Corregido el nombre del controlador a "LugarDeEntrega"
+                if (lugaresDeEntregaResult != null)
+                {
+                    _lugaresDeEntrega = lugaresDeEntregaResult;
+                    Logger.LogInformation($"DEBUG: Lugares de Entrega cargados para CarreraId {carreraId}: {_lugaresDeEntrega.Count} elementos.");
+                }
+                else
+                {
+                    Logger.LogWarning($"DEBUG: No se recibieron lugares de entrega para CarreraId {carreraId}.");
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex, "Error al cargar lugares de entrega para la carrera {CarreraId}.", carreraId);
+                _lugaresDeEntrega = new List<LugarDeEntregaDto>(); // Asegurarse de que la lista no sea null
+            }
 
             Logger.LogInformation($"DEBUG: ReiniciarFormulario ejecutado. ID seleccionado: {carreraId}. Modelo actualizado: {inscripcionModel.CarreraId}");
 
@@ -124,6 +149,7 @@ namespace ProyectoNET.WebApp.Components.Pages.Inscripciones
                 var httpClient = HttpClientFactory.CreateClient("usuariosApi");
 
                 // Crear el request asegurándonos de enviar el ID correcto
+
                 var inscripcionRequest = new
                 {
                     Nombre = currentInscripcionModel.Nombre,

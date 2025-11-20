@@ -223,7 +223,13 @@
                     </div>
                     <div class="mb-3">
                         <label for="lugarDeEntrega" class="form-label">Lugar de Entrega</label>
-                        <InputNumber id="lugarDeEntrega" class="form-control" @bind-Value="inscripcionModel.LugarDeEntregaId" />
+                        <InputSelect @bind-Value="inscripcionModel.LugarDeEntregaId" class="form-control">
+                            <option value="0">-- Seleccione un lugar de entrega --</option>
+                            @foreach (var lugar in _lugaresDeEntrega)
+                            {
+                                <option value="@lugar.Id">@lugar.Nombre</option>
+                            }
+                        </InputSelect>
                         <ValidationMessage For="@(() => inscripcionModel.LugarDeEntregaId)" />
                     </div>
                      <div class="d-grid">
