@@ -49,6 +49,8 @@ public record CorredorData
 }
 
 
+
+
 // ⭐ NUEVO: Evento cuando un usuario se inscribe a una carrera
 public record UsuarioInscritoEvent(
     int IdUsuario, 

@@ -48,7 +48,12 @@ public class CrearCarreraDto
     public string Ubicacion { get; set; } = string.Empty;
 
     public DateTime? FechaInicio { get; set; }
+
+    [Required(ErrorMessage = "El costo es requerido")]
+    [Range(0, long.MaxValue, ErrorMessage = "El costo no puede ser negativo")]
     public decimal CostoInscripcion { get; set; } // Changed to decimal for consistency
+
+    [Range(1, int.MaxValue, ErrorMessage = "La cantidad debe ser mayor a 0")]
     public int CantidadMaximaParticipantes { get; set; }
     public string? ImagenPromocional { get; set; } // Added for validation context
     public List<string> LugaresRetiroEquipamiento { get; set; } = new();
@@ -70,7 +75,6 @@ public class PuntoControlInicioDto
 }
 
 // En ProyectoNET.Shared/AdminWebApp o donde tengas tus DTOs
-
 public class DetalleCarreraDto
 {
     public int Id { get; set; }

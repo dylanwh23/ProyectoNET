@@ -5,7 +5,7 @@
 namespace ProyectoNET.Carreras.API.Migrations
 {
     /// <inheritdoc />
-    public partial class CambiarLugaresATabla : Migration
+    public partial class merge : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

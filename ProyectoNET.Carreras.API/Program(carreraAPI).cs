@@ -10,6 +10,7 @@ using ProyectoNET.Shared.EventosRabbit;
 using ProyectoNET.Carreras.API.Services;
  
 
+
 var builder = WebApplication.CreateBuilder(args);
 
 // =================================================================
