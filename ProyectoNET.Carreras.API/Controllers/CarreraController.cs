@@ -86,11 +86,13 @@ public class CarreraController : ControllerBase
     {
         try
         {
-            var carreras = await _context.Carreras
-                .Include(c => c.LugaresRetiroEquipamiento) // ✅ AGREGAR ESTO
-                .ToListAsync();
+            // ✅ CORRECTO: Usar el repositorio
+            // Ya configuramos GetAllAsync en el repositorio para que haga el .Include()
+            var carreras = await _carreraRepository.GetAllAsync();
 
+            // Mapear a DTO
             var carrerasDTO = carreras.Select(c => _mapper.ToCarrerasListDTO(c));
+
             return Ok(carrerasDTO);
         }
         catch (Exception ex)
