@@ -96,7 +96,7 @@
                                         <th>Nombre</th>
                                         <th>Distancia</th>
                                         <th>Participantes</th>
-                                        <th>Puntos de Control</th>
+                                        <th>Puntos de Retiro</th>
                                         <th>Estado</th>
                                         <th>Acciones</th>
                                     </tr>
@@ -145,17 +145,18 @@
     </div>
 </div>
 
+
 <!-- Modal Crear Carrera -->
 @if (_mostrarModalCrear)
 {
     <div class="modal fade show d-block" tabindex="-1" style="background: rgba(0,0,0,0.5);">
-        <div class="modal-dialog">
+        <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
                     <h5 class="modal-title"><i class="fas fa-plus-circle me-2"></i> Crear Nueva Carrera</h5>
                     <button type="button" class="btn-close btn-close-white" @onclick="CerrarModalCrear"></button>
                 </div>
-                <div class="modal-body">
+                <div class="modal-body" style="max-height: 70vh; overflow-y: auto;">
                     <EditForm Model="_nuevaCarrera" OnValidSubmit="CrearCarrera">
                         <DataAnnotationsValidator />
                         <ValidationSummary />
@@ -193,10 +194,88 @@
                         <div class="mb-3">
                             <label class="form-label">Imagen (opcional)</label>
                             <InputFile class="form-control" OnChange="SubirImagen" accept="image/*" />
+                            @if (_imagenSeleccionada != null)
+                            {
+                                <small class="text-success">
+                                    <i class="fas fa-check-circle me-1"></i>
+                                    Imagen seleccionada: @_imagenSeleccionada.Name
+                                </small>
+                            }
+                        </div>
+
+                        <!-- ⭐ NUEVO: Archivo GeoJSON -->
+                        <div class="mb-3">
+                            <label class="form-label">
+                                <i class="fas fa-route me-1"></i> Ruta GeoJSON (opcional)
+                            </label>
+                            <InputFile class="form-control"
+                                       OnChange="SubirGeoJSON"
+                                       accept=".geojson,.json,application/geo+json" />
+                            @if (_archivoGeoJSON != null)
+                            {
+                                <small class="text-success">
+                                    <i class="fas fa-check-circle me-1"></i>
+                                    Archivo seleccionado: @_archivoGeoJSON.Name
+                                </small>
+                            }
+                            <small class="form-text text-muted d-block mt-1">
+                                <i class="fas fa-info-circle me-1"></i>
+                                Sube un archivo .geojson con la ruta de la carrera
+                            </small>
+                        </div>
+
+                        <!-- Lugares de Entrega -->
+                        <div class="mb-3">
+                            <label class="form-label">
+                                <i class="fas fa-map-marker-alt me-1"></i> Lugares de Retiro de Equipamiento
+                            </label>
+
+                            <div class="input-group mb-2">
+                                <input type="text"
+                                       class="form-control"
+                                       @bind="_nuevoLugarEntrega"
+                                       @bind:event="oninput"
+                                       @onkeydown="ManejarTeclaLugarEntrega"
+                                       placeholder="Ej: Tienda Central - Av. Principal 123" />
+                                <button type="button"
+                                        class="btn btn-outline-primary"
+                                        @onclick="AgregarLugarEntrega">
+                                    <i class="fas fa-plus"></i> Agregar
+                                </button>
+                            </div>
+
+                            @if (_lugaresEntregaTemp.Any())
+                            {
+                                <div class="border rounded p-2 bg-light">
+                                    @foreach (var lugar in _lugaresEntregaTemp)
+                                    {
+                                        <div class="d-flex justify-content-between align-items-center mb-1 p-2 bg-white rounded">
+                                            <span>
+                                                <i class="fas fa-store text-primary me-2"></i>
+                                                @lugar
+                                            </span>
+                                            <button type="button"
+                                                    class="btn btn-sm btn-outline-danger"
+                                                    @onclick="() => EliminarLugarEntrega(lugar)">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </div>
+                                    }
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="text-muted small">
+                                    <i class="fas fa-info-circle me-1"></i>
+                                    No hay lugares agregados
+                                </div>
+                            }
                         </div>
 
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" @onclick="CerrarModalCrear">Cancelar</button>
+                            <button type="button" class="btn btn-secondary" @onclick="CerrarModalCrear">
+                                <i class="fas fa-times me-1"></i> Cancelar
+                            </button>
                             <button type="submit" class="btn btn-success" disabled="@_guardando">
                                 @if (_guardando)
                                 {
@@ -264,6 +343,147 @@
     </div>
 }
 
+
+<!-- Modal Detalle Carrera -->
+@if (_mostrarModalDetalle)
+{
+    <div class="modal fade show d-block" tabindex="-1" style="background: rgba(0,0,0,0.5);">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
+                    <h5 class="modal-title">
+                        <i class="fas fa-info-circle me-2"></i> Detalle de la Carrera
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" @onclick="CerrarModalDetalle"></button>
+                </div>
+                <div class="modal-body" style="max-height: 70vh; overflow-y: auto;">
+                    @if (_cargandoDetalle)
+                    {
+                        <div class="text-center py-5">
+                            <div class="spinner-border text-primary" role="status">
+                                <span class="visually-hidden">Cargando...</span>
+                            </div>
+                            <p class="mt-3 text-muted">Cargando información...</p>
+                        </div>
+                    }
+                    else if (_detalleCarrera != null)
+                    {
+                        <div class="row">
+                            <!-- Imagen (si existe) -->
+                            @if (!string.IsNullOrEmpty(_detalleCarrera.ImagenUrl))
+                            {
+                                <div class="col-12 mb-4">
+                                    <img src="@_detalleCarrera.ImagenUrl"
+                                         class="img-fluid rounded w-100"
+                                         style="max-height: 300px; object-fit: cover;"
+                                         alt="Imagen de la carrera" />
+                                </div>
+                            }
+
+                            <!-- Información en dos columnas -->
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="text-muted small">ID</label>
+                                    <div class="fw-bold">#@_detalleCarrera.Id</div>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="text-muted small">Nombre</label>
+                                    <div class="fw-bold">@_detalleCarrera.Nombre</div>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="text-muted small">Ubicación</label>
+                                    <div>@(_detalleCarrera.Ubicacion ?? "No especificada")</div>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="text-muted small">Distancia</label>
+                                    <div>@(_detalleCarrera.Distancia?.ToString("F2") ?? "-") km</div>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="text-muted small">Costo de Inscripción</label>
+                                    <div>$@(_detalleCarrera.CostoInscripcion?.ToString("N2") ?? "0.00")</div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="text-muted small">Máximo de Participantes</label>
+                                    <div>@(_detalleCarrera.CantidadMaximaParticipantes?.ToString() ?? "Sin límite")</div>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="text-muted small">Fecha de Inicio</label>
+                                    <div>@(_detalleCarrera.FechaInicio?.ToString("dd/MM/yyyy HH:mm") ?? "Por definir")</div>
+                                </div>
+
+                                @if (_detalleCarrera.FechaFin.HasValue)
+                                {
+                                    <div class="mb-3">
+                                        <label class="text-muted small">Fecha de Finalización</label>
+                                        <div>@_detalleCarrera.FechaFin.Value.ToString("dd/MM/yyyy HH:mm")</div>
+                                    </div>
+                                }
+
+                                <div class="mb-3">
+                                    <label class="text-muted small">Estado</label>
+                                    <div>
+                                        <span class="status-badge @ObtenerClaseEstado(_detalleCarrera.Estado)">
+                                            @_detalleCarrera.Estado
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Descripción (si existe) -->
+                            @if (!string.IsNullOrEmpty(_detalleCarrera.Descripcion))
+                            {
+                                <div class="col-12 mt-3">
+                                    <label class="text-muted small">Descripción</label>
+                                    <div class="p-3 bg-light rounded">
+                                        @_detalleCarrera.Descripcion
+                                    </div>
+                                </div>
+                            }
+
+                            <!-- ⭐ Lugares de Retiro con badges -->
+                            @if (_detalleCarrera.LugaresRetiroEquipamiento.Any())
+                            {
+                                <div class="col-12 mt-3">
+                                    <label class="text-muted small mb-2">
+                                        <i class="fas fa-map-marker-alt me-1"></i>
+                                        Lugares de Retiro de Equipamiento
+                                    </label>
+                                    <div class="d-flex flex-wrap gap-2">
+                                        @foreach (var lugar in _detalleCarrera.LugaresRetiroEquipamiento)
+                                        {
+                                            <span class="badge bg-primary p-2">
+                                                <i class="fas fa-store me-1"></i>
+                                                @lugar
+                                            </span>
+                                        }
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    }
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" @onclick="CerrarModalDetalle">
+                        <i class="fas fa-times me-1"></i> Cerrar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+
+
+
+
 @code {
     private string _apiCarreras = "";
     private string _apiUsuarios = "";
@@ -273,6 +493,8 @@
     private bool _cargando = false;
     private bool _guardando = false;
     private bool _componenteRenderizado = false; // ⭐ NUEVO
+    private List<string> _lugaresEntregaTemp = new();
+    private string _nuevoLugarEntrega = "";
 
     // Modales
     private bool _mostrarModalCrear = false;
@@ -389,24 +611,32 @@
         return "status-pending";
     }
 
+    private void EliminarLugarEntrega(string lugar)
+    {
+        _lugaresEntregaTemp.Remove(lugar);
+    }
+
+    // ⭐ NUEVO: Variable para el archivo GeoJSON
+    private IBrowserFile? _archivoGeoJSON;
+
     private void AbrirModalCrear()
     {
         _nuevaCarrera = new CrearCarreraDto
         {
-            FechaInicio = DateTime.UtcNow.AddDays(7) // ⭐ Usar UTC desde el inicio
+            FechaInicio = DateTime.UtcNow.AddDays(7)
         };
         _imagenSeleccionada = null;
+        _archivoGeoJSON = null; // ⭐ NUEVO
+        _lugaresEntregaTemp = new();
+        _nuevoLugarEntrega = "";
         _mostrarModalCrear = true;
     }
 
-    private void CerrarModalCrear()
+    // ⭐ NUEVO: Método para seleccionar archivo GeoJSON
+    private void SubirGeoJSON(InputFileChangeEventArgs e)
     {
-        _mostrarModalCrear = false;
-    }
-
-    private void SubirImagen(InputFileChangeEventArgs e)
-    {
-        _imagenSeleccionada = e.File;
+        _archivoGeoJSON = e.File;
+        Console.WriteLine($"📍 Archivo GeoJSON seleccionado: {_archivoGeoJSON?.Name}");
     }
 
     private async Task CrearCarrera()
@@ -414,11 +644,15 @@
         _guardando = true;
         try
         {
-            // ⭐ Convertir la fecha a UTC antes de enviar
             if (_nuevaCarrera.FechaInicio.HasValue)
             {
                 _nuevaCarrera.FechaInicio = _nuevaCarrera.FechaInicio.Value.ToUniversalTime();
             }
+
+            _nuevaCarrera.LugaresRetiroEquipamiento = _lugaresEntregaTemp.ToList();
+
+            Console.WriteLine($"📤 Enviando carrera: {_nuevaCarrera.Nombre}");
+            Console.WriteLine($"📍 Lugares: {_nuevaCarrera.LugaresRetiroEquipamiento.Count}");
 
             var response = await Http.PostAsJsonAsync("api/Carreras", _nuevaCarrera);
 
@@ -432,14 +666,72 @@
 
             var carrera = await response.Content.ReadFromJsonAsync<CarreraDto>();
 
-            if (_imagenSeleccionada != null && carrera != null)
+            if (carrera == null)
             {
-                var formData = new MultipartFormDataContent();
-                var fileContent = new StreamContent(_imagenSeleccionada.OpenReadStream(maxAllowedSize: 5 * 1024 * 1024));
-                fileContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue(_imagenSeleccionada.ContentType);
-                formData.Add(fileContent, "imagen", _imagenSeleccionada.Name);
+                await MostrarAlerta("Error: No se recibió la carrera creada", "danger");
+                return;
+            }
 
-                await Http.PostAsync($"api/Carreras/{carrera.Id}/imagen", formData);
+            Console.WriteLine($"✅ Carrera creada con ID: {carrera.Id}");
+
+            // ⭐ SUBIR IMAGEN (si existe)
+            if (_imagenSeleccionada != null)
+            {
+                try
+                {
+                    Console.WriteLine($"📸 Subiendo imagen...");
+                    var formDataImagen = new MultipartFormDataContent();
+                    var fileContent = new StreamContent(_imagenSeleccionada.OpenReadStream(maxAllowedSize: 5 * 1024 * 1024));
+                    fileContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue(_imagenSeleccionada.ContentType);
+                    formDataImagen.Add(fileContent, "imagen", _imagenSeleccionada.Name);
+
+                    var imagenResponse = await Http.PostAsync($"api/Carreras/{carrera.Id}/imagen", formDataImagen);
+
+                    if (imagenResponse.IsSuccessStatusCode)
+                    {
+                        Console.WriteLine($"✅ Imagen subida correctamente");
+                    }
+                    else
+                    {
+                        Console.WriteLine($"⚠️ Error al subir imagen: {imagenResponse.StatusCode}");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"⚠️ Error al subir imagen: {ex.Message}");
+                }
+            }
+
+            // ⭐ SUBIR GEOJSON (si existe)
+            if (_archivoGeoJSON != null)
+            {
+                try
+                {
+                    Console.WriteLine($"📍 Subiendo archivo GeoJSON: {_archivoGeoJSON.Name}");
+
+                    var formDataRuta = new MultipartFormDataContent();
+                    var geoJsonContent = new StreamContent(_archivoGeoJSON.OpenReadStream(maxAllowedSize: 10 * 1024 * 1024)); // 10MB máx
+                    geoJsonContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/geo+json");
+                    formDataRuta.Add(geoJsonContent, "archivoRuta", _archivoGeoJSON.Name);
+
+                    var rutaResponse = await Http.PostAsync($"api/carreras/{carrera.Id}/ruta", formDataRuta);
+
+                    if (rutaResponse.IsSuccessStatusCode)
+                    {
+                        Console.WriteLine($"✅ Ruta GeoJSON subida correctamente");
+                    }
+                    else
+                    {
+                        var errorRuta = await rutaResponse.Content.ReadAsStringAsync();
+                        Console.WriteLine($"⚠️ Error al subir ruta: {rutaResponse.StatusCode} - {errorRuta}");
+                        await MostrarAlerta($"Carrera creada pero hubo un error al subir la ruta", "warning");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"⚠️ Error al subir ruta: {ex.Message}");
+                    await MostrarAlerta($"Carrera creada pero hubo un error al subir la ruta: {ex.Message}", "warning");
+                }
             }
 
             await MostrarAlerta("Carrera creada exitosamente ✅", "success");
@@ -448,7 +740,7 @@
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"❌ Error: {ex}");
+            Console.WriteLine($"❌ Error completo: {ex}");
             await MostrarAlerta($"Error al crear carrera: {ex.Message}", "danger");
         }
         finally
@@ -456,6 +748,28 @@
             _guardando = false;
         }
     }
+
+    private void AgregarLugarEntrega()
+    {
+        if (!string.IsNullOrWhiteSpace(_nuevoLugarEntrega))
+        {
+            _lugaresEntregaTemp.Add(_nuevoLugarEntrega.Trim());
+            _nuevoLugarEntrega = "";
+            StateHasChanged(); // ✅ Forzar actualización de la UI
+        }
+    }
+
+    private void CerrarModalCrear()
+    {
+        _mostrarModalCrear = false;
+    }
+
+    private void SubirImagen(InputFileChangeEventArgs e)
+    {
+        _imagenSeleccionada = e.File;
+    }
+
+    
 
     private void AbrirModalIniciar(int idCarrera)
     {
@@ -546,11 +860,6 @@
         }
     }
 
-    private async Task VerDetalle(int id)
-    {
-        await MostrarAlerta("Detalle de carrera (por implementar)", "info");
-    }
-
     // ⭐ CAMBIO IMPORTANTE: Proteger las llamadas JS
     private async Task MostrarAlerta(string mensaje, string tipo)
     {
@@ -584,4 +893,57 @@
         public int IdPuntoDeControl { get; set; }
         public decimal Km { get; set; }
     }
+
+    // Variables para el modal de detalle
+    private bool _mostrarModalDetalle = false;
+    private DetalleCarreraDto? _detalleCarrera = null;
+    private bool _cargandoDetalle = false;
+
+    // Método para ver detalle
+    private async Task VerDetalle(int id)
+    {
+        _cargandoDetalle = true;
+        _mostrarModalDetalle = true;
+        _detalleCarrera = null;
+
+        try
+        {
+            var url = $"{_apiCarreras}/{id}/detalle";
+            _detalleCarrera = await Http.GetFromJsonAsync<DetalleCarreraDto>(url);
+
+            if (_detalleCarrera == null)
+            {
+                await MostrarAlerta("No se pudo cargar el detalle de la carrera", "danger");
+                _mostrarModalDetalle = false;
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"❌ Error al cargar detalle: {ex.Message}");
+            await MostrarAlerta($"Error al cargar detalle: {ex.Message}", "danger");
+            _mostrarModalDetalle = false;
+        }
+        finally
+        {
+            _cargandoDetalle = false;
+            StateHasChanged();
+        }
+    }
+
+    private void CerrarModalDetalle()
+    {
+        _mostrarModalDetalle = false;
+        _detalleCarrera = null;
+    }
+
+    private async Task ManejarTeclaLugarEntrega(KeyboardEventArgs e)
+    {
+        if (e.Key == "Enter")
+        {
+            // ✅ PREVENIR que el formulario se envíe
+            await Task.CompletedTask;
+            AgregarLugarEntrega();
+        }
+    }
+
 }

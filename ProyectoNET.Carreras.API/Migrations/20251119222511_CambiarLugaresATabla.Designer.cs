@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using ProyectoNET.Carreras.API.Data;
@@ -11,9 +12,11 @@ using ProyectoNET.Carreras.API.Data;
 namespace ProyectoNET.Carreras.API.Migrations
 {
     [DbContext(typeof(CarrerasDbContext))]
-    partial class CarrerasDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251119222511_CambiarLugaresATabla")]
+    partial class CambiarLugaresATabla
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -32,11 +35,6 @@ namespace ProyectoNET.Carreras.API.Migrations
 
                     b.Property<int>("CantidadMaximaParticipantes")
                         .HasColumnType("integer");
-
-                    b.Property<int>("CantidadParticipantes")
-                        .HasColumnType("integer");
-                    b.Property<string>("Checkpoints")
-                        .HasColumnType("jsonb");
 
                     b.Property<long>("CostoInscripcion")
                         .HasColumnType("bigint");
@@ -61,14 +59,8 @@ namespace ProyectoNET.Carreras.API.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<double?>("Kms")
-                        .HasColumnType("double precision");
-
                     b.Property<string>("Nombre")
                         .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("RutaGeoJson")
                         .HasColumnType("text");
 
                     b.Property<string>("Ubicacion")
@@ -110,23 +102,32 @@ namespace ProyectoNET.Carreras.API.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("Apellido")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<int>("CarreraId")
                         .HasColumnType("integer");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<DateTime>("FechaInscripcion")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<int?>("IdLugarRetiroEquipamientoElegido")
+                    b.Property<int>("IdLugarRetiroEquipamientoElegido")
                         .HasColumnType("integer");
 
                     b.Property<bool>("IsEquipamientoEntregado")
                         .HasColumnType("boolean");
 
-                    b.Property<int?>("LugarRetiroEquipamientoElegidoId")
+                    b.Property<int>("LugarRetiroEquipamientoElegidoId")
                         .HasColumnType("integer");
 
-                    b.Property<int>("UserId")
-                        .HasColumnType("integer");
+                    b.Property<string>("Nombre")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.HasKey("Id");
 
@@ -158,7 +159,9 @@ namespace ProyectoNET.Carreras.API.Migrations
 
                     b.HasOne("ProyectoNET.Carreras.API.Models.LugarDeEntrega", "LugarRetiroEquipamientoElegido")
                         .WithMany()
-                        .HasForeignKey("LugarRetiroEquipamientoElegidoId");
+                        .HasForeignKey("LugarRetiroEquipamientoElegidoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Carrera");
 

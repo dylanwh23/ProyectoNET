@@ -18,4 +18,6 @@ public record CreateCarreraDTO
     public DateTime? FechaInicio { get; init; }
     public long CostoInscripcion { get; init; }
     public int CantidadMaximaParticipantes { get; init; }
+
+    public List<string> LugaresRetiroEquipamiento { get; init; } = new();
 }

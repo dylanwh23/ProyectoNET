@@ -1,11 +1,17 @@
 using MassTransit;
-using ProyectoNET.Carreras.API.Hubs;
-using ProyectoNET.Carreras.API.Data;
 using Microsoft.EntityFrameworkCore;
+using ProyectoNET.Carreras.API.Consumers;
+using ProyectoNET.Carreras.API.Data;
+using ProyectoNET.Carreras.API.Hubs;
 using ProyectoNET.Carreras.API.Mappers;
 using ProyectoNET.Carreras.API.Models.Repositories;
+<<<<<<< HEAD
 using ProyectoNET.Carreras.API.Consumers;
 using ProyectoNET.Shared.EventosRabbit;
+=======
+using ProyectoNET.Carreras.API.Services;
+ 
+>>>>>>> 065190dfb5980212a864560e2cd06c7d22cef03d
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -51,7 +57,12 @@ builder.Services.AddMassTransit(config =>
                 h.Password("guest");
             });
         }
-
+        cfg.ReceiveEndpoint("carrera-finalizacion", e =>
+        {
+            e.Durable = true;
+            e.AutoDelete = false;
+            e.ConfigureConsumer<CarreraFinalizadaConsumer>(context);
+        });    
         // Configuración del endpoint para la cola específica
         cfg.ReceiveEndpoint("usuario-inscrito-carrera-queue", e =>
         {
@@ -130,19 +141,39 @@ app.MapControllers();
 // 4. MIGRACIONES Y SEEDERS
 // =================================================================
 
-// Aplicar migraciones de EF Core
+
+// para aplicar las migraciones al iniciar la aplicación
+const int maxRetries = 5;
+TimeSpan delay = TimeSpan.FromSeconds(5);
+
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
-    try
+    var logger = services.GetRequiredService<ILogger<Program>>();
+    
+    // Bucle de reintento para garantizar que la DB de Aspire esté levantada
+    for (int i = 0; i < maxRetries; i++)
     {
-        var dbContext = services.GetRequiredService<CarrerasDbContext>();
-        dbContext.Database.Migrate();
-    }
-    catch (Exception ex)
-    {
-        var logger = services.GetRequiredService<ILogger<Program>>();
-        logger.LogError(ex, "Ocurrió un error al aplicar las migraciones.");
+        try
+        {
+            var dbContext = services.GetRequiredService<CarrerasDbContext>();
+            await dbContext.Database.MigrateAsync();
+            break; 
+        }
+        catch (Exception ex)
+        {
+            if (i < maxRetries - 1)
+            {
+                logger.LogWarning(ex, "❌ Falló el intento de acceso a la DB. Reintentando en {DelaySeconds} segundos...", delay.TotalSeconds);
+                await Task.Delay(delay); 
+            }
+            else
+            {
+                logger.LogError(ex, "❌ ERROR FATAL: No se pudo conectar a la DB de Aspire después de {MaxRetries} intentos.", maxRetries);
+                // Aquí, la app fallará al iniciar si no puede conectar
+                throw; 
+            }
+        }
     }
 }
 

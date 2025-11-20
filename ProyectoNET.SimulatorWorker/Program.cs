@@ -1,8 +1,5 @@
 using MassTransit;
 using ProyectoNET.SimulatorWorker.Consumers;
-using ProyectoNET.Shared.WebApp; // <-- ¡Asegúrate de tener el using a tus eventos!
-using RabbitMQ.Client; // <-- ¡Asegúrate de tener el using a RabbitMQ!
-using ProyectoNET.Shared;
 
 var builder = Host.CreateApplicationBuilder(args);
 builder.AddServiceDefaults();

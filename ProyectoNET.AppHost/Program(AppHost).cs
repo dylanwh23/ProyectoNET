@@ -4,7 +4,7 @@ var builder = DistributedApplication.CreateBuilder(args);
 /**/
 //base de datos 
 var postgresServer = builder.AddPostgres("postgres-server");
-postgresServer.WithDataVolume("postgres_data");
+//postgresServer.WithDataVolume("postgres_data");
 var dbCarreraAPI = postgresServer.AddDatabase("carreras-db");
 var dbUsuariosAPI = postgresServer.AddDatabase("usuarios-db");
 //storage de imagenes

@@ -25,6 +25,8 @@ public class CarreraDto
     public decimal CostoInscripcion { get; set; }
     public int CantidadParticipantes { get; set; }
     public int CantidadMaximaParticipantes { get; set; }
+
+    public List<string> LugaresRetiroEquipamiento { get; set; } = new();
 }
 
 // DTO para crear carrera
@@ -49,6 +51,8 @@ public class CrearCarreraDto
     public decimal CostoInscripcion { get; set; } // Changed to decimal for consistency
     public int CantidadMaximaParticipantes { get; set; }
     public string? ImagenPromocional { get; set; } // Added for validation context
+    public List<string> LugaresRetiroEquipamiento { get; set; } = new();
+
 }
 
 // DTO para iniciar carrera
@@ -64,3 +68,5 @@ public class PuntoControlInicioDto
     public int IdPuntoDeControl { get; set; }
     public float Km { get; set; }
 }
+
+// En ProyectoNET.Shared/AdminWebApp o donde tengas tus DTOs
