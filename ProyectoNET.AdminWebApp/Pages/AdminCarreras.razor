@@ -545,7 +545,7 @@
         _cargando = true;
         try
         {
-            var url = $"{_apiCarreras}/api/Carreras";
+            var url = $"{_apiCarreras}/api/carreras";
             Console.WriteLine($"🔍 URL Base API: {_apiCarreras}");
             Console.WriteLine($"🔍 URL Completa: {url}");
             Console.WriteLine($"🔍 HttpClient BaseAddress: {Http.BaseAddress}");
@@ -556,7 +556,7 @@
 
             try
             {
-                var urlEnCurso = $"{_apiCarreras}/api/Carreras/en-curso";
+                var urlEnCurso = $"{_apiCarreras}/api/carreras/en-curso";
                 var carrerasEnCurso = await Http.GetFromJsonAsync<List<CarreraDto>>(urlEnCurso) ?? new();
                 var idsEnCurso = carrerasEnCurso.Select(c => c.Id).ToHashSet();
 
