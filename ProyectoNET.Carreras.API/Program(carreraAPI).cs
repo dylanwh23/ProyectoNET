@@ -1,7 +1,8 @@
 using MassTransit;
-using ProyectoNET.Carreras.API.Hubs;
-using ProyectoNET.Carreras.API.Data;
 using Microsoft.EntityFrameworkCore;
+using ProyectoNET.Carreras.API.Consumers;
+using ProyectoNET.Carreras.API.Data;
+using ProyectoNET.Carreras.API.Hubs;
 using ProyectoNET.Carreras.API.Mappers;
 using ProyectoNET.Carreras.API.Models.Repositories;
 using ProyectoNET.Carreras.API.Services;
@@ -28,9 +29,20 @@ builder.Services.AddScoped<IGeoProcessingService, GeoProcessingService>();
 // Agregar MassTransit
 builder.Services.AddMassTransit(config =>
 {
+    // ⭐ AGREGAR EL CONSUMER
+    config.AddConsumer<CarreraFinalizadaConsumer>();
+
     config.UsingRabbitMq((context, cfg) =>
     {
         cfg.Host(builder.Configuration.GetConnectionString("rabbitmq-bus"));
+
+        // ⭐ CONFIGURAR ENDPOINT PARA EL CONSUMER
+        cfg.ReceiveEndpoint("carrera-finalizacion", e =>
+        {
+            e.Durable = true;
+            e.AutoDelete = false;
+            e.ConfigureConsumer<CarreraFinalizadaConsumer>(context);
+        });
     });
 });
 
