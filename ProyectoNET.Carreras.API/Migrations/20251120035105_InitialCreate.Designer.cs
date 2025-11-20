@@ -12,8 +12,8 @@ using ProyectoNET.Carreras.API.Data;
 namespace ProyectoNET.Carreras.API.Migrations
 {
     [DbContext(typeof(CarrerasDbContext))]
-    [Migration("20251119012235_UpdateParticipanteModel")]
-    partial class UpdateParticipanteModel
+    [Migration("20251120035105_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -39,6 +39,9 @@ namespace ProyectoNET.Carreras.API.Migrations
                     b.Property<int>("CantidadParticipantes")
                         .HasColumnType("integer");
 
+                    b.Property<string>("Checkpoints")
+                        .HasColumnType("jsonb");
+
                     b.Property<long>("CostoInscripcion")
                         .HasColumnType("bigint");
 
@@ -62,8 +65,14 @@ namespace ProyectoNET.Carreras.API.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<double?>("Kms")
+                        .HasColumnType("double precision");
+
                     b.Property<string>("Nombre")
                         .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("RutaGeoJson")
                         .HasColumnType("text");
 
                     b.Property<string>("Ubicacion")

@@ -35,6 +35,7 @@ namespace ProyectoNET.Carreras.API.Migrations
 
                     b.Property<int>("CantidadParticipantes")
                         .HasColumnType("integer");
+
                     b.Property<string>("Checkpoints")
                         .HasColumnType("jsonb");
 

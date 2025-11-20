@@ -5,13 +5,11 @@ using ProyectoNET.Carreras.API.Data;
 using ProyectoNET.Carreras.API.Hubs;
 using ProyectoNET.Carreras.API.Mappers;
 using ProyectoNET.Carreras.API.Models.Repositories;
-<<<<<<< HEAD
 using ProyectoNET.Carreras.API.Consumers;
 using ProyectoNET.Shared.EventosRabbit;
-=======
 using ProyectoNET.Carreras.API.Services;
  
->>>>>>> 065190dfb5980212a864560e2cd06c7d22cef03d
+
 
 var builder = WebApplication.CreateBuilder(args);
 
