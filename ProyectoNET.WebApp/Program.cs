@@ -17,6 +17,20 @@ builder.Services.AddHttpClient("api", (sp, client) =>
     client.BaseAddress = new Uri(apiUrl);
 });
 
+// Configure HttpClient for Usuarios.API
+builder.Services.AddHttpClient("usuariosApi", (sp, client) =>
+{
+    var config = sp.GetRequiredService<IConfiguration>();
+    var apiUrl = config["services:usuarios-api:https:0"] ?? config["services:usuarios-api:http:0"];
+
+    if (string.IsNullOrEmpty(apiUrl))
+    {
+        throw new InvalidOperationException("No se pudo encontrar la URL del servicio 'usuarios-api'.");
+    }
+    
+    client.BaseAddress = new Uri(apiUrl);
+});
+
 builder.AddRedisClient("redis");
 
 builder.Services.AddSignalR(hubOptions =>
@@ -49,4 +63,3 @@ app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode();
 
 app.Run();
-

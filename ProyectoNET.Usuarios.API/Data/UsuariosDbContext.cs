@@ -1,12 +1,24 @@
 using Microsoft.EntityFrameworkCore;
-//using ProyectoNET.Usuarios.API.Models;
+using ProyectoNET.Usuarios.API.Models;
 
 namespace ProyectoNET.Usuarios.API.Data;
+
 public class UsuariosDbContext : DbContext
 {
     public UsuariosDbContext(DbContextOptions<UsuariosDbContext> options)
         : base(options)
     {
     }
-    //public DbSet<Usuario> Usuarios { get; set; }
+    
+    public DbSet<Usuario> Usuarios { get; set; }
+    
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        base.OnModelCreating(modelBuilder);
+        
+        // Configurar índice único para el email
+        modelBuilder.Entity<Usuario>()
+            .HasIndex(u => u.Email)
+            .IsUnique();
+    }
 }

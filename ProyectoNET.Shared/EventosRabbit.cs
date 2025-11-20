@@ -47,3 +47,27 @@ public record CorredorData
         TiempoNeto = tiempoNeto;
     }
 }
+
+// Evento cuando finaliza una carrera
+public record CarreraFinalizadaEvent(
+    int IdCarrera, 
+    DateTime? FechaFin, 
+    int TotalCorredores, 
+    int CorredoresFinalizados
+);
+
+// Evento cuando se inicia una carrera
+public record CarreraIniciada(
+    int IdCarrera, 
+    List<int> IdCorredores, 
+    List<PuntosDeControlDTO> TotalPuntosDeControl
+);
+
+// ⭐ NUEVO: Evento cuando un usuario se inscribe a una carrera
+public record UsuarioInscritoEvent(
+    int IdUsuario, 
+    int IdCarrera,
+    string Nombre,
+    string Apellido,
+    string Email
+);

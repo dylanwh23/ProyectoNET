@@ -81,13 +81,11 @@ public class CarreraController : ControllerBase
         return Ok(carreraDTO);
     }
 
-    [HttpGet("api/carreras")]
+   [HttpGet("api/carreras")]
     public async Task<IActionResult> ObtenerCarreras()
     {
         try
         {
-            // ✅ CORRECTO: Usar el repositorio
-            // Ya configuramos GetAllAsync en el repositorio para que haga el .Include()
             var carreras = await _carreraRepository.GetAllAsync();
 
             // Mapear a DTO

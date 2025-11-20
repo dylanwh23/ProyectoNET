@@ -15,9 +15,12 @@ public class CarreraRepository : ICarreraRepository
     // ✅ CORREGIDO: Agregado .Include()
     public async Task<IEnumerable<Carrera>> GetAllAsync()
     {
+        // Explicitly exclude Participantes for general GetAll to prevent serialization issues
+        // if the DTOs don't need them directly.
         return await _context.Carreras
-            .Include(c => c.LugaresRetiroEquipamiento) // <--- ¡IMPORTANTE!
-            .ToListAsync();
+                             .Include(c => c.LugaresRetiroEquipamiento) // Include if needed by DTOs
+                             .AsNoTracking() // Optional: if data is read-only
+                             .ToListAsync();
     }
 
     // ✅ CORREGIDO: Cambiado FindAsync por FirstOrDefaultAsync + Include
@@ -53,6 +56,8 @@ public class CarreraRepository : ICarreraRepository
         return await _context.Carreras
             .Include(c => c.LugaresRetiroEquipamiento)
             .Where(c => c.EstadoCarrera == Carrera.Estado.EnProgreso)
+            .Include(c => c.LugaresRetiroEquipamiento) // Include if needed by DTOs
+            .AsNoTracking()
             .ToListAsync();
     }
 
@@ -62,6 +67,8 @@ public class CarreraRepository : ICarreraRepository
         return await _context.Carreras
             .Include(c => c.LugaresRetiroEquipamiento)
             .Where(c => c.EstadoCarrera == Carrera.Estado.Pendiente)
+            .Include(c => c.LugaresRetiroEquipamiento) // Include if needed by DTOs
+            .AsNoTracking()
             .ToListAsync();
     }
 }

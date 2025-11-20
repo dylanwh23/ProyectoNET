@@ -1,17 +1,75 @@
 using Microsoft.EntityFrameworkCore;
 using ProyectoNET.Usuarios.API.Data;
+using MassTransit;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+// =================================================================
+// 1. CONFIGURAR SERVICIOS
+// =================================================================
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddControllers();
+
+// Configurar PostgreSQL
 builder.AddNpgsqlDbContext<UsuariosDbContext>("usuarios-db");
 
+// =================================================================
+// CONFIGURACIÓN DE MASSTRANSIT (CORREGIDA)
+// =================================================================
+builder.Services.AddMassTransit(config =>
+{
+    config.UsingRabbitMq((context, cfg) =>
+    {
+        // Obtenemos la cadena de conexión de .NET Aspire / Docker
+        var rabbitMqConnectionString = builder.Configuration.GetConnectionString("rabbitmq-bus");
+
+        // ✅ SOLUCIÓN: Usamos directamente la URI.
+        if (!string.IsNullOrEmpty(rabbitMqConnectionString))
+        {
+            // MassTransit detectará automáticamente el puerto dinámico (ej. 60035)
+            cfg.Host(new Uri(rabbitMqConnectionString));
+        }
+        else
+        {
+            // Fallback por defecto (solo si no hay cadena de conexión)
+            cfg.Host("localhost", "/", h =>
+            {
+                h.Username("guest");
+                h.Password("guest");
+            });
+        }
+        
+        cfg.ConfigureEndpoints(context);
+    });
+});
+
+// =================================================================
+// CONFIGURACIÓN DE CORS
+// =================================================================
+var corsPolicyName = "AllowWebApp";
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(name: corsPolicyName, policy =>
+    {
+        policy.WithOrigins(
+            "https://localhost:7073",
+            "https://localhost:7182",
+            "http://localhost:5001",
+            "https://localhost:7072" // Agregado por consistencia con tus otros servicios
+        )
+        .AllowAnyHeader()
+        .AllowAnyMethod()
+        .AllowCredentials();
+    });
+});
+
+// ===============================================
+// 2. CONSTRUIR Y CONFIGURAR PIPELINE
+// ===============================================
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -19,32 +77,13 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseCors(corsPolicyName);
+app.UseAuthorization();
+app.MapControllers();
 
-var summaries = new[]
-{
-    "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-};
-
-app.MapGet("/weatherforecast", () =>
-{
-    var forecast =  Enumerable.Range(1, 5).Select(index =>
-        new WeatherForecast
-        (
-            DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-            Random.Shared.Next(-20, 55),
-            summaries[Random.Shared.Next(summaries.Length)]
-        ))
-        .ToArray();
-    return forecast;
-})
-.WithName("GetWeatherForecast")
-.WithOpenApi();
-
-app.MapGet("/usuarios-test", () => "Respuesta del Microservicio de Usuarios");
-
-
-
-// para aplicar las migraciones al iniciar la aplicación
+// ===============================================
+// 3. MIGRACIONES
+// ===============================================
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
@@ -52,18 +91,15 @@ using (var scope = app.Services.CreateScope())
     {
         var dbContext = services.GetRequiredService<UsuariosDbContext>();
         dbContext.Database.Migrate();
+        
+        var logger = services.GetRequiredService<ILogger<Program>>();
+        logger.LogInformation("✅ Migraciones aplicadas correctamente en Usuarios.API");
     }
     catch (Exception ex)
     {
         var logger = services.GetRequiredService<ILogger<Program>>();
-        logger.LogError(ex, "Ocurrió un error al aplicar las migraciones.");
+        logger.LogError(ex, "❌ Ocurrió un error al aplicar las migraciones.");
     }
 }
-/**/
 
 app.Run();
-
-record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
-{
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
-}

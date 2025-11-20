@@ -22,6 +22,9 @@ public class CarreraDto
     public int TotalPuntosControl { get; set; }
     public decimal? Distancia { get; set; }
     public DateTime? FechaInicio { get; set; }
+    public decimal CostoInscripcion { get; set; }
+    public int CantidadParticipantes { get; set; }
+    public int CantidadMaximaParticipantes { get; set; }
 
     public List<string> LugaresRetiroEquipamiento { get; set; } = new();
 }
@@ -45,8 +48,9 @@ public class CrearCarreraDto
     public string Ubicacion { get; set; } = string.Empty;
 
     public DateTime? FechaInicio { get; set; }
-    public long CostoInscripcion { get; set; }
+    public decimal CostoInscripcion { get; set; } // Changed to decimal for consistency
     public int CantidadMaximaParticipantes { get; set; }
+    public string? ImagenPromocional { get; set; } // Added for validation context
     public List<string> LugaresRetiroEquipamiento { get; set; } = new();
 
 }
@@ -66,19 +70,3 @@ public class PuntoControlInicioDto
 }
 
 // En ProyectoNET.Shared/AdminWebApp o donde tengas tus DTOs
-
-public class DetalleCarreraDto
-{
-    public int Id { get; set; }
-    public string Nombre { get; set; } = string.Empty;
-    public string? Descripcion { get; set; }
-    public string? Ubicacion { get; set; }
-    public DateTime? FechaInicio { get; set; }
-    public DateTime? FechaFin { get; set; }
-    public float? Distancia { get; set; }
-    public decimal? CostoInscripcion { get; set; }
-    public int? CantidadMaximaParticipantes { get; set; }
-    public string Estado { get; set; } = "Pendiente";
-    public string? ImagenUrl { get; set; }
-    public List<string> LugaresRetiroEquipamiento { get; set; } = new();
-}
