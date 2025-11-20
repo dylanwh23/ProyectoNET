@@ -1,4 +1,5 @@
 @page "/carreras-disponibles"
+@rendermode InteractiveServer
 @using System.ComponentModel.DataAnnotations
 @using ProyectoNET.Shared
 @using ProyectoNET.WebApp.Models
@@ -146,7 +147,7 @@
                     </div>
 
                     <!-- Botón de Inscripción -->
-                    <button class="btn-inscribir-carrera">
+                    <button class="btn-inscribir-carrera" @onclick='(() => ReiniciarFormulario(carrera.Id))' data-bs-toggle="modal" data-bs-target="#inscripcionModal">
                         <i class="fas fa-bolt"></i>
                         <span>Inscribirme Ahora</span>
                         <i class="fas fa-arrow-right"></i>
@@ -170,3 +171,79 @@
         </div>
     </div>
 }
+
+<!-- Modal de Inscripción -->
+<div class="modal fade" id="inscripcionModal" tabindex="-1" aria-labelledby="inscripcionModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="inscripcionModalLabel">Inscribirse a Carrera</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar" @onclick="CerrarModal"></button>
+            </div>
+            <div class="modal-body">
+                @if (!string.IsNullOrEmpty(mensajeExito))
+                {
+                    <div class="alert alert-success" role="alert">
+                        @mensajeExito
+                        @if (!string.IsNullOrEmpty(passwordGenerada))
+                        {
+                            <p>Tu contraseña generada es: <strong>@passwordGenerada</strong>. ¡Guárdala bien!</p>
+                        }
+                    </div>
+                }
+                @if (!string.IsNullOrEmpty(mensajeError))
+                {
+                    <div class="alert alert-danger" role="alert">
+                        @mensajeError
+                    </div>
+                }
+                <EditForm Model="@inscripcionModel" OnValidSubmit="ProcesarInscripcion" FormName="inscripcionForm">
+                    <DataAnnotationsValidator />
+                    <ValidationSummary />
+
+                    <div class="mb-3">
+                        <label for="nombre" class="form-label">Nombre</label>
+                        <InputText id="nombre" class="form-control" @bind-Value="inscripcionModel.Nombre" />
+                        <ValidationMessage For="@(() => inscripcionModel.Nombre)" />
+                    </div>
+                    <div class="mb-3">
+                        <label for="apellido" class="form-label">Apellido</label>
+                        <InputText id="apellido" class="form-control" @bind-Value="inscripcionModel.Apellido" />
+                        <ValidationMessage For="@(() => inscripcionModel.Apellido)" />
+                    </div>
+                    <div class="mb-3">
+                        <label for="email" class="form-label">Email</label>
+                        <InputText id="email" class="form-control" @bind-Value="inscripcionModel.Email" />
+                        <ValidationMessage For="@(() => inscripcionModel.Email)" />
+                    </div>
+                    <div class="mb-3">
+                        <label for="fechaNacimiento" class="form-label">Fecha de Nacimiento</label>
+                        <InputDate id="fechaNacimiento" class="form-control" @bind-Value="inscripcionModel.FechaNacimiento" />
+                        <ValidationMessage For="@(() => inscripcionModel.FechaNacimiento)" />
+                    </div>
+                    <div class="mb-3">
+                        <label for="lugarDeEntrega" class="form-label">Lugar de Entrega</label>
+                        <InputNumber id="lugarDeEntrega" class="form-control" @bind-Value="inscripcionModel.LugarDeEntregaId" />
+                        <ValidationMessage For="@(() => inscripcionModel.LugarDeEntregaId)" />
+                    </div>
+                     <div class="d-grid">
+                        <button type="submit" class="btn btn-primary" disabled="@isProcessing">
+                            @if (isProcessing)
+                            {
+                                <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                                <span>Procesando...</span>
+                            }
+                            else
+                            {
+                                <span>Inscribirme</span>
+                            }
+                        </button>
+                    </div>
+                </EditForm>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" @onclick="CerrarModal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
