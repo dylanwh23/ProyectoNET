@@ -81,16 +81,16 @@ public class CarreraController : ControllerBase
         return Ok(carreraDTO);
     }
 
-    [HttpGet("api/carreras")]
+   [HttpGet("api/carreras")]
     public async Task<IActionResult> ObtenerCarreras()
     {
         try
         {
-            var carreras = await _context.Carreras
-                .Include(c => c.LugaresRetiroEquipamiento) // ✅ AGREGAR ESTO
-                .ToListAsync();
+            var carreras = await _carreraRepository.GetAllAsync();
 
+            // Mapear a DTO
             var carrerasDTO = carreras.Select(c => _mapper.ToCarrerasListDTO(c));
+
             return Ok(carrerasDTO);
         }
         catch (Exception ex)
